@@ -212,45 +212,50 @@ const Problems = () => {
       <ul className={styles.list}>
         {visibleViolations.map((v) => (
           <li key={v.id} className={styles.card}>
-            <div
-              className={
-                v.status === 'active' ? styles.statusRingActive : styles.statusRingResolved
-              }
-              aria-hidden
-            />
-            <div className={styles.cardBody}>
-              <p
+            <Link
+              className={styles.cardLink}
+              href={`/pro/project/problem?id=${encodeURIComponent(v.id)}`}
+            >
+              <div
                 className={
-                  v.status === 'active' ? styles.cardTitleActive : styles.cardTitleResolved
+                  v.status === 'active' ? styles.statusRingActive : styles.statusRingResolved
                 }
-                title={v.title}
-              >
-                {v.title}
-              </p>
-              <p className={styles.meta}>
-                Ответственный: <span className={styles.metaValue}>{v.responsible}</span>
-              </p>
-              {v.status === 'active' ? (
+                aria-hidden
+              />
+              <div className={styles.cardBody}>
+                <p
+                  className={
+                    v.status === 'active' ? styles.cardTitleActive : styles.cardTitleResolved
+                  }
+                  title={v.title}
+                >
+                  {v.title}
+                </p>
                 <p className={styles.meta}>
-                  Ожидаемая дата исправления:{' '}
-                  <span className={styles.metaValue}>{v.dateText}</span>
+                  Ответственный: <span className={styles.metaValue}>{v.responsible}</span>
                 </p>
-              ) : (
-                <p className={styles.metaFixed}>
-                  Исправлено: <span className={styles.metaFixedValue}>{v.dateText}</span>
-                </p>
-              )}
-              <div className={styles.photos} aria-label="Фотографии">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className={styles.photoPlaceholder}>
-                    фото
-                  </div>
-                ))}
+                {v.status === 'active' ? (
+                  <p className={styles.meta}>
+                    Ожидаемая дата исправления:{' '}
+                    <span className={styles.metaValue}>{v.dateText}</span>
+                  </p>
+                ) : (
+                  <p className={styles.metaFixed}>
+                    Исправлено: <span className={styles.metaFixedValue}>{v.dateText}</span>
+                  </p>
+                )}
+                <div className={styles.photos} aria-label="Фотографии">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className={styles.photoPlaceholder}>
+                      фото
+                    </div>
+                  ))}
+                </div>
               </div>
-              <button className={styles.chatBtn} type="button">
-                {v.chatLabel}
-              </button>
-            </div>
+            </Link>
+            <button className={styles.chatBtn} type="button">
+              {v.chatLabel}
+            </button>
           </li>
         ))}
       </ul>

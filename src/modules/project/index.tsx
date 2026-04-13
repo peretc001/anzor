@@ -99,9 +99,11 @@ const Project = () => {
           </ul>
 
           <div className={styles.bottomStack}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
-              Все нарушения (5 / 156 шт)
-            </button>
+            <Link href="/pro/project/problems">
+              <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
+                Все нарушения (7 / 156 шт)
+              </button>
+            </Link>
             <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
               Фотоотчет по объекту
             </button>

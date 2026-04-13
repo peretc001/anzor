@@ -121,9 +121,11 @@ const Project = () => {
                 Все нарушения (7 / 156 шт)
               </button>
             </Link>
-            <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
-              Фотоотчет по объекту
-            </button>
+            <Link href="/pro/project/gallery">
+              <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
+                Фотоотчет по объекту
+              </button>
+            </Link>
             <button className={`${styles.actionBtn} ${styles.actionBtnDocs}`} type="button">
               Документы (договор, план)
             </button>

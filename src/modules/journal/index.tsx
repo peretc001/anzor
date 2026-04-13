@@ -91,9 +91,11 @@ const Journal = () => (
               {BTN_VIOLATIONS}
             </button>
           </Link>
-          <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
-            {BTN_PHOTO}
-          </button>
+          <Link href="/pro/project/gallery">
+            <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
+              {BTN_PHOTO}
+            </button>
+          </Link>
         </div>
       </section>
     </div>

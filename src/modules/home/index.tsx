@@ -3,17 +3,24 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Input } from 'antd'
 import cns from 'classnames'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 import styles from './index.module.scss'
 
 const ADD_BUTTON_LABEL = '+ добавить'
+const CAPTION_ACTIVE = 'Действующие'
+const CAPTION_ARCHIVE = 'Архив'
+
+type SectionItem = {
+  date: string
+  label: string
+}
 
 type SectionData = {
   archive: string[]
-  date: string
-  items: string[]
+  items: SectionItem[]
   progress: number
   tabLabel: string
   title: string
@@ -22,28 +29,29 @@ type SectionData = {
 const SECTIONS: SectionData[] = [
   {
     archive: ['Квартира на Московской', 'Квартира в Питере', 'Дом у моря'],
-    date: 'от 01.04.2026',
-    items: ['Квартира ЖК Самолет', 'Квартира ЖК Патрики', 'Дом в Елизаветке'],
+    items: [
+      { date: 'от 01.04.2026', label: 'Квартира ЖК Самолет' },
+      { date: 'от 18.03.2026', label: 'Квартира ЖК Патрики' },
+      { date: 'от 05.02.2026', label: 'Дом в Елизаветке' },
+    ],
     progress: 30,
     tabLabel: 'Объекты',
-    title: 'Объекты'
+    title: 'Объекты',
   },
   {
     archive: ['ООО «ЮгСтройИнвест»', 'ИП Иванов', 'ИП Петров'],
-    date: 'от 11.03.2026',
-    items: ['ООО «Строительная компания»'],
+    items: [{ date: 'от 11.03.2026', label: 'ООО «Строительная компания»' }],
     progress: 50,
     tabLabel: 'Исполнители',
-    title: 'Исполнители'
+    title: 'Исполнители',
   },
   {
     archive: ['Петров Петр Петрович', 'Сидоров Сидр Сидорович', 'Маск Илон Заремович'],
-    date: 'от 01.02.2026',
-    items: ['Иванов Иван Иванович'],
+    items: [{ date: 'от 01.02.2026', label: 'Иванов Иван Иванович' }],
     progress: 45,
     tabLabel: 'Заказчики',
-    title: 'Заказчики'
-  }
+    title: 'Заказчики',
+  },
 ]
 
 const Index = () => {
@@ -55,18 +63,18 @@ const Index = () => {
     setItemsFilter('')
   }, [activeIndex])
 
-  const { filteredItems, filteredArchive } = useMemo(() => {
+  const { filteredArchive, filteredItems } = useMemo(() => {
     const q = itemsFilter.trim().toLowerCase()
     if (!q) {
       return {
-        filteredItems: section.items,
-        filteredArchive: section.archive
+        filteredArchive: section.archive,
+        filteredItems: section.items
       }
     }
-    const match = (label: string) => label.toLowerCase().includes(q)
+    const matchLabel = (label: string) => label.toLowerCase().includes(q)
     return {
-      filteredItems: section.items.filter(match),
-      filteredArchive: section.archive.filter(match)
+      filteredArchive: section.archive.filter(matchLabel),
+      filteredItems: section.items.filter(item => matchLabel(item.label)),
     }
   }, [itemsFilter, section.archive, section.items])
 
@@ -105,37 +113,34 @@ const Index = () => {
             </Button>
           </div>
           <Input
+            className={styles.itemsFilter}
             allowClear
             aria-label="Фильтр по названию"
-            className={styles.itemsFilter}
             placeholder="Фильтр по названию"
-            prefix={<MagnifyingGlassIcon aria-hidden className={styles.filterIcon} />}
+            prefix={<MagnifyingGlassIcon className={styles.filterIcon} aria-hidden />}
             value={itemsFilter}
             onChange={e => setItemsFilter(e.target.value)}
           />
         </div>
 
-        <h3 className={styles.caption}>Действующие</h3>
+        <h3 className={styles.caption}>{CAPTION_ACTIVE}</h3>
 
         <ul className={styles.list}>
-          {filteredItems.map(label => (
-            <li key={label}>
+          {filteredItems.map(item => (
+            <li key={item.label}>
               <Link className={styles.itemRow} href="/pro/project">
                 <div className={styles.item}>
-                  {label}
-                  <span className={styles.date}>{section.date}</span>
+                  {item.label}
+                  <span className={styles.date}>{item.date}</span>
                 </div>
 
-                <div
-                  className={styles.progress}
-                  style={{ width: `${section.progress}%` }}
-                />
+                <div className={styles.progress} style={{ width: `${section.progress}%` }} />
               </Link>
             </li>
           ))}
         </ul>
 
-        <h3 className={styles.caption}>Архив</h3>
+        <h3 className={styles.caption}>{CAPTION_ARCHIVE}</h3>
 
         <ul className={cns(styles.list, styles.archive)}>
           {filteredArchive.map(label => (

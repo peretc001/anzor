@@ -1,17 +1,20 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ConfigProvider, DatePicker, Select } from 'antd'
 import ruRU from 'antd/locale/ru_RU'
+import cns from 'classnames'
 import dayjs, { type Dayjs } from 'dayjs'
 import Link from 'next/link'
 
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, PlusIcon } from '@heroicons/react/24/outline'
 
+import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import styles from './index.module.scss'
 import listStyles from '@/modules/problems/index.module.scss'
 
 import 'dayjs/locale/ru'
+import { Fancybox } from '@fancyapps/ui'
 
 dayjs.locale('ru')
 
@@ -23,11 +26,20 @@ const RESPONSIBLE_DESIGNER = 'Дизайнер'
 const RESPONSIBLE_EXECUTOR = 'Исполнитель'
 const META_RESPONSIBLE_LABEL = 'Ответственный:'
 const META_DATE_LABEL = 'Ожидаемая дата исправления:'
-const PHOTO_PLACEHOLDER = 'фото'
+const PHOTO_ADD_LABEL = 'Добавить фото'
 const INPUT_PLACEHOLDER = 'Написать сообщение'
 const INPUT_ARIA = 'Написать сообщение'
 const BTN_SEND = 'Отправить'
 const BTN_MARK_FIXED = 'Отметить как исправлено'
+
+const VIOLATION_PHOTO_URLS = [
+  'https://i.pinimg.com/736x/59/ce/c7/59cec73bb09298a578a5dcff09ee89f6.jpg',
+  'https://avatars.mds.yandex.net/get-ydo/3918388/2a0000019170b9265111157c9b35cbd3876b/diploma',
+  'https://i.sstatic.net/cuHl5l.jpg',
+] as const
+
+const FANCYBOX_GROUP = 'violation-photos'
+const FANCYBOX_SELECTOR = `[data-fancybox="${FANCYBOX_GROUP}"]`
 
 type ChatRole = 'designer' | 'executor'
 
@@ -136,6 +148,23 @@ const Problem = () => {
   const [responsible, setResponsible] = useState(RESPONSIBLE_EXECUTOR)
   const [correctionDate, setCorrectionDate] = useState<Dayjs>(() => dayjs())
   const [messages, setMessages] = useState<ChatMessage[]>(MOCK_MESSAGES)
+  const photosRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = photosRef.current
+    if (!root) return
+
+    Fancybox.bind(root, FANCYBOX_SELECTOR, {
+      Carousel: {
+        infinite: false,
+      },
+    })
+
+    return () => {
+      Fancybox.unbind(root, FANCYBOX_SELECTOR)
+      Fancybox.close()
+    }
+  }, [])
 
   const send = () => {
     const text = draft.trim()
@@ -223,30 +252,54 @@ const Problem = () => {
                     />
                   </div>
                 </ConfigProvider>
-                <div className={listStyles.photos} aria-label="Фотографии">
-                  {[0, 1, 2].map(i => (
-                    <div key={i} className={listStyles.photoPlaceholder}>
-                      {PHOTO_PLACEHOLDER}
-                    </div>
+                <div ref={photosRef} className={listStyles.photos} aria-label="Фотографии">
+                  {VIOLATION_PHOTO_URLS.map(src => (
+                    <a
+                      key={src}
+                      className={cns(listStyles.photoPlaceholder, styles.photoFancyLink)}
+                      aria-label={`Открыть фото: ${VIOLATION_TITLE}`}
+                      data-caption={VIOLATION_TITLE}
+                      data-fancybox={FANCYBOX_GROUP}
+                      href={src}
+                      rel="noreferrer"
+                    >
+                      <img
+                        className={styles.photoFancyImg}
+                        alt=""
+                        decoding="async"
+                        loading="lazy"
+                        src={src}
+                      />
+                    </a>
                   ))}
+                  <div
+                    className={cns(listStyles.photoPlaceholder, styles.photoUploadStub)}
+                    aria-label={PHOTO_ADD_LABEL}
+                  >
+                    <PlusIcon className={styles.photoUploadIcon} aria-hidden />
+                    <span className={styles.photoUploadText} aria-hidden>
+                      {PHOTO_ADD_LABEL}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <button className={styles.markFixedBtn} type="button">
+              {BTN_MARK_FIXED}
+            </button>
           </div>
         </div>
 
         <div className={styles.chatLayout}>
-          <div
-            className={styles.history}
-            aria-live="polite"
-            aria-relevant="additions"
-            role="log"
-          >
+          <div className={styles.history} aria-live="polite" aria-relevant="additions" role="log">
             <div className={styles.messages}>
               {messages.map(m => (
                 <article
                   key={m.id}
-                  className={m.role === 'designer' ? styles.messageOutgoing : styles.messageIncoming}
+                  className={
+                    m.role === 'designer' ? styles.messageOutgoing : styles.messageIncoming
+                  }
                 >
                   <div className={styles.messageBlock}>
                     <header className={styles.msgHeader}>
@@ -308,10 +361,6 @@ const Problem = () => {
               {BTN_SEND}
             </button>
           </div>
-
-          <button className={styles.markFixedBtn} type="button">
-            {BTN_MARK_FIXED}
-          </button>
         </div>
       </div>
     </div>

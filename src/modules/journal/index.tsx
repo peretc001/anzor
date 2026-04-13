@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
@@ -13,6 +14,8 @@ import type { ProjectContactRole } from '@/constants/projectContact'
 import styles from './index.module.scss'
 
 import 'dayjs/locale/ru'
+
+const JournalTitlePdfModal = dynamic(() => import('./JournalTitlePdfModal'), { ssr: false })
 
 const HEADER_TITLE = 'Журнал авторского надзора от 12.04.2026'
 const INFO_PROJECT_LABEL = 'Объект:'
@@ -28,7 +31,6 @@ const SIG_EXECUTOR = 'Исполнитель'
 const SIG_CUSTOMER = 'Заказчик'
 const SIG_DESIGNER = 'Дизайнер'
 const SIG_NOT_SIGNED = 'Не подписано'
-const SIG_CUSTOMER_SIGNED = 'УКЭП #45234788 от 11.04.2026'
 const BTN_SEND_SIGN = 'Отправить на подпись'
 const BTN_AWAITING_SIGNATURES = 'Ожидается подписание'
 const SIGN_SEND_COOLDOWN_SEC = 59
@@ -37,7 +39,8 @@ const BTN_PHOTO = 'Фотоотчет'
 
 const Journal = () => {
   const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
-  const [signCooldownLeft, setSignCooldownLeft] = useState<number | null>(null)
+  const [signCooldownLeft, setSignCooldownLeft] = useState<null | number>(null)
+  const [titlePdfOpen, setTitlePdfOpen] = useState(false)
 
   const isSignCooldown = signCooldownLeft !== null
 
@@ -98,13 +101,33 @@ const Journal = () => {
         <section className={styles.section} aria-labelledby="journal-heading">
           <div className={styles.documentRow}>
             <div className={styles.documentCard}>
-              <img alt="" src="/journal.png" />
+              <button
+                className={styles.documentPreview}
+                type="button"
+                onClick={() => {
+                  setTitlePdfOpen(true)
+                }}
+              >
+                <img alt="Титульный лист журнала" src="/journal.png" />
+              </button>
 
               <div className={styles.documentActions}>
-                <button className={styles.documentBtn} type="button">
+                <button
+                  className={styles.documentBtn}
+                  type="button"
+                  onClick={() => {
+                    setTitlePdfOpen(true)
+                  }}
+                >
                   {BTN_VIEW}
                 </button>
-                <button className={styles.documentBtn} type="button">
+                <button
+                  className={styles.documentBtn}
+                  type="button"
+                  onClick={() => {
+                    setTitlePdfOpen(true)
+                  }}
+                >
                   {BTN_PRINT}
                 </button>
               </div>
@@ -167,6 +190,13 @@ const Journal = () => {
         role={contactModal ?? 'customer'}
         onClose={() => {
           setContactModal(null)
+        }}
+      />
+
+      <JournalTitlePdfModal
+        open={titlePdfOpen}
+        onClose={() => {
+          setTitlePdfOpen(false)
         }}
       />
     </div>

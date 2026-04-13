@@ -118,6 +118,29 @@
   overflow: hidden;
 }
 
+.documentPreview {
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-blue);
+    outline-offset: 2px;
+  }
+}
+
 .documentActions {
   display: flex;
   gap: 10px;

@@ -44,20 +44,21 @@ function formatViolationsCount(count: number): string {
 }
 
 type JournalEntry = {
-  hasAlert: boolean
   dateLabel: string
+  hasAlert: boolean
+  link: string
   violationsCount: number
 }
 
 const JOURNAL_ITEMS: JournalEntry[] = [
-  { hasAlert: true, dateLabel: '12.04.2026', link: '/pro/project/journal', violationsCount: 7 },
+  { dateLabel: '12.04.2026', hasAlert: true, link: '/pro/project/journal', violationsCount: 7 },
   {
-    hasAlert: false,
     dateLabel: '15.03.2026',
+    hasAlert: false,
     link: '/pro/project/journalDone',
-    violationsCount: 0
+    violationsCount: 0,
   },
-  { hasAlert: false, dateLabel: '11.02.2026', link: '/pro/project/journalDone', violationsCount: 2 }
+  { dateLabel: '11.02.2026', hasAlert: false, link: '/pro/project/journalDone', violationsCount: 2 },
 ]
 
 const Project = () => {

@@ -21,15 +21,25 @@ dayjs.locale('ru')
 
 const ADD_BUTTON_LABEL = '+ добавить'
 
+function formatViolationsCount(count: number): string {
+  const n = Math.abs(count) % 100
+  const n1 = n % 10
+  if (n > 10 && n < 20) return `${count} нарушений`
+  if (n1 === 1) return `${count} нарушение`
+  if (n1 >= 2 && n1 <= 4) return `${count} нарушения`
+  return `${count} нарушений`
+}
+
 type JournalEntry = {
   hasAlert: boolean
   dateLabel: string
+  violationsCount: number
 }
 
 const JOURNAL_ITEMS: JournalEntry[] = [
-  { hasAlert: true, dateLabel: '25.04.2026' },
-  { hasAlert: false, dateLabel: '25.03.2026' },
-  { hasAlert: false, dateLabel: '25.02.2026' }
+  { hasAlert: true, dateLabel: '25.04.2026', violationsCount: 7 },
+  { hasAlert: false, dateLabel: '25.03.2026', violationsCount: 0 },
+  { hasAlert: false, dateLabel: '25.02.2026', violationsCount: 2 }
 ]
 
 const Project = () => {
@@ -61,24 +71,26 @@ const Project = () => {
         </div>
 
         <section className={styles.section} aria-labelledby="journal-heading">
-          <ConfigProvider locale={ruRU}>
-            <DatePicker
-              className={styles.calendarPicker}
-              allowClear={false}
-              format="MMMM YYYY"
-              getPopupContainer={() => document.body}
-              inputReadOnly
-              picker="month"
-              placeholder="Календарь (год, месяц)"
-              value={journalMonth}
-              onChange={setJournalMonth}
-            />
-          </ConfigProvider>
+          <div className={styles.wrapper}>
+            <div className={styles.addWrap}>
+              <Button block color="primary" variant="solid">
+                {ADD_BUTTON_LABEL}
+              </Button>
+            </div>
 
-          <div className={styles.addWrap}>
-            <Button block color="primary" variant="solid">
-              {ADD_BUTTON_LABEL}
-            </Button>
+            <ConfigProvider locale={ruRU}>
+              <DatePicker
+                className={styles.calendarPicker}
+                allowClear={false}
+                format="MMMM YYYY"
+                getPopupContainer={() => document.body}
+                inputReadOnly
+                picker="month"
+                placeholder="Календарь (год, месяц)"
+                value={journalMonth}
+                onChange={setJournalMonth}
+              />
+            </ConfigProvider>
           </div>
 
           <ul className={styles.list}>
@@ -86,9 +98,14 @@ const Project = () => {
               <li key={entry.dateLabel}>
                 <Link className={styles.itemRow} href="/pro/project/journal">
                   <div className={styles.item}>
-                    Журнал за {entry.dateLabel}
+                    <span className={styles.journalTitle}>Журнал за {entry.dateLabel}</span>
                     {entry.hasAlert ? (
-                      <ExclamationCircleIcon className={cns(styles.icon, styles.warning)} />
+                      <>
+                        <span className={styles.violationsCaption}>
+                          {formatViolationsCount(entry.violationsCount)}
+                        </span>
+                        <ExclamationCircleIcon className={cns(styles.icon, styles.warning)} />
+                      </>
                     ) : (
                       <CheckCircleIcon className={cns(styles.icon, styles.success)} />
                     )}

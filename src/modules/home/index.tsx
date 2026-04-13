@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Button } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Button, Input } from 'antd'
 import cns from 'classnames'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 import styles from './index.module.scss'
@@ -11,7 +12,9 @@ const ADD_BUTTON_LABEL = '+ добавить'
 
 type SectionData = {
   archive: string[]
+  date: string
   items: string[]
+  progress: number
   tabLabel: string
   title: string
 }
@@ -45,7 +48,27 @@ const SECTIONS: SectionData[] = [
 
 const Index = () => {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [itemsFilter, setItemsFilter] = useState('')
   const section = SECTIONS[activeIndex]
+
+  useEffect(() => {
+    setItemsFilter('')
+  }, [activeIndex])
+
+  const { filteredItems, filteredArchive } = useMemo(() => {
+    const q = itemsFilter.trim().toLowerCase()
+    if (!q) {
+      return {
+        filteredItems: section.items,
+        filteredArchive: section.archive
+      }
+    }
+    const match = (label: string) => label.toLowerCase().includes(q)
+    return {
+      filteredItems: section.items.filter(match),
+      filteredArchive: section.archive.filter(match)
+    }
+  }, [itemsFilter, section.archive, section.items])
 
   return (
     <div className={styles.root}>
@@ -75,24 +98,37 @@ const Index = () => {
         aria-labelledby={`panel-title-${activeIndex}`}
         role="tabpanel"
       >
-        <Button color="primary" variant="solid">
-          {ADD_BUTTON_LABEL}
-        </Button>
+        <div className={styles.wrapper}>
+          <div className={styles.addWrap}>
+            <Button color="primary" variant="solid">
+              {ADD_BUTTON_LABEL}
+            </Button>
+          </div>
+          <Input
+            allowClear
+            aria-label="Фильтр по названию"
+            className={styles.itemsFilter}
+            placeholder="Фильтр по названию"
+            prefix={<MagnifyingGlassIcon aria-hidden className={styles.filterIcon} />}
+            value={itemsFilter}
+            onChange={e => setItemsFilter(e.target.value)}
+          />
+        </div>
 
         <h3 className={styles.caption}>Действующие</h3>
 
         <ul className={styles.list}>
-          {section.items.map((label, index) => (
+          {filteredItems.map(label => (
             <li key={label}>
               <Link className={styles.itemRow} href="/pro/project">
                 <div className={styles.item}>
                   {label}
-                  <span className={styles.date}>{SECTIONS[index].date}</span>
+                  <span className={styles.date}>{section.date}</span>
                 </div>
 
                 <div
                   className={styles.progress}
-                  style={{ width: SECTIONS[index].progress + '%' }}
+                  style={{ width: `${section.progress}%` }}
                 />
               </Link>
             </li>
@@ -102,7 +138,7 @@ const Index = () => {
         <h3 className={styles.caption}>Архив</h3>
 
         <ul className={cns(styles.list, styles.archive)}>
-          {section.archive.map(label => (
+          {filteredArchive.map(label => (
             <li key={label}>
               <div className={styles.itemRow}>
                 <div className={styles.item}>{label}</div>

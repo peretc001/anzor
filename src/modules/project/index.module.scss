@@ -81,18 +81,27 @@
   padding: 16px;
 }
 
-.calendarPicker {
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
   width: 100%;
+}
+
+.calendarPicker {
+  flex: 1;
+  min-width: 0;
+  width: auto !important;
   margin: 0;
   padding: 0;
-  border: none !important;
   border-radius: 10px;
-  background: #ffe4cc !important;
+  background: transparent !important;
   box-shadow: none !important;
-  transition: filter 0.15s ease;
+  transition: opacity 0.15s ease;
 
   &:hover {
-    filter: brightness(0.98);
+    opacity: 0.92;
   }
 
   &:global(.ant-picker-focused) {
@@ -106,7 +115,7 @@
   }
 
   :global(.ant-picker-input) {
-    padding: 14px 16px;
+    padding: 10px 16px;
   }
 
   :global(.ant-picker-input > input) {
@@ -125,12 +134,12 @@
 }
 
 .addWrap {
-  align-self: flex-start;
-  width: 48%;
-  max-width: 220px;
+  flex: 0 1 220px;
+  min-width: 0;
 
   :global(.ant-btn) {
     width: 100%;
+    border-radius: 10px;
   }
 }
 
@@ -155,7 +164,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     padding: 12px;
     border-radius: 8px;
     font-size: 14px;
@@ -168,8 +177,19 @@
       background: var(--blue-50);
     }
 
+    .journalTitle {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .violationsCaption {
+      flex: none;
+      @include typography.text-sm;
+      color: var(--gray-500);
+      white-space: nowrap;
+    }
+
     .icon {
-      margin-left: auto;
       flex: none;
       width: 24px;
       height: 24px;

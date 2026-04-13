@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Button } from 'antd'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
@@ -13,6 +14,10 @@ import type { ProjectContactRole } from '@/constants/projectContact'
 import styles from './index.module.scss'
 
 import 'dayjs/locale/ru'
+
+const JournalTitlePdfModal = dynamic(() => import('../journal/JournalTitlePdfModal'), {
+  ssr: false
+})
 
 const HEADER_TITLE = 'Журнал авторского надзора от 15.03.2026'
 const INFO_PROJECT_LABEL = 'Объект:'
@@ -35,6 +40,7 @@ const BTN_PHOTO = 'Фотоотчет'
 
 const JournalDone = () => {
   const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
+  const [titlePdfOpen, setTitlePdfOpen] = useState(false)
 
   return (
     <div className={styles.root}>
@@ -80,14 +86,25 @@ const JournalDone = () => {
         <section className={styles.section} aria-labelledby="journal-heading">
           <div className={styles.documentRow}>
             <div className={styles.documentCard}>
-              <img alt="" src="/journal.png" />
+              <button
+                className={styles.documentPreview}
+                type="button"
+                onClick={() => {
+                  setTitlePdfOpen(true)
+                }}
+              >
+                <img alt="Титульный лист журнала" src="/journal.png" />
+              </button>
 
               <div className={styles.documentActions}>
-                <button className={styles.documentBtn} type="button">
+                <button
+                  className={styles.documentBtn}
+                  type="button"
+                  onClick={() => {
+                    setTitlePdfOpen(true)
+                  }}
+                >
                   {BTN_VIEW}
-                </button>
-                <button className={styles.documentBtn} type="button">
-                  {BTN_PRINT}
                 </button>
               </div>
             </div>
@@ -131,6 +148,14 @@ const JournalDone = () => {
         role={contactModal ?? 'customer'}
         onClose={() => {
           setContactModal(null)
+        }}
+      />
+
+      <JournalTitlePdfModal
+        isSigned
+        open={titlePdfOpen}
+        onClose={() => {
+          setTitlePdfOpen(false)
         }}
       />
     </div>

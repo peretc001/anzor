@@ -19,12 +19,14 @@ const DOWNLOAD_FILENAME = 'zhurnal-avtorskogo-nadzora-titul.pdf'
 
 type JournalTitlePdfModalProps = {
   readonly data?: JournalTitlePdfData
+  readonly isSigned?: boolean
   readonly open: boolean
   readonly onClose: () => void
 }
 
 const JournalTitlePdfModal = ({
   data = JOURNAL_TITLE_PDF_DEFAULT_DATA,
+  isSigned = false,
   open,
   onClose,
 }: JournalTitlePdfModalProps) => {
@@ -33,7 +35,7 @@ const JournalTitlePdfModal = ({
   const handleDownload = useCallback(async () => {
     setDownloading(true)
     try {
-      const instance = pdf(<JournalTitlePdfDocument data={data} />)
+      const instance = pdf(<JournalTitlePdfDocument data={data} isSigned={isSigned} />)
       const blob = await instance.toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -45,7 +47,7 @@ const JournalTitlePdfModal = ({
     } finally {
       setDownloading(false)
     }
-  }, [data])
+  }, [data, isSigned])
 
   return (
     <Modal
@@ -63,7 +65,7 @@ const JournalTitlePdfModal = ({
       </div>
       <div className={styles.viewerWrap}>
         <PDFViewer className={styles.viewer} showToolbar width="100%">
-          <JournalTitlePdfDocument data={data} />
+          <JournalTitlePdfDocument data={data} isSigned={isSigned} />
         </PDFViewer>
       </div>
     </Modal>

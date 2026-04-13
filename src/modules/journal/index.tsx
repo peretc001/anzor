@@ -47,7 +47,7 @@ const Journal = () => {
   useEffect(() => {
     if (!isSignCooldown) return
     const id = window.setInterval(() => {
-      setSignCooldownLeft((prev) => {
+      setSignCooldownLeft(prev => {
         if (prev === null || prev <= 1) return null
         return prev - 1
       })
@@ -120,15 +120,6 @@ const Journal = () => {
                   }}
                 >
                   {BTN_VIEW}
-                </button>
-                <button
-                  className={styles.documentBtn}
-                  type="button"
-                  onClick={() => {
-                    setTitlePdfOpen(true)
-                  }}
-                >
-                  {BTN_PRINT}
                 </button>
               </div>
             </div>

@@ -151,10 +151,12 @@ const styles = StyleSheet.create({
 
 type JournalTitlePdfDocumentProps = {
   readonly data?: JournalTitlePdfData
+  readonly isSigned?: boolean
 }
 
 export const JournalTitlePdfDocument = ({
   data = JOURNAL_TITLE_PDF_DEFAULT_DATA,
+  isSigned = false,
 }: JournalTitlePdfDocumentProps) => {
   const num = data.journalNumber.trim() || PDF_JOURNAL_NUMBER_FALLBACK
 
@@ -229,9 +231,11 @@ export const JournalTitlePdfDocument = ({
           </View>
         </View>
 
-        <View style={styles.signatureImageWrap}>
-          <Image style={styles.signatureImage} src={PDF_SIGNATURE_IMAGE_SRC} />
-        </View>
+        {isSigned ? (
+          <View style={styles.signatureImageWrap}>
+            <Image style={styles.signatureImage} src={PDF_SIGNATURE_IMAGE_SRC} />
+          </View>
+        ) : null}
       </Page>
     </Document>
   )

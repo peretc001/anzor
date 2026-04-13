@@ -1,0 +1,103 @@
+'use client'
+
+import React from 'react'
+import { Button } from 'antd'
+import Link from 'next/link'
+
+import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+
+import styles from './index.module.scss'
+
+import 'dayjs/locale/ru'
+
+const HEADER_TITLE = 'Журнал авторского надзора от 25.04.2026'
+const INFO_EXECUTOR_LABEL = 'Исполнитель:'
+const INFO_EXECUTOR_VALUE = 'ООО «Строительная компания»'
+const INFO_CUSTOMER_LABEL = 'Заказчик:'
+const INFO_CUSTOMER_VALUE = 'Иванов Иван'
+const BTN_VIEW = 'Просмотр'
+const BTN_PRINT = 'Печать'
+const SIGNATURES_TITLE = 'Подписи'
+const SIG_EXECUTOR = 'Исполнитель'
+const SIG_CUSTOMER = 'Заказчик'
+const SIG_DESIGNER = 'Дизайнер'
+const SIG_NOT_SIGNED = 'Не подписано'
+const SIG_CUSTOMER_SIGNED = 'УКЭП #45234788 от 25.04.2026'
+const BTN_SEND_SIGN = 'Отправить на подпись'
+const BTN_VIOLATIONS = 'Нарушения (7 / 13 шт)'
+const BTN_PHOTO = 'Фотоотчет'
+
+const Journal = () => (
+  <div className={styles.root}>
+    <div className={styles.header}>
+      <Link className={styles.back} href="/pro/project">
+        <ChevronLeftIcon className={styles.icon} />
+      </Link>
+      <div className={styles.item}>{HEADER_TITLE}</div>
+    </div>
+
+    <div className={styles.container}>
+      <div className={styles.info}>
+        <div className={styles.item}>
+          <span>{INFO_EXECUTOR_LABEL}</span>
+          <span className={styles.value}>{INFO_EXECUTOR_VALUE}</span>
+        </div>
+        <div className={styles.item}>
+          <span>{INFO_CUSTOMER_LABEL}</span>
+          <span className={styles.value}>{INFO_CUSTOMER_VALUE}</span>
+        </div>
+      </div>
+
+      <section className={styles.section} aria-labelledby="journal-heading">
+        <div className={styles.documentRow}>
+          <div className={styles.documentCard}>
+            <img alt="" src="/journal.png" />
+
+            <div className={styles.documentActions}>
+              <button className={styles.documentBtn} type="button">
+                {BTN_VIEW}
+              </button>
+              <button className={styles.documentBtn} type="button">
+                {BTN_PRINT}
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.signatures}>
+            <h3 className={styles.signaturesTitle}>{SIGNATURES_TITLE}</h3>
+            <ul className={styles.signatureList}>
+              <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                <span className={styles.signatureLabel}>{SIG_EXECUTOR}</span>
+                <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+              </li>
+              <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
+                <span className={styles.signatureLabel}>{SIG_CUSTOMER}</span>
+                <span className={styles.signatureStatus}>{SIG_CUSTOMER_SIGNED}</span>
+              </li>
+              <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                <span className={styles.signatureLabel}>{SIG_DESIGNER}</span>
+                <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+              </li>
+            </ul>
+            <div className={styles.sendRow}>
+              <Button type="primary">{BTN_SEND_SIGN}</Button>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.bottomStack}>
+          <Link href="/pro/project/problems">
+            <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
+              {BTN_VIOLATIONS}
+            </button>
+          </Link>
+          <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
+            {BTN_PHOTO}
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+)
+
+export default Journal

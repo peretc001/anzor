@@ -84,7 +84,7 @@ const Project = () => {
           <ul className={styles.list}>
             {JOURNAL_ITEMS.map(entry => (
               <li key={entry.dateLabel}>
-                <Link className={styles.itemRow} href="/pro/project">
+                <Link className={styles.itemRow} href="/pro/project/journal">
                   <div className={styles.item}>
                     Журнал за {entry.dateLabel}
                     {entry.hasAlert ? (

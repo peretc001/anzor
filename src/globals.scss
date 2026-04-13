@@ -21,9 +21,11 @@ a {
 .layout-container {
   width: 100%;
   min-height: 100dvh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--gray-100);
+  overflow: hidden;
 
   .page {
     flex: 1;
@@ -33,6 +35,7 @@ a {
     max-width: 414px;
     margin: 0 auto;
     padding: 32px 0;
+    overflow: hidden;
   }
 }
 

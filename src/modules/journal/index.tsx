@@ -1,16 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'antd'
 import Link from 'next/link'
 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+
+import ContactProfileModal from '@/shared/components/contactProfileModal/contactProfileModal'
+
+import type { ProjectContactRole } from '@/constants/projectContact'
 
 import styles from './index.module.scss'
 
 import 'dayjs/locale/ru'
 
 const HEADER_TITLE = 'Журнал авторского надзора от 25.04.2026'
+const INFO_PROJECT_LABEL = 'Объект:'
+const INFO_PROJECT_VALUE = 'Квартира ЖК Самолет'
 const INFO_EXECUTOR_LABEL = 'Исполнитель:'
 const INFO_EXECUTOR_VALUE = 'ООО «Строительная компания»'
 const INFO_CUSTOMER_LABEL = 'Заказчик:'
@@ -27,79 +33,111 @@ const BTN_SEND_SIGN = 'Отправить на подпись'
 const BTN_VIOLATIONS = 'Нарушения (7 / 13 шт)'
 const BTN_PHOTO = 'Фотоотчет'
 
-const Journal = () => (
-  <div className={styles.root}>
-    <div className={styles.header}>
-      <Link className={styles.back} href="/pro/project">
-        <ChevronLeftIcon className={styles.icon} />
-      </Link>
-      <div className={styles.item}>{HEADER_TITLE}</div>
-    </div>
+const Journal = () => {
+  const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
 
-    <div className={styles.container}>
-      <div className={styles.info}>
-        <div className={styles.item}>
-          <span>{INFO_EXECUTOR_LABEL}</span>
-          <span className={styles.value}>{INFO_EXECUTOR_VALUE}</span>
-        </div>
-        <div className={styles.item}>
-          <span>{INFO_CUSTOMER_LABEL}</span>
-          <span className={styles.value}>{INFO_CUSTOMER_VALUE}</span>
-        </div>
+  return (
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <Link className={styles.back} href="/pro/project">
+          <ChevronLeftIcon className={styles.icon} />
+        </Link>
+        <div className={styles.item}>{HEADER_TITLE}</div>
       </div>
 
-      <section className={styles.section} aria-labelledby="journal-heading">
-        <div className={styles.documentRow}>
-          <div className={styles.documentCard}>
-            <img alt="" src="/journal.png" />
-
-            <div className={styles.documentActions}>
-              <button className={styles.documentBtn} type="button">
-                {BTN_VIEW}
-              </button>
-              <button className={styles.documentBtn} type="button">
-                {BTN_PRINT}
-              </button>
-            </div>
+      <div className={styles.container}>
+        <div className={styles.info}>
+          <div className={styles.item}>
+            <span>{INFO_PROJECT_LABEL}</span>
+            <span className={styles.value}>{INFO_PROJECT_VALUE}</span>
           </div>
-
-          <div className={styles.signatures}>
-            <h3 className={styles.signaturesTitle}>{SIGNATURES_TITLE}</h3>
-            <ul className={styles.signatureList}>
-              <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
-                <span className={styles.signatureLabel}>{SIG_EXECUTOR}</span>
-                <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
-              </li>
-              <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
-                <span className={styles.signatureLabel}>{SIG_CUSTOMER}</span>
-                <span className={styles.signatureStatus}>{SIG_CUSTOMER_SIGNED}</span>
-              </li>
-              <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
-                <span className={styles.signatureLabel}>{SIG_DESIGNER}</span>
-                <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
-              </li>
-            </ul>
-            <div className={styles.sendRow}>
-              <Button type="primary">{BTN_SEND_SIGN}</Button>
-            </div>
+          <div className={styles.item}>
+            <span>{INFO_EXECUTOR_LABEL}</span>
+            <button
+              className={styles.valueBtn}
+              type="button"
+              onClick={() => {
+                setContactModal('executor')
+              }}
+            >
+              {INFO_EXECUTOR_VALUE}
+            </button>
+          </div>
+          <div className={styles.item}>
+            <span>{INFO_CUSTOMER_LABEL}</span>
+            <button
+              className={styles.valueBtn}
+              type="button"
+              onClick={() => {
+                setContactModal('customer')
+              }}
+            >
+              {INFO_CUSTOMER_VALUE}
+            </button>
           </div>
         </div>
 
-        <div className={styles.bottomStack}>
-          <Link href="/pro/project/problems">
-            <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
-              {BTN_VIOLATIONS}
-            </button>
-          </Link>
-          <Link href="/pro/project/gallery">
-            <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
-              {BTN_PHOTO}
-            </button>
-          </Link>
-        </div>
-      </section>
+        <section className={styles.section} aria-labelledby="journal-heading">
+          <div className={styles.documentRow}>
+            <div className={styles.documentCard}>
+              <img alt="" src="/journal.png" />
+
+              <div className={styles.documentActions}>
+                <button className={styles.documentBtn} type="button">
+                  {BTN_VIEW}
+                </button>
+                <button className={styles.documentBtn} type="button">
+                  {BTN_PRINT}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.signatures}>
+              <h3 className={styles.signaturesTitle}>{SIGNATURES_TITLE}</h3>
+              <ul className={styles.signatureList}>
+                <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                  <span className={styles.signatureLabel}>{SIG_EXECUTOR}</span>
+                  <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+                </li>
+                <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
+                  <span className={styles.signatureLabel}>{SIG_CUSTOMER}</span>
+                  <span className={styles.signatureStatus}>{SIG_CUSTOMER_SIGNED}</span>
+                </li>
+                <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                  <span className={styles.signatureLabel}>{SIG_DESIGNER}</span>
+                  <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+                </li>
+              </ul>
+              <div className={styles.sendRow}>
+                <Button type="primary">{BTN_SEND_SIGN}</Button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.bottomStack}>
+            <Link href="/pro/project/problems">
+              <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
+                {BTN_VIOLATIONS}
+              </button>
+            </Link>
+            <Link href="/pro/project/gallery">
+              <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
+                {BTN_PHOTO}
+              </button>
+            </Link>
+          </div>
+        </section>
+      </div>
+
+      <ContactProfileModal
+        open={contactModal !== null}
+        role={contactModal ?? 'customer'}
+        onClose={() => {
+          setContactModal(null)
+        }}
+      />
     </div>
-  </div>
-)
+  )
+}
 
 export default Journal

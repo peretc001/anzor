@@ -8,6 +8,10 @@ import Link from 'next/link'
 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 
+import ContactProfileModal from '@/shared/components/contactProfileModal/contactProfileModal'
+
+import type { ProjectContactRole } from '@/constants/projectContact'
+
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import styles from './index.module.scss'
 
@@ -200,6 +204,7 @@ const FANCYBOX_GROUP = 'photoreport'
 
 const Gallery = () => {
   const [filterMonth, setFilterMonth] = useState<Dayjs | null>(null)
+  const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const visibleGroups = useMemo(() => {
@@ -239,11 +244,27 @@ const Gallery = () => {
         <div className={styles.info}>
           <div className={styles.item}>
             <span>{INFO_EXECUTOR_LABEL}</span>
-            <span className={styles.value}>{INFO_EXECUTOR_VALUE}</span>
+            <button
+              className={styles.valueBtn}
+              type="button"
+              onClick={() => {
+                setContactModal('executor')
+              }}
+            >
+              {INFO_EXECUTOR_VALUE}
+            </button>
           </div>
           <div className={styles.item}>
             <span>{INFO_CUSTOMER_LABEL}</span>
-            <span className={styles.value}>{INFO_CUSTOMER_VALUE}</span>
+            <button
+              className={styles.valueBtn}
+              type="button"
+              onClick={() => {
+                setContactModal('customer')
+              }}
+            >
+              {INFO_CUSTOMER_VALUE}
+            </button>
           </div>
         </div>
 
@@ -308,6 +329,14 @@ const Gallery = () => {
           </div>
         </section>
       </div>
+
+      <ContactProfileModal
+        open={contactModal !== null}
+        role={contactModal ?? 'customer'}
+        onClose={() => {
+          setContactModal(null)
+        }}
+      />
     </div>
   )
 }

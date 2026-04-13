@@ -1,0 +1,117 @@
+@use "@/styles/typography";
+
+.modalRoot {
+  :global(.ant-modal-content) {
+    padding: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgb(42 43 47 / 0.2);
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+}
+
+.card {
+  position: relative;
+  background: var(--main-white);
+}
+
+.banner {
+  height: 96px;
+  background:
+    linear-gradient(135deg, #1e88e5 0%, #1565c0 45%, #0d47a1 100%),
+    radial-gradient(ellipse 120% 80% at 20% 40%, rgb(255 255 255 / 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 60% at 80% 20%, rgb(100 181 246 / 0.45) 0%, transparent 50%);
+  background-blend-mode: normal, overlay, normal;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid var(--main-white);
+  background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%);
+  @include typography.semibold;
+  font-size: 22px;
+  line-height: 1;
+  color: #1565c0;
+  box-shadow: 0 2px 8px rgb(42 43 47 / 0.12);
+}
+
+.body {
+  padding: 24px 20px 22px;
+}
+
+.name {
+  margin: 0 0 6px;
+  @include typography.semibold;
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--main-black);
+}
+
+.subtitle {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.location {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--gray-800);
+}
+
+.bio {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-700);
+}
+
+.rowIcon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--gray-500);
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contactRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--main-blue);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import Link from 'next/link'
 
@@ -30,11 +30,29 @@ const SIG_DESIGNER = 'Дизайнер'
 const SIG_NOT_SIGNED = 'Не подписано'
 const SIG_CUSTOMER_SIGNED = 'УКЭП #45234788 от 11.04.2026'
 const BTN_SEND_SIGN = 'Отправить на подпись'
+const BTN_AWAITING_SIGNATURES = 'Ожидается подписание'
+const SIGN_SEND_COOLDOWN_SEC = 59
 const BTN_VIOLATIONS = 'Нарушения (7 / 13 шт)'
 const BTN_PHOTO = 'Фотоотчет'
 
 const Journal = () => {
   const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
+  const [signCooldownLeft, setSignCooldownLeft] = useState<number | null>(null)
+
+  const isSignCooldown = signCooldownLeft !== null
+
+  useEffect(() => {
+    if (!isSignCooldown) return
+    const id = window.setInterval(() => {
+      setSignCooldownLeft((prev) => {
+        if (prev === null || prev <= 1) return null
+        return prev - 1
+      })
+    }, 1000)
+    return () => {
+      window.clearInterval(id)
+    }
+  }, [isSignCooldown])
 
   return (
     <div className={styles.root}>
@@ -99,9 +117,9 @@ const Journal = () => {
                   <span className={styles.signatureLabel}>{SIG_EXECUTOR}</span>
                   <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
                 </li>
-                <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
+                <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
                   <span className={styles.signatureLabel}>{SIG_CUSTOMER}</span>
-                  <span className={styles.signatureStatus}>{SIG_CUSTOMER_SIGNED}</span>
+                  <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
                 </li>
                 <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
                   <span className={styles.signatureLabel}>{SIG_DESIGNER}</span>
@@ -109,7 +127,22 @@ const Journal = () => {
                 </li>
               </ul>
               <div className={styles.sendRow}>
-                <Button type="primary">{BTN_SEND_SIGN}</Button>
+                <div className={styles.sendCol}>
+                  <Button
+                    disabled={isSignCooldown}
+                    type="primary"
+                    onClick={() => {
+                      setSignCooldownLeft(SIGN_SEND_COOLDOWN_SEC)
+                    }}
+                  >
+                    {isSignCooldown ? BTN_AWAITING_SIGNATURES : BTN_SEND_SIGN}
+                  </Button>
+                  {signCooldownLeft !== null ? (
+                    <span className={styles.sendCountdown} aria-live="polite">
+                      {`Отправить заново через 00:${String(signCooldownLeft).padStart(2, '0')}`}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

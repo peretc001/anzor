@@ -102,12 +102,13 @@
 
 .documentRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
 
 .documentCard {
   flex: 0 1 180px;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
   min-height: 300px;
@@ -154,6 +155,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-top: 16px;
 }
 
 .signaturesTitle {
@@ -198,9 +200,21 @@
 
 .sendRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   margin-top: 2px;
+}
+
+.sendCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.sendCountdown {
+  @include typography.text-sm;
+  color: var(--gray-400);
 }
 
 .sendBtn {

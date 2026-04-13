@@ -1,0 +1,13 @@
+.root {
+  padding: 0 16px;
+
+  @media screen and (max-width: 767px) {
+    padding: 0 8px;
+  }
+
+  .icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+  }
+}

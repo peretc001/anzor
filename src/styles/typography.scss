@@ -1,0 +1,67 @@
+// Font-size
+@mixin text-xxs {
+  font-size: 10px;
+  line-height: 14px;
+}
+
+@mixin text-xs {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+@mixin text-sm {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+@mixin text-md {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@mixin text-lg {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+@mixin display-sm {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+@mixin display-md {
+  font-size: 32px;
+  line-height: 38px;
+  letter-spacing: -0.64px;
+}
+
+@mixin display-lg {
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -0.8px;
+}
+
+@mixin display-xl {
+  font-size: 64px;
+  line-height: 76px;
+  letter-spacing: -1.28px;
+}
+
+@mixin display-xxl {
+  font-size: 72px;
+  line-height: 90px;
+  letter-spacing: -1.44px;
+}
+
+// Weight
+@mixin regular {
+  font-weight: 400;
+}
+
+@mixin semibold {
+  font-weight: 600;
+}
+
+@mixin bold {
+  font-weight: 700;
+}

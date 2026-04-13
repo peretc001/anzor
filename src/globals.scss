@@ -1,0 +1,115 @@
+@use "./styles/reset";
+@use "./styles/colors";
+@use "./styles/utils";
+@use "./styles/ant";
+@use "./styles/typography";
+@use "./styles/variables";
+@use "./styles/keyframe-animations";
+
+body {
+  background: var(--main-white);
+  color: var(--main-black);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+}
+
+a {
+  color: var(--main-black);
+  text-decoration: none;
+}
+
+.layout-container {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-100);
+
+  .page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 414px;
+    margin: 0 auto;
+    padding: 32px 0;
+  }
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-scroll {
+  overflow: hidden;
+  touch-action: none;
+}
+
+h1 {
+  @include typography.display-md;
+  @include typography.bold;
+  margin-bottom: 24px;
+
+  @media screen and (max-width: 767px) {
+    @include typography.display-sm;
+  }
+}
+
+h2 {
+  @include typography.display-sm;
+  @include typography.bold;
+  margin-bottom: 16px;
+
+  @media screen and (max-width: 767px) {
+    @include typography.text-lg;
+  }
+}
+
+h3 {
+  @include typography.text-md;
+  @include typography.semibold;
+  margin-bottom: 16px;
+
+  @media screen and (max-width: 767px) {
+    @include typography.text-sm;
+  }
+}
+
+.breadcrumbs {
+  width: 100%;
+  @include typography.text-xs;
+  color: var(--gray-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  a {
+    color: var(--main-black);
+  }
+}
+
+
+/* Для WebKit браузеров (Chrome, Safari, Opera, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a6a9b5; /* цвет ползунка */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #38393f; /* цвет ползунка при наведении */
+}
+
+/* Для Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #a6a9b5 #f1f1f1; /* ползунок трек */
+}

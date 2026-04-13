@@ -1,0 +1,35 @@
+.tiptap.ProseMirror {
+  font-family: "Open Sans", sans-serif;
+}
+
+.simple-editor-wrapper {
+  width: 100%;
+  height: max-content;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--main-blue);
+    }
+  }
+}
+
+.simple-editor-content {
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  p {
+    font-size: 14px !important;
+  }
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  flex: 1;
+  padding: 16px;
+}

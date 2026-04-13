@@ -1,0 +1,44 @@
+.ant-btn {
+  min-height: 40px;
+}
+
+.ant-popconfirm-buttons .ant-btn {
+  min-height: 24px;
+}
+
+.ant-dropdown-menu-item-active, .ant-dropdown-menu-item-selected, .ant-select-item-option-selected {
+  background: var(--blue-50) !important;
+}
+
+.ant-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+
+  svg {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.ant-btn-color-primary {
+  box-shadow: none;
+}
+
+.ant-tooltip-content {
+  font-size: 12px;
+}
+
+.ant-form-item {
+  margin: 0 !important;
+}
+
+.ant-form-item-required em {
+  color: var(--gray-400);
+  font-style: normal;
+  margin-left: 4px;
+}
+
+.ant-modal, .ant-modal-close {
+  outline: none !important;
+}

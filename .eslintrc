@@ -1,0 +1,230 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "import",
+    "sonarjs",
+    "perfectionist",
+    "prettier",
+    "simple-import-sort"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:perfectionist/recommended-natural",
+    "plugin:react/all",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "warn",
+      "never"
+    ],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "react/prop-types": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+    "indent": [
+      "error",
+      2
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 100,
+        "tabWidth": 2,
+        "ignorePattern": "^import .*",
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
+    "no-console": "warn",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "no-mixed-spaces-and-tabs": "error",
+    "arrow-spacing": "error",
+    "no-trailing-spaces": "error",
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "react/no-danger": "off",
+    "react/jsx-filename-extension": "off",
+    "react/jsx-no-bind": "off",
+    "react/jsx-max-depth": "off",
+    "react/forbid-component-props": "off",
+    "react/require-default-props": "off",
+    "react/jsx-sort-props": "off",
+    "react/self-closing-comp": [
+      "error",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "perfectionist/sort-object-types": [
+      "error",
+      {
+        "type": "natural",
+        "order": "asc",
+        "custom-groups": {
+          "serviceKey": ["key", "ref"],
+          "id": "id",
+          "className": ["className", "style*"],
+          "boolean": ["is*", "has*"],
+          "callback": ["action*", "on*", "handle*"]
+        },
+        "groups": ["serviceKey", "id", "className", "boolean", "unknown", "callback"]
+      }
+    ],
+    "perfectionist/sort-jsx-props": [
+      "error",
+      {
+        "type": "natural",
+        "order": "asc",
+        "custom-groups": {
+          "serviceKey": ["key", "ref"],
+          "id": "id",
+          "className": ["className", "style*"],
+          "boolean": ["is*", "has*"],
+          "callback": ["action*", "on*", "handle*"]
+        },
+        "groups": ["serviceKey", "id", "className", "boolean", "unknown", "callback"]
+      }
+    ],
+    "perfectionist/sort-interfaces": [
+      "error",
+      {
+        "type": "natural",
+        "order": "asc",
+        "custom-groups": {
+          "serviceKey": ["key", "ref"],
+          "id": "id",
+          "className": ["className", "style*"],
+          "boolean": ["is*", "has*"],
+          "callback": ["action*", "on*", "handle*"]
+        },
+        "groups": ["serviceKey", "id", "className", "boolean", "unknown", "callback"]
+      }
+    ],
+    "perfectionist/sort-objects": [
+      "error",
+      {
+        "type": "natural",
+        "order": "asc",
+        "custom-groups": {
+          "serviceKey": ["key", "ref"],
+          "id": "id",
+          "className": ["className", "style*"],
+          "boolean": ["is*", "has*"],
+          "callback": ["action*", "on*", "handle*"]
+        },
+        "groups": ["serviceKey", "id", "className", "boolean", "unknown", "callback"]
+      }
+    ],
+    "perfectionist/sort-imports": "off",
+    "perfectionist/sort-named-imports": "off",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "rules": {
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              // react first, then another packages
+              ["^react$", "^[a-z]"],
+              ["^@tanstack"],
+              ["^@heroicons"],
+              ["@/types"],
+              ["@/shared"],
+              ["@/shared.*$"],
+              ["@/constant"],
+              ["@/lib"],
+              ["@/layout"],
+              ["@/store"],
+              ["@/modals"],
+              ["@/modules"],
+              ["@/pages"],
+              ["@/utils"],
+              ["@/components"],
+              // Style imports — всегда в самом низу
+              ["^.+\\.(css|scss|sass|less)$"]
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": "latest",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "import/resolver": {
+      "typescript": {
+        "project": [
+          "tsconfig.json",
+          "package/tsconfig.json"
+        ]
+      },
+      "node": {
+        "project": [
+          "tsconfig.json",
+          "package/tsconfig.json"
+        ]
+      }
+    }
+  }
+}

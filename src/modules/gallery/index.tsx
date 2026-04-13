@@ -5,6 +5,7 @@ import { ConfigProvider, DatePicker } from 'antd'
 import ruRU from 'antd/locale/ru_RU'
 import dayjs, { type Dayjs } from 'dayjs'
 import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 
@@ -202,8 +203,20 @@ const PHOTOS_COUNT_UNIT = 'фото'
 const FANCYBOX_SELECTOR = '[data-fancybox="photoreport"]'
 const FANCYBOX_GROUP = 'photoreport'
 
+const MONTH_PARAM_REGEX = /^\d{4}-\d{2}$/
+
+function parseMonthQueryParam(raw: string | null): Dayjs | null {
+  if (!raw || !MONTH_PARAM_REGEX.test(raw)) return null
+  const parsed = dayjs(`${raw}-01`, 'YYYY-MM-DD', true)
+  return parsed.isValid() ? parsed.startOf('month') : null
+}
+
 const Gallery = () => {
-  const [filterMonth, setFilterMonth] = useState<Dayjs | null>(null)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const monthParam = searchParams.get('date')
+  const filterMonth = useMemo(() => parseMonthQueryParam(monthParam), [monthParam])
   const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -284,7 +297,16 @@ const Gallery = () => {
                 picker="month"
                 placeholder={FILTER_PLACEHOLDER}
                 value={filterMonth}
-                onChange={setFilterMonth}
+                onChange={(next) => {
+                  const params = new URLSearchParams(searchParams.toString())
+                  if (next) {
+                    params.set('date', next.format('YYYY-MM'))
+                  } else {
+                    params.delete('date')
+                  }
+                  const qs = params.toString()
+                  router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+                }}
               />
             </ConfigProvider>
           </div>

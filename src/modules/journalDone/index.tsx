@@ -14,7 +14,7 @@ import styles from './index.module.scss'
 
 import 'dayjs/locale/ru'
 
-const HEADER_TITLE = 'Журнал авторского надзора от 12.04.2026'
+const HEADER_TITLE = 'Журнал авторского надзора от 15.03.2026'
 const INFO_PROJECT_LABEL = 'Объект:'
 const INFO_PROJECT_VALUE = 'Квартира ЖК Самолет'
 const INFO_EXECUTOR_LABEL = 'Исполнитель:'
@@ -27,13 +27,13 @@ const SIGNATURES_TITLE = 'Подписи'
 const SIG_EXECUTOR = 'Исполнитель'
 const SIG_CUSTOMER = 'Заказчик'
 const SIG_DESIGNER = 'Дизайнер'
-const SIG_NOT_SIGNED = 'Не подписано'
-const SIG_CUSTOMER_SIGNED = 'УКЭП #45234788 от 11.04.2026'
-const BTN_SEND_SIGN = 'Отправить на подпись'
-const BTN_VIOLATIONS = 'Нарушения (7 / 13 шт)'
+const SIG_EXECUTOR_SIGNED = 'УКЭП #45234388 от 11.04.2026'
+const SIG_CUSTOMER_SIGNED = 'УКЭП #45234758 от 12.04.2026'
+const SIG_DESIGNER_SIGNED = 'УКЭП #45234749 от 13.04.2026'
+const BTN_VIOLATIONS = 'Нет нарушений'
 const BTN_PHOTO = 'Фотоотчет'
 
-const Journal = () => {
+const JournalDone = () => {
   const [contactModal, setContactModal] = useState<ProjectContactRole | null>(null)
 
   return (
@@ -95,32 +95,29 @@ const Journal = () => {
             <div className={styles.signatures}>
               <h3 className={styles.signaturesTitle}>{SIGNATURES_TITLE}</h3>
               <ul className={styles.signatureList}>
-                <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
                   <span className={styles.signatureLabel}>{SIG_EXECUTOR}</span>
-                  <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+                  <span className={styles.signatureStatus}>{SIG_EXECUTOR_SIGNED}</span>
                 </li>
                 <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
                   <span className={styles.signatureLabel}>{SIG_CUSTOMER}</span>
                   <span className={styles.signatureStatus}>{SIG_CUSTOMER_SIGNED}</span>
                 </li>
-                <li className={`${styles.signatureRow} ${styles.signatureRowWarn}`}>
+                <li className={`${styles.signatureRow} ${styles.signatureRowOk}`}>
                   <span className={styles.signatureLabel}>{SIG_DESIGNER}</span>
-                  <span className={styles.signatureStatus}>{SIG_NOT_SIGNED}</span>
+                  <span className={styles.signatureStatus}>{SIG_DESIGNER_SIGNED}</span>
                 </li>
               </ul>
-              <div className={styles.sendRow}>
-                <Button type="primary">{BTN_SEND_SIGN}</Button>
-              </div>
             </div>
           </div>
 
           <div className={styles.bottomStack}>
-            <Link href="/pro/project/problems">
+            <Link href="/pro/project/problems#done">
               <button className={`${styles.actionBtn} ${styles.actionBtnViolations}`} type="button">
                 {BTN_VIOLATIONS}
               </button>
             </Link>
-            <Link href="/pro/project/gallery?date=2026-04">
+            <Link href="/pro/project/gallery?date=2026-03">
               <button className={`${styles.actionBtn} ${styles.actionBtnPhoto}`} type="button">
                 {BTN_PHOTO}
               </button>
@@ -140,4 +137,4 @@ const Journal = () => {
   )
 }
 
-export default Journal
+export default JournalDone

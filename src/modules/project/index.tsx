@@ -50,9 +50,14 @@ type JournalEntry = {
 }
 
 const JOURNAL_ITEMS: JournalEntry[] = [
-  { hasAlert: true, dateLabel: '25.04.2026', violationsCount: 7 },
-  { hasAlert: false, dateLabel: '25.03.2026', violationsCount: 0 },
-  { hasAlert: false, dateLabel: '25.02.2026', violationsCount: 2 }
+  { hasAlert: true, dateLabel: '12.04.2026', link: '/pro/project/journal', violationsCount: 7 },
+  {
+    hasAlert: false,
+    dateLabel: '15.03.2026',
+    link: '/pro/project/journalDone',
+    violationsCount: 0
+  },
+  { hasAlert: false, dateLabel: '11.02.2026', link: '/pro/project/journalDone', violationsCount: 2 }
 ]
 
 const Project = () => {
@@ -126,7 +131,7 @@ const Project = () => {
           <ul className={styles.list}>
             {JOURNAL_ITEMS.map(entry => (
               <li key={entry.dateLabel}>
-                <Link className={styles.itemRow} href="/pro/project/journal">
+                <Link className={styles.itemRow} href={entry.link}>
                   <div className={styles.item}>
                     <span className={styles.journalTitle}>
                       {JOURNAL_TITLE_PREFIX} {entry.dateLabel}

@@ -172,6 +172,17 @@ const Problems = () => {
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
+    const syncFilterFromHash = () => {
+      if (window.location.hash === '#done') {
+        setFilter('resolved')
+      }
+    }
+    syncFilterFromHash()
+    window.addEventListener('hashchange', syncFilterFromHash)
+    return () => window.removeEventListener('hashchange', syncFilterFromHash)
+  }, [])
+
+  useEffect(() => {
     const root = listRef.current
     if (!root) return
 

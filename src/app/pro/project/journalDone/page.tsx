@@ -1,18 +1,15 @@
 import { Metadata } from 'next'
-import { Suspense } from 'react'
 
-import Gallery from '@/modules/gallery'
+import JournalDone from '@/modules/journalDone'
 
 export const metadata: Metadata = {
-  title: 'Фотоотчет'
+  title: 'Журнал авторского надзора'
 }
 
 const Page = () => (
   <div className="layout-container">
     <div className="page">
-      <Suspense fallback={null}>
-        <Gallery />
-      </Suspense>
+      <JournalDone />
     </div>
   </div>
 )

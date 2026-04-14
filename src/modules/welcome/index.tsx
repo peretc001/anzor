@@ -27,6 +27,7 @@ const Welcome = () => {
       </div>
 
       <main className={styles.main}>
+        <img className={styles.logo} src="/logo.png" />
         <h1 className={styles.title}>
           <span>АНЗОР</span>авторский надзор дизайн-проектов
         </h1>

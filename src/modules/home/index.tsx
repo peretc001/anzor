@@ -1,136 +1,130 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Input } from 'antd'
 import cns from 'classnames'
 import Link from 'next/link'
 
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import {
+  BuildingOffice2Icon,
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+  HomeIcon,
+  MapPinIcon
+} from '@heroicons/react/24/outline'
+
+import { useProjectsStore } from '@/shared/store/projects'
+
+import { paths } from '@/constants'
 
 import styles from './index.module.scss'
 
-const ADD_BUTTON_LABEL = '+ добавить'
-const CAPTION_ACTIVE = 'Действующие'
-const CAPTION_ARCHIVE = 'Архив'
-
-type SectionItem = {
-  date: string
-  label: string
-}
-
-type SectionData = {
-  archive: string[]
-  items: SectionItem[]
-  progress: number
-  tabLabel: string
-  title: string
-}
-
-const SECTIONS: SectionData[] = [
-  {
-    archive: ['Квартира на Московской', 'Квартира в Питере', 'Дом у моря'],
-    items: [
-      { date: 'от 01.04.2026', label: 'Квартира ЖК Самолет' },
-      { date: 'от 18.03.2026', label: 'Квартира ЖК Патрики' },
-      { date: 'от 05.02.2026', label: 'Дом в Елизаветке' }
-    ],
-    progress: 30,
-    tabLabel: 'Объекты',
-    title: 'Объекты'
-  },
-  {
-    archive: ['ООО «ЮгСтройИнвест»', 'ИП Иванов', 'ИП Петров'],
-    items: [{ date: 'от 11.03.2026', label: 'ООО «Строительная компания»' }],
-    progress: 50,
-    tabLabel: 'Исполнители',
-    title: 'Исполнители'
-  },
-  {
-    archive: ['Петров Петр Петрович', 'Сидоров Сидр Сидорович', 'Маск Илон Заремович'],
-    items: [{ date: 'от 01.02.2026', label: 'Иванов Иван Иванович' }],
-    progress: 45,
-    tabLabel: 'Заказчики',
-    title: 'Заказчики'
-  }
-]
-
 const Home = () => {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [itemsFilter, setItemsFilter] = useState('')
-  const section = SECTIONS[activeIndex]
+  const { projects } = useProjectsStore()
+  const [query, setQuery] = useState('')
+  const normalizedQuery = query.trim().toLowerCase()
+  const filteredProjects = useMemo(
+    () =>
+      projects.filter(project => {
+        if (!normalizedQuery) {
+          return true
+        }
 
-  useEffect(() => {
-    setItemsFilter('')
-  }, [activeIndex])
+        const name = project.name.toLowerCase()
+        const address = project.address.toLowerCase()
 
-  const { filteredArchive, filteredItems } = useMemo(() => {
-    const q = itemsFilter.trim().toLowerCase()
-    if (!q) {
-      return {
-        filteredArchive: section.archive,
-        filteredItems: section.items
-      }
-    }
-    const matchLabel = (label: string) => label.toLowerCase().includes(q)
-    return {
-      filteredArchive: section.archive.filter(matchLabel),
-      filteredItems: section.items.filter(item => matchLabel(item.label))
-    }
-  }, [itemsFilter, section.archive, section.items])
+        return name.includes(normalizedQuery) || address.includes(normalizedQuery)
+      }),
+    [projects, normalizedQuery]
+  )
+  const activeProjects = useMemo(
+    () => filteredProjects.filter(project => project.active),
+    [filteredProjects]
+  )
+  const archiveProjects = useMemo(
+    () => filteredProjects.filter(project => !project.active),
+    [filteredProjects]
+  )
+
+  const renderProjectCard = (project: (typeof projects)[number]) => (
+    <Link
+      key={project.id}
+      className={cns(styles.card, !project.active && styles.archive)}
+      href={paths.project + '/' + project.id}
+    >
+      <div className={styles.left}>
+        <div className={styles.iconWrap}>
+          {project.icon === 'building' ? (
+            <BuildingOffice2Icon className={styles.icon} />
+          ) : (
+            <HomeIcon className={styles.icon} />
+          )}
+        </div>
+      </div>
+
+      <div className={styles.center}>
+        <div className={styles.titleRow}>
+          <h3 className={styles.title}>{project.name}</h3>
+          {project.warningsCount > 0 ? (
+            <span className={styles.warning}>
+              <ExclamationTriangleIcon className={styles.warningIcon} />
+              {project.warningsCount}
+            </span>
+          ) : null}
+        </div>
+
+        <div className={styles.address}>
+          <MapPinIcon className={styles.pinIcon} />
+          <span>{project.address}</span>
+        </div>
+
+        <div className={styles.tags}>
+          <span className={styles.tag}>{project.contractor}</span>
+          {project.customer ? (
+            <span className={`${styles.tag} ${styles.tagCustomer}`}>{project.customer}</span>
+          ) : null}
+        </div>
+      </div>
+
+      <div className={styles.right}>
+        <div className={styles.rightInfo}>
+          <div className={styles.count}>{project.journalsCount}</div>
+          <div className={styles.label}>журналов</div>
+        </div>
+        <ChevronRightIcon className={styles.chevron} />
+      </div>
+    </Link>
+  )
 
   return (
     <div className={styles.root}>
-      <section
-        className={styles.section}
-        aria-labelledby={`panel-title-${activeIndex}`}
-        role="tabpanel"
-      >
-        <div className={styles.wrapper}>
-          <div className={styles.addWrap}>
-            <Button color="primary" variant="solid">
-              {ADD_BUTTON_LABEL}
-            </Button>
-          </div>
-          <Input
-            className={styles.itemsFilter}
-            allowClear
-            aria-label="Фильтр по названию"
-            placeholder="Фильтр по названию"
-            prefix={<MagnifyingGlassIcon className={styles.filterIcon} aria-hidden />}
-            value={itemsFilter}
-            onChange={e => setItemsFilter(e.target.value)}
-          />
-        </div>
+      <div className={styles.header}>
+        <Button className={styles.addButton} type="primary">
+          + Добавить объект
+        </Button>
+        <Input
+          className={styles.filter}
+          placeholder="Поиск по названию и адресу"
+          value={query}
+          onChange={event => {
+            setQuery(event.target.value)
+          }}
+        />
+      </div>
 
-        <h3 className={styles.caption}>{CAPTION_ACTIVE}</h3>
+      {activeProjects.length > 0 ? (
+        <section className={styles.section}>
+          <h2 className={styles.title}>Объекты</h2>
+          <div className={styles.list}>{activeProjects.map(renderProjectCard)}</div>
+        </section>
+      ) : null}
 
-        <ul className={styles.list}>
-          {filteredItems.map(item => (
-            <li key={item.label}>
-              <Link className={styles.itemRow} href="/pro/project">
-                <div className={styles.item}>
-                  {item.label}
-                  <span className={styles.date}>{item.date}</span>
-                </div>
-
-                <div className={styles.progress} style={{ width: `${section.progress}%` }} />
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <h3 className={styles.caption}>{CAPTION_ARCHIVE}</h3>
-
-        <ul className={cns(styles.list, styles.archive)}>
-          {filteredArchive.map(label => (
-            <li key={label}>
-              <div className={styles.itemRow}>
-                <div className={styles.item}>{label}</div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {archiveProjects.length > 0 ? (
+        <section className={styles.section}>
+          <h2 className={styles.title}>Завершенные</h2>
+          <div className={styles.list}>{archiveProjects.map(renderProjectCard)}</div>
+        </section>
+      ) : null}
     </div>
   )
 }

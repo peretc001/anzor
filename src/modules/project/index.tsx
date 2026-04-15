@@ -83,8 +83,12 @@ const Project = () => {
             <h1 className={styles.title}>{project.name}</h1>
             <p className={styles.address}>{project.address}</p>
             <div className={styles.parties}>
-              <span className={styles.contractor}>{project.contractor}</span>
-              {project.customer ? <span className={styles.customer}>{project.customer}</span> : null}
+              {project.customer ? (
+                <span className={styles.customer}>{project.customer}</span>
+              ) : null}
+              {project.contractor ? (
+                <span className={styles.contractor}>{project.contractor}</span>
+              ) : null}
             </div>
             <div className={styles.meta}>
               <span>{pluralizeJournals(project.journals.length)}</span>

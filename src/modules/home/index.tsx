@@ -97,21 +97,11 @@ const Home = () => {
         </div>
 
         <div className={styles.tags}>
-          <span className={styles.tag}>{project.contractor}</span>
           {project.customer ? (
             <span className={`${styles.tag} ${styles.tagCustomer}`}>{project.customer}</span>
           ) : null}
+          {project.contractor ? <span className={styles.tag}>{project.contractor}</span> : null}
         </div>
-      </div>
-
-      <div className={styles.right}>
-        <div className={styles.rightInfo}>
-          <div className={cns(styles.count, getDurationColorClass(project.duration))}>
-            {project.duration}
-          </div>
-          <div className={styles.label}>срок</div>
-        </div>
-        <ChevronRightIcon className={styles.chevron} />
       </div>
     </Link>
   )

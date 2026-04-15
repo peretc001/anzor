@@ -29,19 +29,19 @@ const MAIN_MENU_ITEMS = [
     badge: null,
     icon: <UsersIcon className={styles.icon} />,
     label: 'Заказчики',
-    link: '/pro/users'
+    link: paths.customers
   },
   {
     badge: null,
     icon: <WrenchScrewdriverIcon className={styles.icon} />,
     label: 'Исполнители',
-    link: '/pro/companies'
+    link: paths.contractors
   },
   {
     badge: 2,
     icon: <ChatBubbleBottomCenterIcon className={styles.icon} />,
     label: 'Чат',
-    link: '/pro/chat'
+    link: paths.chat
   }
 ] as const
 

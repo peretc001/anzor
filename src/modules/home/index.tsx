@@ -68,7 +68,7 @@ const Home = () => {
     <Link
       key={project.id}
       className={cns(styles.card, !project.active && styles.archive)}
-      href={paths.project + '/' + project.id}
+      href={paths.projects + '/' + project.id}
     >
       <div className={styles.left}>
         <div className={styles.iconWrap}>

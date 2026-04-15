@@ -12,6 +12,8 @@ import {
   WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline'
 
+import User from '@/shared/components/user/user'
+
 import { paths } from '@/constants'
 
 import styles from './menu.module.scss'
@@ -91,16 +93,7 @@ const Menu = () => {
           </ul>
         </nav>
 
-        <button className={styles.profile} type="button">
-          <span className={styles.avatar}>A</span>
-          <span className={styles.userInfo}>
-            <span className={styles.userName}>Анна Соколова</span>
-            <span className={styles.userRole}>Дизайнер</span>
-          </span>
-          <span className={styles.profileArrow} aria-hidden="true">
-            {'->'}
-          </span>
-        </button>
+        <User />
       </div>
     </aside>
   )

@@ -9,8 +9,19 @@ export interface Project {
   customer?: string
   duration: string
   icon: 'building' | 'home'
+  journals: ProjectJournal[]
   name: string
+  photoReportsCount: number
   warningsCount: number
+}
+
+export interface ProjectJournal {
+  id: number
+  date: string
+  openIssues: number
+  resolvedIssues: number
+  status: 'awaiting' | 'done' | 'draft'
+  title: string
 }
 
 interface IProjectsStore {
@@ -29,7 +40,26 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           customer: 'Иванова Мария ...',
           duration: '35 дней',
           icon: 'building',
+          journals: [
+            {
+              id: 1,
+              date: '2024-03-20',
+              openIssues: 1,
+              resolvedIssues: 1,
+              status: 'draft',
+              title: 'Контрольный выезд. Проверка устранения нарушений'
+            },
+            {
+              id: 2,
+              date: '2024-03-10',
+              openIssues: 1,
+              resolvedIssues: 0,
+              status: 'awaiting',
+              title: 'Проверены работы по укладке плитки в ванной'
+            }
+          ],
           name: 'Квартира на Тверской',
+          photoReportsCount: 6,
           warningsCount: 2
         },
         {
@@ -39,8 +69,10 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           contractor: 'ИП Петров И.В.',
           duration: '5 дней',
           icon: 'home',
+          journals: [],
           name: 'Загородный дом Рублёвка',
-          warningsCount: 0
+          warningsCount: 0,
+          photoReportsCount: 0
         },
         {
           id: 3,
@@ -49,7 +81,9 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           contractor: 'ООО «НадзорПроф»',
           duration: '24 дня',
           icon: 'building',
+          journals: [],
           name: 'Квартира ЖК Самолет',
+          photoReportsCount: 2,
           warningsCount: 1
         },
         {
@@ -60,8 +94,10 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           customer: 'Смирнов Павел ...',
           duration: '44 дня',
           icon: 'home',
+          journals: [],
           name: 'Дом в Елизаветке',
-          warningsCount: 0
+          warningsCount: 0,
+          photoReportsCount: 0
         },
         {
           id: 1,
@@ -70,8 +106,10 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           contractor: 'ООО «МонолитСервис»',
           duration: '18 дней',
           icon: 'building',
+          journals: [],
           name: 'Квартира на Московской',
-          warningsCount: 0
+          warningsCount: 0,
+          photoReportsCount: 0
         },
         {
           id: 0,
@@ -81,7 +119,9 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           customer: 'Волкова Анна ...',
           duration: '61 день',
           icon: 'home',
+          journals: [],
           name: 'Дом у моря',
+          photoReportsCount: 0,
           warningsCount: 0
         }
       ]

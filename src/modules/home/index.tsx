@@ -132,19 +132,21 @@ const Home = () => {
         />
       </div>
 
-      {activeProjects.length > 0 ? (
-        <section className={styles.section}>
-          <h2 className={styles.title}>Объекты</h2>
-          <div className={styles.list}>{activeProjects.map(renderProjectCard)}</div>
-        </section>
-      ) : null}
+      <div className={styles.container}>
+        {activeProjects.length > 0 ? (
+          <section className={styles.section}>
+            <h2 className={styles.title}>Объекты</h2>
+            <div className={styles.list}>{activeProjects.map(renderProjectCard)}</div>
+          </section>
+        ) : null}
 
-      {archiveProjects.length > 0 ? (
-        <section className={styles.section}>
-          <h2 className={styles.title}>Завершенные</h2>
-          <div className={styles.list}>{archiveProjects.map(renderProjectCard)}</div>
-        </section>
-      ) : null}
+        {archiveProjects.length > 0 ? (
+          <section className={styles.section}>
+            <h2 className={styles.title}>Завершенные</h2>
+            <div className={styles.list}>{archiveProjects.map(renderProjectCard)}</div>
+          </section>
+        ) : null}
+      </div>
     </div>
   )
 }

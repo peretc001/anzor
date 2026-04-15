@@ -19,6 +19,24 @@ import { paths } from '@/constants'
 
 import styles from './index.module.scss'
 
+const getDurationColorClass = (duration: string) => {
+  const days = Number.parseInt(duration, 10)
+
+  if (Number.isNaN(days)) {
+    return styles.durationDanger
+  }
+
+  if (days < 20) {
+    return styles.durationSuccess
+  }
+
+  if (days < 30) {
+    return styles.durationWarning
+  }
+
+  return styles.durationDanger
+}
+
 const Home = () => {
   const { projects } = useProjectsStore()
   const [query, setQuery] = useState('')
@@ -88,8 +106,10 @@ const Home = () => {
 
       <div className={styles.right}>
         <div className={styles.rightInfo}>
-          <div className={styles.count}>{project.journalsCount}</div>
-          <div className={styles.label}>журналов</div>
+          <div className={cns(styles.count, getDurationColorClass(project.duration))}>
+            {project.duration}
+          </div>
+          <div className={styles.label}>срок</div>
         </div>
         <ChevronRightIcon className={styles.chevron} />
       </div>

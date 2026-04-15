@@ -7,8 +7,8 @@ export interface Project {
   address: string
   contractor: string
   customer?: string
+  duration: string
   icon: 'building' | 'home'
-  journalsCount: number
   name: string
   warningsCount: number
 }
@@ -27,8 +27,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Москва, ул. Тверская, д. 12, кв. 45',
           contractor: 'ООО «СтройМастер»',
           customer: 'Иванова Мария ...',
+          duration: '35 дней',
           icon: 'building',
-          journalsCount: 2,
           name: 'Квартира на Тверской',
           warningsCount: 2
         },
@@ -37,8 +37,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           active: true,
           address: 'Московская обл., Одинцовский р-н, пос. Горки-2',
           contractor: 'ИП Петров И.В.',
+          duration: '5 дней',
           icon: 'home',
-          journalsCount: 1,
           name: 'Загородный дом Рублёвка',
           warningsCount: 0
         },
@@ -47,8 +47,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           active: true,
           address: 'г. Краснодар, ул. Беличенок, д. 88, кв. 157',
           contractor: 'ООО «НадзорПроф»',
+          duration: '24 дня',
           icon: 'building',
-          journalsCount: 3,
           name: 'Квартира ЖК Самолет',
           warningsCount: 1
         },
@@ -58,8 +58,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Краснодар, ст. Елизаветнинская, д. 7',
           contractor: 'ИП Мельников А.А.',
           customer: 'Смирнов Павел ...',
+          duration: '44 дня',
           icon: 'home',
-          journalsCount: 5,
           name: 'Дом в Елизаветке',
           warningsCount: 0
         },
@@ -68,8 +68,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           active: false,
           address: 'г. Екатеринбург, ул. Московская, д. 8, кв. 21',
           contractor: 'ООО «МонолитСервис»',
+          duration: '18 дней',
           icon: 'building',
-          journalsCount: 2,
           name: 'Квартира на Московской',
           warningsCount: 0
         },
@@ -79,8 +79,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'Краснодарский край, п. Лазаревское, ул. Морская, д. 2',
           contractor: 'ИП Козлов Д.Н.',
           customer: 'Волкова Анна ...',
+          duration: '61 день',
           icon: 'home',
-          journalsCount: 4,
           name: 'Дом у моря',
           warningsCount: 0
         }

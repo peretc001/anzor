@@ -23,6 +23,18 @@
 
 .ant-btn-color-primary {
   box-shadow: none;
+  background: #651fff !important;
+  border-color: #651fff !important;
+}
+
+.ant-btn-color-primary.ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover {
+  background: #5b1ae6 !important;
+  border-color: #5b1ae6 !important;
+}
+
+.ant-btn-color-primary.ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):active {
+  background: #4f16c9 !important;
+  border-color: #4f16c9 !important;
 }
 
 .ant-tooltip-content {

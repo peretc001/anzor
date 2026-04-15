@@ -32,29 +32,29 @@ const SECTIONS: SectionData[] = [
     items: [
       { date: 'от 01.04.2026', label: 'Квартира ЖК Самолет' },
       { date: 'от 18.03.2026', label: 'Квартира ЖК Патрики' },
-      { date: 'от 05.02.2026', label: 'Дом в Елизаветке' },
+      { date: 'от 05.02.2026', label: 'Дом в Елизаветке' }
     ],
     progress: 30,
     tabLabel: 'Объекты',
-    title: 'Объекты',
+    title: 'Объекты'
   },
   {
     archive: ['ООО «ЮгСтройИнвест»', 'ИП Иванов', 'ИП Петров'],
     items: [{ date: 'от 11.03.2026', label: 'ООО «Строительная компания»' }],
     progress: 50,
     tabLabel: 'Исполнители',
-    title: 'Исполнители',
+    title: 'Исполнители'
   },
   {
     archive: ['Петров Петр Петрович', 'Сидоров Сидр Сидорович', 'Маск Илон Заремович'],
     items: [{ date: 'от 01.02.2026', label: 'Иванов Иван Иванович' }],
     progress: 45,
     tabLabel: 'Заказчики',
-    title: 'Заказчики',
-  },
+    title: 'Заказчики'
+  }
 ]
 
-const Index = () => {
+const Home = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [itemsFilter, setItemsFilter] = useState('')
   const section = SECTIONS[activeIndex]
@@ -74,33 +74,12 @@ const Index = () => {
     const matchLabel = (label: string) => label.toLowerCase().includes(q)
     return {
       filteredArchive: section.archive.filter(matchLabel),
-      filteredItems: section.items.filter(item => matchLabel(item.label)),
+      filteredItems: section.items.filter(item => matchLabel(item.label))
     }
   }, [itemsFilter, section.archive, section.items])
 
   return (
     <div className={styles.root}>
-      <div className={styles.tabs} aria-label="Разделы" role="tablist">
-        {SECTIONS.map((s, index) => {
-          const selected = index === activeIndex
-
-          return (
-            <button
-              key={s.tabLabel}
-              className={`${styles.tab} ${selected ? styles.tabActive : ''}`}
-              aria-selected={selected}
-              role="tab"
-              type="button"
-              onClick={() => {
-                setActiveIndex(index)
-              }}
-            >
-              {s.tabLabel}
-            </button>
-          )
-        })}
-      </div>
-
       <section
         className={styles.section}
         aria-labelledby={`panel-title-${activeIndex}`}
@@ -156,4 +135,4 @@ const Index = () => {
   )
 }
 
-export default Index
+export default Home

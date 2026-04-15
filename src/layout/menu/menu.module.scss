@@ -1,0 +1,157 @@
+@use "@/styles/typography";
+
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--main-white);
+  border-right: 1px solid var(--gray-200);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+
+  nav {
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-100);
+  }
+}
+
+.brand {
+  padding: 16px 16px 16px 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.logo {
+  @include typography.display-sm;
+  @include typography.bold;
+  color: var(--main-blue);
+}
+
+.subtitle {
+  @include typography.text-xs;
+  color: var(--gray-400);
+}
+
+.menuList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 0;
+  list-style: none;
+}
+
+.menuButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  @include typography.text-sm;
+  color: var(--gray-700);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    background: var(--gray-100);
+  }
+}
+
+.menuButtonActive {
+  background: var(--background-light);
+  color: var(--main-blue);
+}
+
+.iconWrap {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.badge {
+  min-width: 26px;
+  height: 26px;
+  margin-left: auto;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f62e56;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--main-white);
+}
+
+.profile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f2edff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  color: #651fff;
+}
+
+.userInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.userName {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--main-black);
+}
+
+.userRole {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--gray-400);
+}
+
+.profileArrow {
+  margin-left: auto;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--gray-350);
+}

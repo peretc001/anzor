@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import type { Viewport } from 'next'
 import { Open_Sans } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
@@ -7,8 +7,7 @@ import { getLocale } from 'next-intl/server'
 import { Amplitude } from '@/lib/amplitude'
 import UseQueryProviders from '@/lib/useQueryProviders'
 
-import Beta from '@/layout/beta/beta'
-import Header from '@/layout/header/header'
+import Menu from '@/layout/menu/menu'
 import Metrika from '@/layout/metrica'
 import AuthModal from '@/layout/modals/authModal'
 
@@ -36,7 +35,13 @@ const RootLayout = async ({
       <body className={openSans.className}>
         <NextIntlClientProvider>
           <UseQueryProviders>
-            <div className="layout-container">{children}</div>
+            <div className="layout-container">
+              <div className="menu">
+                <Menu />
+              </div>
+
+              <div className="page">{children}</div>
+            </div>
 
             <AuthModal />
 

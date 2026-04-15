@@ -23,18 +23,21 @@ a {
   min-height: 100dvh;
   max-height: 100dvh;
   display: flex;
-  flex-direction: column;
-  background: var(--gray-100);
   overflow: hidden;
+
+  .menu {
+    flex: none;
+    width: 100%;
+    max-width: 250px;
+    display: flex;
+  }
 
   .page {
     flex: 1;
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 414px;
     margin: 0 auto;
-    padding: 32px 0;
     overflow: hidden;
   }
 }

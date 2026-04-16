@@ -17,6 +17,21 @@
     margin-top: 8px;
   }
 
+  .editor :global(.simple-editor-content) {
+    min-height: 100px;
+  }
+
+  .limit {
+    color: var(--gray-400);
+    font-size: 10px;
+    text-align: right;
+    margin-top: -8px;
+  }
+
+  .date :global(.ant-picker) {
+    min-width: 200px;
+  }
+
   .actions {
     display: flex;
     justify-content: flex-end;

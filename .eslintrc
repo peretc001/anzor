@@ -192,7 +192,6 @@
               ["@/modules"],
               ["@/pages"],
               ["@/utils"],
-              ["@/components"],
               // Style imports — всегда в самом низу
               ["^.+\\.(css|scss|sass|less)$"]
             ]

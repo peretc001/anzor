@@ -3,6 +3,9 @@ import { Button, DatePicker, Form, Input, Select, Upload } from 'antd'
 import datePickerRu from 'antd/es/date-picker/locale/ru_RU'
 import type { UploadFile } from 'antd/es/upload/interface'
 import dayjs, { type Dayjs } from 'dayjs'
+import { useTranslations } from 'next-intl'
+
+import SimpleEditor from '@/shared/components/tiptap/tiptap-templates/simple/simple-editor'
 
 import { EXECUTOR_TYPES } from '@/constants'
 
@@ -32,7 +35,13 @@ type IFormProps = {
 const disablePastDates = (current: Dayjs) => current.isBefore(dayjs(), 'day')
 
 const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) => {
+  const t = useTranslations('projects')
+
   const [form] = Form.useForm<TaskFormValues>()
+
+  const handleChangeContent = (html: React.ReactNode) => {
+    form.setFieldValue('description', html)
+  }
 
   const handleFinish = async (values: TaskFormValues) => {
     await onSubmit?.(values)
@@ -55,18 +64,17 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
       </Form.Item>
 
-      <Form.Item<TaskFormValues> label="Описание" name="description">
-        <Input.TextArea
-          autoSize={{ maxRows: 5, minRows: 3 }}
-          placeholder="Опишите задачу и что нужно исправить"
-        />
+      <Form.Item className={styles.editor} label="Описание" name="description">
+        <SimpleEditor defaultContent="" onChange={handleChangeContent} />
       </Form.Item>
+      <span className={styles.limit}>{t('form.description.limit')}</span>
 
       <Form.Item<TaskFormValues> label="Ответственный" name="executor">
         <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
       </Form.Item>
 
       <Form.Item<TaskFormValues>
+        className={styles.date}
         label="Ожидаемая дата выполнения"
         name="control"
         rules={[

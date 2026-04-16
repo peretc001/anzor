@@ -1,72 +1,70 @@
 .root {
+  flex: none;
+  display: flex;
+  height: 200px;
   position: relative;
-  margin: 0;
   border-radius: 10px;
-  overflow: hidden;
   background: var(--gray-100);
-  aspect-ratio: 4 / 3;
-}
+  overflow: hidden;
 
-.taskTag {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  margin: 0;
-}
-
-.deleteButton {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 999px;
-  background: rgb(0 0 0 / 0.45);
-  color: var(--main-white);
-  cursor: pointer;
-
-  &:hover {
-    background: rgb(0 0 0 / 0.6);
+  .taskTag {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    margin: 0;
   }
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  .deleteButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.45);
+    color: var(--main-white);
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(0 0 0 / 0.6);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .trashIcon {
+      width: 16px;
+      height: 16px;
+    }
   }
-}
 
-.trashIcon {
-  width: 16px;
-  height: 16px;
-}
+  .thumbLink {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+    overflow: hidden;
 
-.thumbLink {
-  display: block;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-radius: inherit;
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
+    &:focus-visible {
+      outline: 2px solid var(--main-blue);
+      outline-offset: 2px;
+    }
 
-  &:focus-visible {
-    outline: 2px solid var(--main-blue);
-    outline-offset: 2px;
+    .thumb {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
-}
-
-.thumb {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }

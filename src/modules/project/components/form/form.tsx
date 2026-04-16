@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Button, Form, Input, message, Modal, Select, Switch } from 'antd'
 
 import { IProject } from '@/shared/interfaces'
@@ -52,13 +52,11 @@ const FormModal: FC<IFormProps> = ({ project, onCancel }) => {
       className={styles.root}
       form={form}
       initialValues={{
-        active: true,
         active: project.active,
         address: project.address,
         contractor: project.contractor,
         customer: project.customer,
         name: project.name,
-        type: 'building',
         type: project.type
       }}
       layout="vertical"

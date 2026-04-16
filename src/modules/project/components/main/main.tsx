@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, useState } from 'react'
-import { Button, message } from 'antd'
+import { Button, message, Modal } from 'antd'
 import cns from 'classnames'
 import dayjs from 'dayjs'
 import Link from 'next/link'
@@ -15,7 +15,6 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { IProject } from '@/shared/interfaces'
-import type { ProjectJournal } from '@/shared/store/projects'
 
 import { paths } from '@/constants'
 
@@ -26,33 +25,11 @@ import FormModal, { ProjectFormValues } from '../form/form'
 
 dayjs.locale('ru')
 
-const ADD_BUTTON_LABEL = '+ Создать журнал'
 const BACK_LABEL = 'Все объекты'
-const EMPTY_LABEL = 'Объект не найден'
-const META_OPENED_LABEL = 'открытых'
-const META_RESOLVED_LABEL = 'устранено'
-const OPEN_SHORT_LABEL = 'откр.'
 const EDIT_BUTTON_LABEL = 'Редактировать'
-const TAB_JOURNALS = 'Журналы'
 const TAB_TASKS = 'Задачи'
 const TAB_DOCS = 'Документы'
 const TAB_GALLERY = 'Фотогалерея'
-const TAB_PARTICIPANTS = 'Участники'
-
-const statusMap = {
-  awaiting: 'Ожидает подписи',
-  done: 'Подписан',
-  draft: 'Черновик'
-} as const
-
-function pluralizeJournals(count: number): string {
-  const n = Math.abs(count) % 100
-  const n1 = n % 10
-  if (n > 10 && n < 20) return `${count} журналов`
-  if (n1 === 1) return `${count} журнал`
-  if (n1 >= 2 && n1 <= 4) return `${count} журнала`
-  return `${count} журналов`
-}
 
 type IMainProps = {
   readonly galleryPhotosCount?: number
@@ -63,33 +40,13 @@ type IMainProps = {
 const Main: FC<IMainProps> = ({ galleryPhotosCount = 0, project, tasksCount = 0 }) => {
   const pathname = usePathname()
   const [projectData, setProjectData] = useState<IProject>(project)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const journals: ProjectJournal[] = []
   const icon = projectData.type
 
-  const openedCount = journals.reduce((acc, journal) => acc + journal.openIssues, 0)
-  const resolvedCount = journals.reduce((acc, journal) => acc + journal.resolvedIssues, 0)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   const handleOpenEditModal = () => setIsEditModalOpen(true)
   const handleCloseEditModal = () => setIsEditModalOpen(false)
-
-  const handleSubmitProject = async (values: ProjectFormValues) => {
-    setIsSaving(true)
-
-    const savedProject = await saveProjectApi({ ...projectData, ...values })
-
-    setIsSaving(false)
-
-    if (!savedProject) {
-      message.error('Не удалось сохранить изменения')
-      return
-    }
-
-    setProjectData(savedProject)
-    setIsEditModalOpen(false)
-    message.success('Изменения сохранены')
-  }
 
   return (
     <div className={styles.root}>
@@ -119,11 +76,11 @@ const Main: FC<IMainProps> = ({ galleryPhotosCount = 0, project, tasksCount = 0 
               ) : null}
             </div>
             <div className={styles.meta}>
-              <span>{pluralizeJournals(journals.length)}</span>
-              <span className={styles.metaDanger}>{`${openedCount} ${META_OPENED_LABEL}`}</span>
-              <span
-                className={styles.metaSuccess}
-              >{`${resolvedCount} ${META_RESOLVED_LABEL}`}</span>
+              {/*<span>{pluralizeJournals(journals.length)}</span>*/}
+              {/*<span className={styles.metaDanger}>{`${openedCount} ${META_OPENED_LABEL}`}</span>*/}
+              {/*<span*/}
+              {/*  className={styles.metaSuccess}*/}
+              {/*>{`${resolvedCount} ${META_RESOLVED_LABEL}`}</span>*/}
             </div>
           </div>
         </div>
@@ -137,25 +94,27 @@ const Main: FC<IMainProps> = ({ galleryPhotosCount = 0, project, tasksCount = 0 
         </Button>
       </div>
 
-      <FormModal
+      <Modal
+        destroyOnHidden
+        footer={null}
         open={isEditModalOpen}
-        project={projectData}
-        submitting={isSaving}
+        title="header.edit"
         onCancel={handleCloseEditModal}
-        onSubmit={handleSubmitProject}
-      />
+      >
+        <FormModal project={project} onCancel={handleCloseEditModal} />
+      </Modal>
 
       <div className={styles.tabs}>
-        <Link
-          className={cns(
-            styles.tab,
-            pathname === paths.projects + '/' + project.id + '/journals' && styles.tabActive
-          )}
-          href={paths.projects + '/' + project.id + '/journals'}
-        >
-          {TAB_JOURNALS}
-          <span className={styles.tabBadge}>{journals.length}</span>
-        </Link>
+        {/*<Link*/}
+        {/*  className={cns(*/}
+        {/*    styles.tab,*/}
+        {/*    pathname === paths.projects + '/' + project.id + '/journals' && styles.tabActive*/}
+        {/*  )}*/}
+        {/*  href={paths.projects + '/' + project.id + '/journals'}*/}
+        {/*>*/}
+        {/*  {TAB_JOURNALS}*/}
+        {/*  <span className={styles.tabBadge}>{journals.length}</span>*/}
+        {/*</Link>*/}
         <Link
           className={cns(
             styles.tab,

@@ -50,9 +50,9 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       }
 
       const uploadFiles =
-        values.photos
-          ?.map(file => file.originFileObj)
-          .filter((file): file is File => file instanceof File) ?? []
+        values.photos?.flatMap(file =>
+          file.originFileObj instanceof File ? [file.originFileObj] : []
+        ) ?? []
 
       if (uploadFiles.length === 0) {
         return {

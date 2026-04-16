@@ -1,26 +1,19 @@
-import React from 'react'
+import React, { FC } from 'react'
 import cns from 'classnames'
 import Link from 'next/link'
 
-import {
-  BuildingOffice2Icon,
-  ExclamationTriangleIcon,
-  HomeIcon,
-  MapPinIcon
-} from '@heroicons/react/24/outline'
-
 import ProjectInfo from '@/shared/components/projectInfo/projectInfo'
-import type { ProjectCardModel } from '@/shared/store/projects'
+import { IProject } from '@/shared/interfaces'
 
 import { paths } from '@/constants'
 
 import styles from './card.module.scss'
 
-type CardProps = {
-  readonly project: ProjectCardModel
+interface ICardProps {
+  readonly project: IProject
 }
 
-const Card = ({ project }: CardProps) => (
+const Card: FC<ICardProps> = ({ project }) => (
   <div className={styles.root}>
     <Link
       className={cns(styles.card, !project.active && styles.archive)}

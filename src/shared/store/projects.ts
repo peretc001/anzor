@@ -1,33 +1,10 @@
 import { create, StoreApi, UseBoundStore } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-export interface Project {
-  id: number
-  active: boolean
-  address?: string
-  contractor?: string
-  customer?: string
-  type: 'building' | 'home'
-  name: string
-}
-
-/** Данные карточки на главном списке объектов (иконка и предупреждения не хранятся в БД). */
-export type ProjectCardModel = Project & {
-  icon: 'building' | 'home'
-  warningsCount: number
-}
-
-export interface ProjectJournal {
-  id: number
-  date: string
-  openIssues: number
-  resolvedIssues: number
-  status: 'awaiting' | 'done' | 'draft'
-  title: string
-}
+import { IProject } from '@/shared/interfaces'
 
 interface IProjectsStore {
-  projects: Project[]
+  projects: IProject[]
 }
 
 export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
@@ -40,24 +17,24 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Москва, ул. Тверская, д. 12, кв. 45',
           contractor: 'ООО «СтройМастер»',
           customer: 'Иванова Мария',
-          type: 'building',
           name: 'Квартира на Тверской',
+          type: 'building'
         },
         {
           id: 4,
           active: true,
           address: 'Московская обл., Одинцовский р-н, пос. Горки-2',
           customer: 'Мельникова Светлана',
-          type: 'home',
           name: 'Загородный дом Рублёвка',
+          type: 'home'
         },
         {
           id: 3,
           active: true,
           address: 'г. Краснодар, ул. Беличенок, д. 88, кв. 657',
           customer: 'Красовский Игорь',
-          type: 'building',
           name: 'Квартира ЖК Самолет',
+          type: 'building'
         },
         {
           id: 2,
@@ -65,8 +42,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Краснодар, ст. Елизаветнинская, д. 7',
           contractor: 'ИП Мельников А.А.',
           customer: 'Смирнов Павел',
-          type: 'home',
           name: 'Дом в Елизаветке',
+          type: 'home'
         },
         {
           id: 1,
@@ -74,8 +51,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Екатеринбург, ул. Московская, д. 8, кв. 21',
           contractor: 'ООО «МонолитСервис»',
           customer: 'Саркисян Армен',
-          type: 'building',
           name: 'Квартира на Московской',
+          type: 'building'
         },
         {
           id: 0,
@@ -83,8 +60,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'Краснодарский край, п. Лазаревское, ул. Морская, д. 2',
           contractor: 'ИП Козлов Д.Н.',
           customer: 'Волкова Анна',
-          type: 'home',
           name: 'Дом у моря',
+          type: 'home'
         }
       ]
     }),

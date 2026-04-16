@@ -24,6 +24,7 @@ const GalleryCard: FC<GalleryCardProps> = ({
   return (
     <div className={styles.root}>
       {task_id ? <Tag className={styles.taskTag}>Задача #{task_id}</Tag> : null}
+
       <Popconfirm
         cancelText="Отмена"
         description="Действие нельзя отменить"
@@ -41,6 +42,7 @@ const GalleryCard: FC<GalleryCardProps> = ({
           <TrashIcon className={styles.trashIcon} />
         </button>
       </Popconfirm>
+
       <a
         className={styles.thumbLink}
         aria-label="Открыть в полном размере"
@@ -48,7 +50,7 @@ const GalleryCard: FC<GalleryCardProps> = ({
         rel="noreferrer"
         target="_blank"
       >
-        <Image alt="" className={styles.thumb} height={300} loading="lazy" src={url} width={300} />
+        <Image className={styles.thumb} alt="" height={200} loading="lazy" src={url} width={200} />
       </a>
     </div>
   )

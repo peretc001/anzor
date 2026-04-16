@@ -7,10 +7,11 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { IGallery } from '@/shared/interfaces'
 
+import Card from '@/modules/gallery/components/card/card'
+
 import styles from './main.module.scss'
 
 import { deleteGalleryApi } from '../../api/deleteGalleryApi'
-import Card from '@/modules/gallery/components/card/card'
 import Form from '../form/form'
 
 type IMainProps = {
@@ -47,20 +48,13 @@ const Main: FC<IMainProps> = ({ gallery, projectId }) => {
         </Button>
       </div>
 
-      <section className={styles.section}>
-        {gallery.length > 0 ? (
-          <div className={styles.scroll}>
-            {gallery.map(item => (
-              <Card
-                key={item.id}
-                deletingId={deletingId}
-                item={item}
-                onDelete={handleDeletePhoto}
-              />
-            ))}
-          </div>
-        ) : null}
-      </section>
+      {gallery.length > 0 ? (
+        <div className={styles.list}>
+          {gallery.map(item => (
+            <Card key={item.id} deletingId={deletingId} item={item} onDelete={handleDeletePhoto} />
+          ))}
+        </div>
+      ) : null}
 
       <Modal
         destroyOnHidden
@@ -69,7 +63,7 @@ const Main: FC<IMainProps> = ({ gallery, projectId }) => {
         title="Загрузка фото"
         onCancel={handleCloseUploadModal}
       >
-        <Form onCancel={handleCloseUploadModal} projectId={projectId} />
+        <Form projectId={projectId} onCancel={handleCloseUploadModal} />
       </Modal>
     </div>
   )

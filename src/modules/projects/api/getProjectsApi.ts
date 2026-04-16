@@ -1,4 +1,4 @@
-import { IProfile, IProject } from '@/shared/interfaces'
+import { IProject } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 

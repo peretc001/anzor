@@ -8,19 +8,11 @@
   padding: 16px 0;
   overflow: hidden;
 
-  .section {
+  .list {
     flex: 1;
-    display: flex;
-    overflow: hidden;
-
-    .scroll {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    overflow: auto;
   }
 }

@@ -2,9 +2,10 @@
 
 import React, { useMemo, useState } from 'react'
 import { Button, Input, message } from 'antd'
+
 import { useQueryClient } from '@tanstack/react-query'
 
-import type { ProjectCardModel } from '@/shared/store/projects'
+import { IProject } from '@/shared/interfaces'
 
 import { saveProjectApi } from '@/modules/projects/api/saveProjectApi'
 import Card from '@/modules/projects/components/card/card'
@@ -18,7 +19,7 @@ const UI_SECTION_ACTIVE = 'Объекты'
 const UI_SECTION_ARCHIVE = 'Завершенные'
 
 type MainProps = {
-  readonly projects: ProjectCardModel[]
+  readonly projects: IProject[]
 }
 
 const Main = ({ projects }: MainProps) => {

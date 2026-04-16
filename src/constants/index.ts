@@ -5,3 +5,8 @@ export const paths = {
   home: '/',
   projects: '/projects'
 }
+
+export const PROJECT_TYPES = [
+  { label: 'Квартира', value: 'flat' },
+  { label: 'Дом', value: 'house' },
+]

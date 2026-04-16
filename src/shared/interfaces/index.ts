@@ -14,3 +14,9 @@ export interface IProject {
   name: string
   type: 'building' | 'home'
 }
+
+export interface IGallery {
+  id: number
+  month: string
+  url: string
+}

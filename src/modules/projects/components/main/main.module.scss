@@ -1,0 +1,50 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+
+  .header {
+    flex: none;
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+
+    .addButton {
+      height: 40px;
+    }
+
+    .filter {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      max-width: 360px;
+    }
+  }
+
+  .container {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 24px;
+
+    .title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--gray-700);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}

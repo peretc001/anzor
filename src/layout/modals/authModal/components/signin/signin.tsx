@@ -38,7 +38,7 @@ const SigninPage: FC<ISigninPage> = ({ actionClose }) => {
     if (state?.id) {
       actionClose()
       eventSignIn()
-      redirect('/pro')
+      redirect('/')
     }
   }, [state?.id])
 

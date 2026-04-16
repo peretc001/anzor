@@ -45,10 +45,10 @@ class ServerApi {
         response.ok
           ? response.json()
           : response.json().then((body: any) => {
-              const msg =
+            const msg =
                 body?.message ?? body?.error ?? response.statusText ?? String(response.status)
-              throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
-            })
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+          })
       )
       .catch(err => {
         throw err instanceof Error ? err : new Error(String(err))
@@ -81,10 +81,10 @@ class ServerApi {
         response.ok
           ? response.json()
           : response.json().then((body: any) => {
-              const msg =
+            const msg =
                 body?.message ?? body?.error ?? response.statusText ?? String(response.status)
-              throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
-            })
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+          })
       )
       .catch(err => {
         throw err instanceof Error ? err : new Error(String(err))
@@ -96,9 +96,18 @@ class ServerApi {
     apiMethod: string,
     params: Record<string, any> = {},
     signal?: AbortSignal,
-    host: string = DEFAULT_API_HOST
+    host: string = DEFAULT_API_HOST,
+    extraHeaders?: Record<string, string>
   ): Promise<any> {
-    const fetchParams = { ...FETCH_PARAMS, method: 'GET', signal }
+    const fetchParams: FetchParams = {
+      ...FETCH_PARAMS,
+      headers: {
+        ...FETCH_PARAMS.headers,
+        ...extraHeaders
+      },
+      method: 'GET',
+      signal
+    }
     const paramsStr = Object.keys(params)
       .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
       .join('&')
@@ -108,10 +117,10 @@ class ServerApi {
         response.ok
           ? response.json()
           : response.json().then((body: any) => {
-              const msg =
+            const msg =
                 body?.message ?? body?.error ?? response.statusText ?? String(response.status)
-              throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
-            })
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+          })
       )
       .catch(err => {
         throw err instanceof Error ? err : new Error(String(err))
@@ -137,10 +146,10 @@ class ServerApi {
         response.ok
           ? response.json()
           : response.json().then((body: any) => {
-              const msg =
+            const msg =
                 body?.message ?? body?.error ?? response.statusText ?? String(response.status)
-              throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
-            })
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+          })
       )
       .catch(err => {
         throw err instanceof Error ? err : new Error(String(err))

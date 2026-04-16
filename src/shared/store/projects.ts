@@ -4,14 +4,16 @@ import { devtools } from 'zustand/middleware'
 export interface Project {
   id: number
   active: boolean
-  address: string
-  contractor: string
+  address?: string
+  contractor?: string
   customer?: string
-  duration: string
-  icon: 'building' | 'home'
-  journals: ProjectJournal[]
+  type: 'building' | 'home'
   name: string
-  photoReportsCount: number
+}
+
+/** Данные карточки на главном списке объектов (иконка и предупреждения не хранятся в БД). */
+export type ProjectCardModel = Project & {
+  icon: 'building' | 'home'
   warningsCount: number
 }
 
@@ -38,53 +40,24 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Москва, ул. Тверская, д. 12, кв. 45',
           contractor: 'ООО «СтройМастер»',
           customer: 'Иванова Мария',
-          duration: '35 дней',
-          icon: 'building',
-          journals: [
-            {
-              id: 1,
-              date: '2024-03-20',
-              openIssues: 1,
-              resolvedIssues: 1,
-              status: 'draft',
-              title: 'Контрольный выезд. Проверка устранения нарушений'
-            },
-            {
-              id: 2,
-              date: '2024-03-10',
-              openIssues: 1,
-              resolvedIssues: 0,
-              status: 'awaiting',
-              title: 'Проверены работы по укладке плитки в ванной'
-            }
-          ],
+          type: 'building',
           name: 'Квартира на Тверской',
-          photoReportsCount: 6,
-          warningsCount: 2
         },
         {
           id: 4,
           active: true,
           address: 'Московская обл., Одинцовский р-н, пос. Горки-2',
           customer: 'Мельникова Светлана',
-          duration: '5 дней',
-          icon: 'home',
-          journals: [],
+          type: 'home',
           name: 'Загородный дом Рублёвка',
-          photoReportsCount: 0,
-          warningsCount: 0
         },
         {
           id: 3,
           active: true,
           address: 'г. Краснодар, ул. Беличенок, д. 88, кв. 657',
           customer: 'Красовский Игорь',
-          duration: '24 дня',
-          icon: 'building',
-          journals: [],
+          type: 'building',
           name: 'Квартира ЖК Самолет',
-          photoReportsCount: 2,
-          warningsCount: 1
         },
         {
           id: 2,
@@ -92,12 +65,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Краснодар, ст. Елизаветнинская, д. 7',
           contractor: 'ИП Мельников А.А.',
           customer: 'Смирнов Павел',
-          duration: '44 дня',
-          icon: 'home',
-          journals: [],
+          type: 'home',
           name: 'Дом в Елизаветке',
-          photoReportsCount: 0,
-          warningsCount: 0
         },
         {
           id: 1,
@@ -105,12 +74,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'г. Екатеринбург, ул. Московская, д. 8, кв. 21',
           contractor: 'ООО «МонолитСервис»',
           customer: 'Саркисян Армен',
-          duration: '18 дней',
-          icon: 'building',
-          journals: [],
+          type: 'building',
           name: 'Квартира на Московской',
-          photoReportsCount: 0,
-          warningsCount: 0
         },
         {
           id: 0,
@@ -118,12 +83,8 @@ export const useProjectsStore: UseBoundStore<StoreApi<IProjectsStore>> = create(
           address: 'Краснодарский край, п. Лазаревское, ул. Морская, д. 2',
           contractor: 'ИП Козлов Д.Н.',
           customer: 'Волкова Анна',
-          duration: '61 день',
-          icon: 'home',
-          journals: [],
+          type: 'home',
           name: 'Дом у моря',
-          photoReportsCount: 0,
-          warningsCount: 0
         }
       ]
     }),

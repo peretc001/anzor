@@ -13,7 +13,7 @@ interface IProjectInfo {
 const ProjectInfo: FC<IProjectInfo> = ({ project }) => (
   <div className={styles.root}>
     <div className={styles.type}>
-      {project.type === 'building' ? (
+      {project.type === 'flat' ? (
         <BuildingOffice2Icon className={styles.icon} />
       ) : (
         <HomeIcon className={styles.icon} />

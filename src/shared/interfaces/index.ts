@@ -12,7 +12,7 @@ export interface IProject {
   contractor?: string
   customer?: string
   name: string
-  type: 'building' | 'home'
+  type: 'flat' | 'house'
 }
 
 export interface IGallery {

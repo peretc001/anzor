@@ -12,7 +12,7 @@ import { IProject } from '@/shared/interfaces'
 
 import { paths } from '@/constants'
 
-import FormModal from '@/modules/project/components/form/form'
+import EditProject from '@/modules/projects/components/form/form'
 
 import styles from './projectHeader.module.scss'
 
@@ -50,7 +50,7 @@ const ProjectHeader: FC<IProjectHeader> = ({ project }) => {
         title={t('header.edit')}
         onCancel={handleCloseEditModal}
       >
-        <FormModal project={project} onCancel={handleCloseEditModal} />
+        <EditProject project={project} onCancel={handleCloseEditModal} />
       </Modal>
     </div>
   )

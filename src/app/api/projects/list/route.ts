@@ -12,7 +12,11 @@ export async function GET() {
     return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data, error } = await supabase.from('projects').select('*').eq('owner_id', user.id)
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('owner_id', user.id)
+    .order('created_at', { ascending: false })
 
   if (error) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
@@ -40,21 +44,44 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null)
   const project = body?.project
 
-  if (!project?.name || (project?.type !== 'building' && project?.type !== 'home')) {
+  if (!project?.name || (project?.type !== 'flat' && project?.type !== 'house')) {
     return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
+  }
+
+  const row = {
+    active: Boolean(project.active),
+    address: project.address ?? null,
+    contractor: project.contractor ?? null,
+    customer: project.customer ?? null,
+    name: project.name,
+    type: project.type
+  }
+
+  const isUpdate = typeof project.id === 'number' && !Number.isNaN(project.id)
+
+  if (isUpdate) {
+    const { data: updatedProject, error } = await supabase
+      .from('projects')
+      .update(row)
+      .eq('id', project.id)
+      .eq('owner_id', user.id)
+      .select('*')
+      .single()
+
+    if (error) {
+      const status = error.code === 'PGRST116' ? 404 : 500
+      return NextResponse.json({ data: null, error: error.message }, { status })
+    }
+
+    return NextResponse.json({ data: updatedProject })
   }
 
   const { data: insertedProject, error } = await supabase
     .from('projects')
     .insert({
       id: Date.now(),
-      active: Boolean(project.active),
-      address: project.address ?? null,
-      contractor: project.contractor ?? null,
-      customer: project.customer ?? null,
-      name: project.name,
-      owner_id: user.id,
-      type: project.type
+      ...row,
+      owner_id: user.id
     })
     .select('*')
     .single()

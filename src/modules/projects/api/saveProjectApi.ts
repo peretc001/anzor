@@ -2,9 +2,10 @@ import { IProject } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-type CreateProjectPayload = Omit<IProject, 'id'>
+/** С `id` — обновление, без — создание (один POST на `projects/list`). */
+export type SaveProjectPayload = Omit<IProject, 'id'> & { id?: number }
 
-export const saveProjectApi = async (project: CreateProjectPayload) => {
+export const saveProjectApi = async (project: SaveProjectPayload) => {
   try {
     const response = await serverApi.post('projects/list', { project })
 

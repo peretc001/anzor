@@ -12,11 +12,25 @@ type Props = {
   readonly params: Promise<{ id: string }>
 }
 
-const Page = async ({ params }: Props) => {
+const Layout = async ({ children, params }: Props) => {
   const { id } = await params
   const projectId = Number(id)
 
-  return 'Project'
+  if (!Number.isInteger(projectId) || projectId <= 0) {
+    notFound()
+  }
+
+  const project = await getProjectApi(projectId)
+
+  if (!project) {
+    notFound()
+  }
+
+  return (
+    <div>
+      <Project project={project} /> {children}
+    </div>
+  )
 }
 
-export default Page
+export default Layout

@@ -5,6 +5,7 @@ import { Button, message } from 'antd'
 import cns from 'classnames'
 import dayjs from 'dayjs'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import {
   BuildingOffice2Icon,
@@ -16,9 +17,12 @@ import {
 import { IProject } from '@/shared/interfaces'
 import type { ProjectJournal } from '@/shared/store/projects'
 
+import { paths } from '@/constants'
+
+import styles from './main.module.scss'
+
 import { saveProjectApi } from '../../api/saveProjectApi'
 import FormModal, { ProjectFormValues } from '../form/form'
-import styles from './main.module.scss'
 
 dayjs.locale('ru')
 
@@ -30,6 +34,7 @@ const META_RESOLVED_LABEL = 'устранено'
 const OPEN_SHORT_LABEL = 'откр.'
 const EDIT_BUTTON_LABEL = 'Редактировать'
 const TAB_JOURNALS = 'Журналы'
+const TAB_PROBLEMS = 'Нарушения'
 const TAB_DOCS = 'Документы'
 const TAB_PHOTO = 'Фотоотчёт'
 const TAB_PARTICIPANTS = 'Участники'
@@ -49,13 +54,12 @@ function pluralizeJournals(count: number): string {
   return `${count} журналов`
 }
 
-const formatDate = (date: string) => dayjs(date).locale('ru').format('D MMMM YYYY')
-
 type IMainProps = {
   readonly project: IProject
 }
 
 const Main: FC<IMainProps> = ({ project }) => {
+  const pathname = usePathname()
   const [projectData, setProjectData] = useState<IProject>(project)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -125,8 +129,8 @@ const Main: FC<IMainProps> = ({ project }) => {
         <Button
           className={styles.editButton}
           icon={<PencilSquareIcon className={styles.editIcon} />}
-          onClick={handleOpenEditModal}
           loading={isSaving}
+          onClick={handleOpenEditModal}
         >
           {EDIT_BUTTON_LABEL}
         </Button>
@@ -135,47 +139,52 @@ const Main: FC<IMainProps> = ({ project }) => {
       <FormModal
         open={isEditModalOpen}
         project={projectData}
+        submitting={isSaving}
         onCancel={handleCloseEditModal}
         onSubmit={handleSubmitProject}
-        submitting={isSaving}
       />
 
       <div className={styles.tabs}>
-        <button className={cns(styles.tab, styles.tabActive)} type="button">
+        <Link
+          className={cns(
+            styles.tab,
+            pathname === paths.projects + '/' + project.id + '/journals' && styles.tabActive
+          )}
+          href={paths.projects + '/' + project.id + '/journals'}
+        >
           {TAB_JOURNALS}
           <span className={styles.tabBadge}>{journals.length}</span>
-        </button>
-        <button className={styles.tab} type="button">
-          {TAB_DOCS}
-        </button>
-        <button className={styles.tab} type="button">
+        </Link>
+        <Link
+          className={cns(
+            styles.tab,
+            pathname === paths.projects + '/' + project.id + '/problems' && styles.tabActive
+          )}
+          href={paths.projects + '/' + project.id + '/problems'}
+        >
+          {TAB_PROBLEMS}
+          <span className={styles.tabBadge}>{journals.length}</span>
+        </Link>
+        <Link
+          className={cns(
+            styles.tab,
+            pathname === paths.projects + '/' + project.id + '/gallery' && styles.tabActive
+          )}
+          href={paths.projects + '/' + project.id + '/gallery'}
+        >
           {TAB_PHOTO}
           <span className={styles.tabBadge}>{photoReportsCount}</span>
-        </button>
-        <button className={styles.tab} type="button">
-          {TAB_PARTICIPANTS}
-        </button>
+        </Link>
+        <Link
+          className={cns(
+            styles.tab,
+            pathname === paths.projects + '/' + project.id + '/docs' && styles.tabActive
+          )}
+          href={paths.projects + '/' + project.id + '/docs'}
+        >
+          {TAB_DOCS}
+        </Link>
       </div>
-
-      <section className={styles.section}>
-        <Button className={styles.addButton} type="primary">
-          {ADD_BUTTON_LABEL}
-        </Button>
-
-        <ul className={styles.list}>
-          {journals.map(journal => (
-            <li key={journal.id} className={styles.listItem}>
-              <div className={styles.itemDate}>{formatDate(journal.date)}</div>
-              <div className={styles.itemTitle}>{journal.title}</div>
-              <div className={styles.itemOpen}>{`${journal.openIssues} ${OPEN_SHORT_LABEL}`}</div>
-              <div className={cns(styles.itemStatus, styles[`status_${journal.status}`])}>
-                {statusMap[journal.status]}
-              </div>
-            </li>
-          ))}
-          {!journals.length ? <li className={styles.listItem}>{EMPTY_LABEL}</li> : null}
-        </ul>
-      </section>
     </div>
   )
 }

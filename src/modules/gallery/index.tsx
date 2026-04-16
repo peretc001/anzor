@@ -26,7 +26,7 @@ const MONTH_LABEL: Record<string, string> = {
   '2026-01': 'Январь 2026',
   '2026-02': 'Февраль 2026',
   '2026-03': 'Март 2026',
-  '2026-04': 'Апрель 2026',
+  '2026-04': 'Апрель 2026'
 }
 
 /** От новых к старым (апрель — под ваши фото, пока пусто) */
@@ -161,34 +161,34 @@ const INTERIOR_PHOTOS: GalleryPhoto[] = [
   {
     alt: 'Кухня с островом и обеденной зоной, визуализация',
     monthKey: '2026-04',
-    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737956.jpg',
+    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737956.jpg'
   },
   {
     alt: 'Гостиная и кухня-гостиная, общий вид',
     monthKey: '2026-04',
-    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737959.jpg',
+    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737959.jpg'
   },
   {
     alt: 'Студия: кухня, остров и зона отдыха',
     monthKey: '2026-04',
-    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737334.jpg',
+    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737334.jpg'
   },
   {
     alt: 'Спальня с рабочим местом и проектором',
     monthKey: '2026-04',
-    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737312.jpg',
+    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737312.jpg'
   },
   {
     alt: 'Гостиная с диваном и кухонной зоной',
     monthKey: '2026-04',
-    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737342.jpg',
-  },
+    src: 'https://s3.regru.cloud/s3.planirovochka/e1aeb5fd-9afa-409c-8e14-d8dfe9b58624/gallery/1774802737342.jpg'
+  }
 ]
 
-const GALLERY_BY_MONTH = MONTH_ORDER.map((key) => ({
+const GALLERY_BY_MONTH = MONTH_ORDER.map(key => ({
   monthKey: key,
   monthLabel: MONTH_LABEL[key],
-  photos: INTERIOR_PHOTOS.filter((p) => p.monthKey === key),
+  photos: INTERIOR_PHOTOS.filter(p => p.monthKey === key)
 }))
 
 const HEADER_TITLE = 'Фотоотчет'
@@ -205,7 +205,7 @@ const FANCYBOX_GROUP = 'photoreport'
 
 const MONTH_PARAM_REGEX = /^\d{4}-\d{2}$/
 
-function parseMonthQueryParam(raw: string | null): Dayjs | null {
+function parseMonthQueryParam(raw: null | string): Dayjs | null {
   if (!raw || !MONTH_PARAM_REGEX.test(raw)) return null
   const parsed = dayjs(`${raw}-01`, 'YYYY-MM-DD', true)
   return parsed.isValid() ? parsed.startOf('month') : null
@@ -223,7 +223,7 @@ const Gallery = () => {
   const visibleGroups = useMemo(() => {
     if (!filterMonth) return GALLERY_BY_MONTH
     const key = filterMonth.format('YYYY-MM')
-    const photos = INTERIOR_PHOTOS.filter((p) => p.monthKey === key)
+    const photos = INTERIOR_PHOTOS.filter(p => p.monthKey === key)
     const monthLabel = MONTH_LABEL[key] ?? filterMonth.locale('ru').format('MMMM YYYY')
     return [{ monthKey: key, monthLabel, photos }]
   }, [filterMonth])
@@ -234,8 +234,8 @@ const Gallery = () => {
 
     Fancybox.bind(root, FANCYBOX_SELECTOR, {
       Carousel: {
-        infinite: false,
-      },
+        infinite: false
+      }
     })
 
     return () => {
@@ -246,41 +246,7 @@ const Gallery = () => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <Link className={styles.back} href="/pro/project">
-          <ChevronLeftIcon className={styles.icon} />
-        </Link>
-        <div className={styles.item}>{HEADER_TITLE}</div>
-      </div>
-
       <div className={styles.container}>
-        <div className={styles.info}>
-          <div className={styles.item}>
-            <span>{INFO_EXECUTOR_LABEL}</span>
-            <button
-              className={styles.valueBtn}
-              type="button"
-              onClick={() => {
-                setContactModal('executor')
-              }}
-            >
-              {INFO_EXECUTOR_VALUE}
-            </button>
-          </div>
-          <div className={styles.item}>
-            <span>{INFO_CUSTOMER_LABEL}</span>
-            <button
-              className={styles.valueBtn}
-              type="button"
-              onClick={() => {
-                setContactModal('customer')
-              }}
-            >
-              {INFO_CUSTOMER_VALUE}
-            </button>
-          </div>
-        </div>
-
         <section className={styles.section} aria-label="Фотогалерея по месяцам">
           <div className={styles.filterRow}>
             <span id="gallery-month-filter-label" className={styles.filterLabel}>
@@ -297,7 +263,7 @@ const Gallery = () => {
                 picker="month"
                 placeholder={FILTER_PLACEHOLDER}
                 value={filterMonth}
-                onChange={(next) => {
+                onChange={next => {
                   const params = new URLSearchParams(searchParams.toString())
                   if (next) {
                     params.set('date', next.format('YYYY-MM'))
@@ -324,7 +290,7 @@ const Gallery = () => {
                   <p className={styles.emptyHint}>{EMPTY_MONTH_MESSAGE}</p>
                 ) : (
                   <ul className={styles.grid}>
-                    {photos.map((photo) => (
+                    {photos.map(photo => (
                       <li key={photo.src} className={styles.cell}>
                         <a
                           className={styles.thumbLink}

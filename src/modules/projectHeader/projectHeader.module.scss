@@ -1,0 +1,32 @@
+@use "@/styles/typography";
+
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 8px;
+    color: var(--gray-500);
+    text-decoration: none;
+    @include typography.text-sm;
+  }
+
+  .icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  .container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}

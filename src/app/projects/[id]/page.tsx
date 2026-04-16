@@ -1,22 +1,11 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
-import Project from '@/modules/project'
-import { getProjectApi } from '@/modules/project/api/getProjectApi'
+import Tasks from '@/modules/tasks'
 
 export const metadata: Metadata = {
-  title: 'Журналы авторского надзора'
+  title: 'Задачи'
 }
 
-type Props = {
-  readonly params: Promise<{ id: string }>
-}
-
-const Page = async ({ params }: Props) => {
-  const { id } = await params
-  const projectId = Number(id)
-
-  return 'Project'
-}
+const Page = () => <Tasks />
 
 export default Page

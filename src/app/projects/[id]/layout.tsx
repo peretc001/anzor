@@ -2,10 +2,11 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 
-import { getGalleryApi } from '@/modules/gallery/api/getGalleryApi'
-import { getProjectApi } from '@/modules/project/api/getProjectApi'
 import ProjectHeader from '@/shared/components/projectHeader/projectHeader'
 import ProjectMenu from '@/shared/components/projectMenu/projectMenu'
+
+import { getGalleryApi } from '@/modules/gallery/api/getGalleryApi'
+import { getProjectApi } from '@/modules/project/api/getProjectApi'
 import { getTasksApi } from '@/modules/tasks/api/getTasksApi'
 
 type Props = {
@@ -34,9 +35,9 @@ const Layout = async ({ children, params }: Props) => {
       <ProjectHeader project={project} />
 
       <ProjectMenu
-        galleryPhotosCount={galleryData.length || 0}
-        projectId={project.id}
-        tasksCount={tasks.length || 0}
+        galleryPhotosCount={galleryData?.length || 0}
+        projectId={project?.id}
+        tasksCount={tasks?.length || 0}
       />
 
       {children}

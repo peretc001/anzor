@@ -17,6 +17,7 @@ export interface IProject {
 
 export interface IGallery {
   id: number
+  project_id?: number
   task_id?: null | number
   url: string
 }
@@ -31,6 +32,7 @@ export interface ITask {
   executor?: null | string
   owner_id?: string
   photos?: null | string[]
+  project_id?: number
   /** open — открыто, resolved — исправлено */
   status?: 'open' | 'resolved' | null
   title: string

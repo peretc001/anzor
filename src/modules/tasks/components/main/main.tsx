@@ -17,6 +17,7 @@ import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 import styles from './main.module.scss'
 
 type IMainProps = {
+  readonly projectId: number
   readonly tasks: ITask[]
 }
 
@@ -28,7 +29,7 @@ type CreateTaskWithPhotosResult = {
   readonly taskPhotosUpdateFailed: boolean
 }
 
-const Main: FC<IMainProps> = ({ tasks }) => {
+const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryClient = useQueryClient()
 
@@ -40,6 +41,7 @@ const Main: FC<IMainProps> = ({ tasks }) => {
         description: values.description?.trim() || null,
         executor: values.executor || null,
         photos: null,
+        project_id: projectId,
         title: values.title
       })
 
@@ -67,7 +69,7 @@ const Main: FC<IMainProps> = ({ tasks }) => {
 
       for (const file of uploadFiles) {
         try {
-          const url = await addGalleryApi({ file, taskId: createdTask.id })
+          const url = await addGalleryApi({ file, projectId, taskId: createdTask.id })
           if (url) {
             uploadedUrls.push(url)
           } else {
@@ -99,8 +101,8 @@ const Main: FC<IMainProps> = ({ tasks }) => {
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['tasks'] })
-      await queryClient.invalidateQueries({ queryKey: ['gallery'] })
+      await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
+      await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
       handleCloseModal()
     }
   })

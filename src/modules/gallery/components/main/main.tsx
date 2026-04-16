@@ -15,9 +15,10 @@ import Form from '../form/form'
 
 type IMainProps = {
   readonly gallery: IGallery[]
+  readonly projectId: number
 }
 
-const Main: FC<IMainProps> = ({ gallery }) => {
+const Main: FC<IMainProps> = ({ gallery, projectId }) => {
   const queryClient = useQueryClient()
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [deletingId, setDeletingId] = useState<null | number>(null)
@@ -28,8 +29,8 @@ const Main: FC<IMainProps> = ({ gallery }) => {
     try {
       setDeletingId(id)
       await deleteGalleryApi(id)
-      await queryClient.invalidateQueries({ queryKey: ['gallery'] })
-      await queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
+      await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
       message.success('Фото удалено')
     } catch {
       message.error('Не удалось удалить фото')
@@ -68,7 +69,7 @@ const Main: FC<IMainProps> = ({ gallery }) => {
         title="Загрузка фото"
         onCancel={handleCloseUploadModal}
       >
-        <Form onCancel={handleCloseUploadModal} />
+        <Form onCancel={handleCloseUploadModal} projectId={projectId} />
       </Modal>
     </div>
   )

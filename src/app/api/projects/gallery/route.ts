@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+import { ensureUserOwnsProject } from '@/lib/ensureUserOwnsProject'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { s3DeleteObject, s3KeyFromStoredUrl, s3UploadFile } from '@/lib/s3'
 import { createClient } from '@/lib/supabaseServer'
@@ -13,7 +14,7 @@ const ALLOWED_IMAGE_TYPES: Record<string, string> = {
   'image/webp': 'webp'
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createClient()
 
   const user = await getCurrentUser()
@@ -22,10 +23,24 @@ export async function GET() {
     return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
 
+  const projectIdRaw = new URL(request.url).searchParams.get('project_id')
+  const projectId = projectIdRaw != null && projectIdRaw !== '' ? Number(projectIdRaw) : NaN
+
+  if (!Number.isInteger(projectId) || projectId <= 0) {
+    return NextResponse.json({ data: null, error: 'Invalid project_id' }, { status: 400 })
+  }
+
+  const allowed = await ensureUserOwnsProject(supabase, user.id, projectId)
+
+  if (!allowed) {
+    return NextResponse.json({ data: null, error: 'Project not found' }, { status: 404 })
+  }
+
   const { data, error } = await supabase
     .from('gallery')
     .select('*')
     .eq('owner_id', user.id)
+    .eq('project_id', projectId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -45,6 +60,14 @@ export async function POST(request: Request) {
 
     const formData = await request.formData()
     const file = formData.get('file')
+    const projectIdRaw = formData.get('project_id')
+    const projectId =
+      typeof projectIdRaw === 'string' && projectIdRaw.trim() !== '' ? Number(projectIdRaw) : NaN
+
+    if (!Number.isInteger(projectId) || projectId <= 0) {
+      return NextResponse.json({ error: 'Invalid project_id', status: false }, { status: 400 })
+    }
+
     const taskIdRaw = formData.get('task_id')
     const taskId =
       typeof taskIdRaw === 'string' && taskIdRaw.trim() !== '' ? Number(taskIdRaw) : null
@@ -72,7 +95,32 @@ export async function POST(request: Request) {
 
     const body = new Uint8Array(buffer)
     const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`
-    const key = `${user.id}/gallery/${fileName}`
+    const key = `${user.id}/gallery/${projectId}/${fileName}`
+
+    const supabase = await createClient()
+
+    const allowed = await ensureUserOwnsProject(supabase, user.id, projectId)
+
+    if (!allowed) {
+      return NextResponse.json({ error: 'Project not found', status: false }, { status: 404 })
+    }
+
+    if (taskId != null) {
+      const { data: taskRow, error: taskLookupError } = await supabase
+        .from('tasks')
+        .select('id, project_id')
+        .eq('id', taskId)
+        .eq('owner_id', user.id)
+        .maybeSingle()
+
+      if (taskLookupError) {
+        return NextResponse.json({ error: taskLookupError.message, status: false }, { status: 500 })
+      }
+
+      if (!taskRow || Number(taskRow.project_id) !== projectId) {
+        return NextResponse.json({ error: 'Invalid task_id for this project', status: false }, { status: 400 })
+      }
+    }
 
     await s3UploadFile({
       key,
@@ -81,10 +129,10 @@ export async function POST(request: Request) {
     })
 
     const galleryUrl = `/${key}`
-    const supabase = await createClient()
 
     const { error: saveError } = await supabase.from('gallery').insert({
       owner_id: user.id,
+      project_id: projectId,
       task_id: taskId,
       url: galleryUrl
     })
@@ -119,7 +167,7 @@ export async function DELETE(request: Request) {
 
     const { data: row, error: fetchError } = await supabase
       .from('gallery')
-      .select('id, task_id, url')
+      .select('id, project_id, task_id, url')
       .eq('id', id)
       .eq('owner_id', user.id)
       .maybeSingle()

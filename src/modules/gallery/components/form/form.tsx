@@ -16,9 +16,10 @@ import { UploadOutlined } from '@ant-design/icons'
 
 interface IGalleryAdd {
   readonly onCancel: () => void
+  readonly projectId: number
 }
 
-const Add: FC<IGalleryAdd> = ({ onCancel }) => {
+const Add: FC<IGalleryAdd> = ({ onCancel, projectId }) => {
   const t = useTranslations('account')
 
   const queryClient = useQueryClient()
@@ -31,11 +32,11 @@ const Add: FC<IGalleryAdd> = ({ onCancel }) => {
   const [preview, setPreview] = useState<null | string>(null)
 
   const { isLoading: isUploadLoading, mutate: save } = useMutation({
-    mutationFn: (params: any) => addGalleryApi(params),
+    mutationFn: (params: { file: File }) => addGalleryApi({ ...params, projectId }),
     onError: () => message.error(t('gallery.upload.error')),
     onSuccess: url => {
       if (url) {
-        queryClient.invalidateQueries({ queryKey: ['gallery'] })
+        queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
         if (onCancel) onCancel()
       }
     }

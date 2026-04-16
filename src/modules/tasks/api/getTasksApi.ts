@@ -2,9 +2,9 @@ import { ITask } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-export const getTasksApi = async () => {
+export const getTasksApi = async (projectId: number) => {
   try {
-    const response = await serverApi.get('projects/tasks')
+    const response = await serverApi.get('projects/tasks', { project_id: projectId })
 
     if (!response?.data) {
       return []

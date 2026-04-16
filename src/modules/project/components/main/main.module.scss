@@ -1,0 +1,252 @@
+@use "@/styles/typography";
+
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  color: var(--gray-500);
+  text-decoration: none;
+  @include typography.text-sm;
+}
+
+.backIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.headerCard {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--main-white);
+}
+
+.mainInfo {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: var(--background-light);
+}
+
+.previewIcon {
+  width: 26px;
+  height: 26px;
+  color: var(--main-blue);
+}
+
+.titleWrap {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--gray-1000);
+}
+
+.address {
+  margin: 4px 0 0;
+  @include typography.text-sm;
+  color: var(--gray-500);
+}
+
+.parties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.contractor,
+.customer {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.contractor {
+  background: #edf3ff;
+  color: #4f6a97;
+}
+
+.customer {
+  background: #e6f7ec;
+  color: #3c8a61;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  @include typography.text-sm;
+  color: var(--gray-500);
+}
+
+.metaDanger {
+  color: #cf212a;
+}
+
+.metaSuccess {
+  color: #1f9254;
+}
+
+.editButton {
+  border-radius: 10px;
+}
+
+.editIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--gray-100);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gray-500);
+  @include typography.text-sm;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--main-white);
+  color: var(--main-black);
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  padding: 0 6px;
+  background: #ececf0;
+  @include typography.text-xs;
+  color: var(--gray-500);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.addButton {
+  align-self: flex-start;
+  min-width: 214px;
+  border-radius: 14px;
+}
+
+.list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid #e8e7ef;
+  border-radius: 14px;
+  background: var(--main-white);
+}
+
+.itemDate {
+  @include typography.semibold;
+  @include typography.text-md;
+  color: var(--main-black);
+  white-space: nowrap;
+}
+
+.itemTitle {
+  min-width: 0;
+  color: #b0b0bb;
+  @include typography.text-md;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemOpen {
+  @include typography.semibold;
+  @include typography.text-md;
+  color: #cf212a;
+  white-space: nowrap;
+}
+
+.itemStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  @include typography.text-sm;
+  @include typography.semibold;
+}
+
+.status_draft {
+  background: #f5f5f7;
+  color: #7a7a85;
+}
+
+.status_awaiting {
+  background: #fff3d6;
+  color: #9a6a00;
+}
+
+.status_done {
+  background: #d9f3e3;
+  color: #1f9254;
+}
+
+.empty {
+  @include typography.text-md;
+  color: var(--gray-500);
+}

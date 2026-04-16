@@ -1,12 +1,21 @@
+'use client'
+
 import React from 'react'
+
+import { useQuery } from '@tanstack/react-query'
+
+import Loader from '@/shared/components/loader/loader'
 
 import { getProjectsApi } from '@/modules/projects/api/getProjectsApi'
 import Main from '@/modules/projects/components/main/main'
 
-const Projects = async () => {
-  const projects = await getProjectsApi()
+const Projects = () => {
+  const { isLoading, data } = useQuery({
+    queryFn: getProjectsApi,
+    queryKey: ['projects']
+  })
 
-  return <Main projects={projects} />
+  return isLoading ? <Loader isFull /> : <Main projects={data} />
 }
 
 export default Projects

@@ -92,17 +92,33 @@ class ServerApi {
   }
 
   // Метод GET запроса
-  static get(
+  static async get(
     apiMethod: string,
     params: Record<string, any> = {},
     signal?: AbortSignal,
     host: string = DEFAULT_API_HOST,
     extraHeaders?: Record<string, string>
   ): Promise<any> {
+    let serverCookieHeader: Record<string, string> = {}
+
+    if (typeof window === 'undefined') {
+      const { cookies } = await import('next/headers')
+      const cookieStore = await cookies()
+      const cookieValue = cookieStore
+        .getAll()
+        .map(({ name, value }) => `${name}=${value}`)
+        .join('; ')
+
+      if (cookieValue) {
+        serverCookieHeader = { cookie: cookieValue }
+      }
+    }
+
     const fetchParams: FetchParams = {
       ...FETCH_PARAMS,
       headers: {
         ...FETCH_PARAMS.headers,
+        ...serverCookieHeader,
         ...extraHeaders
       },
       method: 'GET',

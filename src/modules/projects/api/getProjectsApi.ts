@@ -1,32 +1,17 @@
-import { cookies } from 'next/headers'
-
-import type { ProjectCardModel } from '@/shared/store/projects'
+import { IProfile, IProject } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-/** GET `/api/projects` — список проектов текущего пользователя (Supabase). */
-export async function getProjectsApi(): Promise<ProjectCardModel[]> {
+export const getProjectsApi = async () => {
   try {
-    const cookieStore = await cookies()
-    const cookieHeader = cookieStore
-      .getAll()
-      .map(({ name, value }) => `${name}=${encodeURIComponent(value)}`)
-      .join('; ')
+    const response = await serverApi.get('projects/list')
 
-    const response = await serverApi.get(
-      'projects',
-      {},
-      undefined,
-      undefined,
-      cookieHeader ? { Cookie: cookieHeader } : undefined
-    )
-
-    if (!response?.data) {
+    if (!response.data) {
       return []
     }
 
-    return response.data as ProjectCardModel[]
+    return (response.data as IProject[]) || []
   } catch {
-    return []
+    return null
   }
 }

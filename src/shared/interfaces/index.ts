@@ -17,7 +17,7 @@ export interface IProject {
 
 export interface IGallery {
   id: number
-  month: string
+  task_id?: null | number
   url: string
 }
 

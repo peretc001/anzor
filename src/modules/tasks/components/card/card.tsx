@@ -75,6 +75,29 @@ const Card = ({ task }: CardProps) => {
               ) : null}
             </div>
           ) : null}
+          {task.photos?.length ? (
+            <div className={styles.photos}>
+              {task.photos.slice(0, 4).map(photo => (
+                <a
+                  key={photo}
+                  className={styles.photoLink}
+                  href={`${process.env.NEXT_PUBLIC_S3_PATH}${photo}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <img
+                    className={styles.photoThumb}
+                    alt=""
+                    loading="lazy"
+                    src={`${process.env.NEXT_PUBLIC_S3_PATH}${photo}`}
+                  />
+                </a>
+              ))}
+              {task.photos.length > 4 ? (
+                <span className={styles.photoMore}>+{task.photos.length - 4}</span>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 

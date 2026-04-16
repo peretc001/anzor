@@ -45,11 +45,16 @@ export async function POST(request: Request) {
 
     const formData = await request.formData()
     const file = formData.get('file')
-    const description = String(formData.get('description') ?? '')
-    const type = String(formData.get('type') ?? 'visual')
+    const taskIdRaw = formData.get('task_id')
+    const taskId =
+      typeof taskIdRaw === 'string' && taskIdRaw.trim() !== '' ? Number(taskIdRaw) : null
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: 'File is required', status: false }, { status: 400 })
+    }
+
+    if (taskIdRaw != null && (!Number.isInteger(taskId) || (taskId as number) <= 0)) {
+      return NextResponse.json({ error: 'Invalid task_id', status: false }, { status: 400 })
     }
 
     const mime = file.type || 'application/octet-stream'
@@ -66,7 +71,7 @@ export async function POST(request: Request) {
     }
 
     const body = new Uint8Array(buffer)
-    const fileName = `${Date.now()}.${ext}`
+    const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`
     const key = `${user.id}/gallery/${fileName}`
 
     await s3UploadFile({
@@ -79,9 +84,8 @@ export async function POST(request: Request) {
     const supabase = await createClient()
 
     const { error: saveError } = await supabase.from('gallery').insert({
-      description,
       owner_id: user.id,
-      type,
+      task_id: taskId,
       url: galleryUrl
     })
 
@@ -115,7 +119,7 @@ export async function DELETE(request: Request) {
 
     const { data: row, error: fetchError } = await supabase
       .from('gallery')
-      .select('id, url')
+      .select('id, task_id, url')
       .eq('id', id)
       .eq('owner_id', user.id)
       .maybeSingle()
@@ -129,6 +133,40 @@ export async function DELETE(request: Request) {
     }
 
     const url = typeof row.url === 'string' ? row.url : ''
+    const rawTaskId = row.task_id as number | string | null | undefined
+    const taskId =
+      typeof rawTaskId === 'number' && Number.isInteger(rawTaskId) && rawTaskId > 0
+        ? rawTaskId
+        : typeof rawTaskId === 'string' && /^\d+$/.test(rawTaskId)
+          ? Number(rawTaskId)
+          : null
+
+    if (taskId != null) {
+      const { data: taskRow, error: taskFetchError } = await supabase
+        .from('tasks')
+        .select('id, photos')
+        .eq('id', taskId)
+        .eq('owner_id', user.id)
+        .maybeSingle()
+
+      if (taskFetchError) {
+        return NextResponse.json({ error: taskFetchError.message, status: false }, { status: 500 })
+      }
+
+      if (taskRow && Array.isArray(taskRow.photos) && taskRow.photos.includes(url)) {
+        const nextPhotos = taskRow.photos.filter((p: string) => p !== url)
+        const { error: taskUpdateError } = await supabase
+          .from('tasks')
+          .update({ photos: nextPhotos.length > 0 ? nextPhotos : null })
+          .eq('id', taskId)
+          .eq('owner_id', user.id)
+
+        if (taskUpdateError) {
+          return NextResponse.json({ error: taskUpdateError.message, status: false }, { status: 500 })
+        }
+      }
+    }
+
     const key = s3KeyFromStoredUrl(url)
 
     if (key) {

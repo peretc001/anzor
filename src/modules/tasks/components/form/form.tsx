@@ -1,29 +1,31 @@
 import React, { FC } from 'react'
-import { Button, DatePicker, Form, Input, Select } from 'antd'
+import { Button, DatePicker, Form, Input, Select, Upload } from 'antd'
+import type { UploadFile } from 'antd/es/upload/interface'
 import type { Dayjs } from 'dayjs'
+import { UploadOutlined } from '@ant-design/icons'
 
 import { EXECUTOR_TYPES } from '@/constants'
 
 import styles from './form.module.scss'
 
-type ProblemFormValues = {
+type TaskFormValues = {
   control?: Dayjs
   description?: string
   executor?: string
-  photos?: string[]
+  photos?: UploadFile[]
   title: string
 }
 
 type IFormProps = {
   readonly submitting?: boolean
   readonly onCancel: () => void
-  readonly onSubmit?: (values: ProblemFormValues) => Promise<void> | void
+  readonly onSubmit?: (values: TaskFormValues) => Promise<void> | void
 }
 
 const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) => {
-  const [form] = Form.useForm<ProblemFormValues>()
+  const [form] = Form.useForm<TaskFormValues>()
 
-  const handleFinish = async (values: ProblemFormValues) => {
+  const handleFinish = async (values: TaskFormValues) => {
     await onSubmit?.(values)
     form.resetFields()
   }
@@ -36,7 +38,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
       layout="vertical"
       onFinish={handleFinish}
     >
-      <Form.Item<ProblemFormValues>
+      <Form.Item<TaskFormValues>
         label="Заголовок"
         name="title"
         rules={[{ message: 'Введите заголовок', required: true }]}
@@ -44,31 +46,45 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
       </Form.Item>
 
-      <Form.Item<ProblemFormValues> label="Описание" name="description">
+      <Form.Item<TaskFormValues> label="Описание" name="description">
         <Input.TextArea
           autoSize={{ maxRows: 5, minRows: 3 }}
           placeholder="Опишите задачу и что нужно исправить"
         />
       </Form.Item>
 
-      <Form.Item<ProblemFormValues> label="Ответственный" name="executor">
+      <Form.Item<TaskFormValues> label="Ответственный" name="executor">
         <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
       </Form.Item>
 
-      <Form.Item<ProblemFormValues> label="Ожидаемая дата выполнения" name="control">
+      <Form.Item<TaskFormValues> label="Ожидаемая дата выполнения" name="control">
         <DatePicker className={styles.fullWidth} format="DD.MM.YYYY" />
       </Form.Item>
 
-      <Form.Item<ProblemFormValues>
-        extra="Добавьте одну или несколько ссылок на фото"
+      <Form.Item<TaskFormValues>
+        extra="Можно выбрать до 20 изображений"
         label="Фото"
         name="photos"
+        rules={[
+          {
+            validator: (_, value: UploadFile[] | undefined) => {
+              if (!value || value.length <= 20) return Promise.resolve()
+              return Promise.reject(new Error('Максимум 20 фотографий'))
+            }
+          }
+        ]}
+        valuePropName="fileList"
+        getValueFromEvent={event => event?.fileList}
       >
-        <Select
-          mode="tags"
-          placeholder="https://example.com/photo.jpg"
-          tokenSeparators={[',', ' ']}
-        />
+        <Upload
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          beforeUpload={() => false}
+          listType="picture"
+          maxCount={20}
+          multiple
+        >
+          <Button icon={<UploadOutlined />}>Выбрать фото</Button>
+        </Upload>
       </Form.Item>
 
       <div className={styles.actions}>
@@ -83,5 +99,5 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
   )
 }
 
-export type { ProblemFormValues }
+export type { TaskFormValues }
 export default FormModal

@@ -7,10 +7,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ITask } from '@/shared/interfaces'
 
+import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
 import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
 import Card from '@/modules/tasks/components/card/card'
-import type { ProblemFormValues } from '@/modules/tasks/components/form/form'
+import type { TaskFormValues } from '@/modules/tasks/components/form/form'
 import Form from '@/modules/tasks/components/form/form'
+import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 
 import styles from './main.module.scss'
 
@@ -18,37 +20,112 @@ type IMainProps = {
   readonly tasks: ITask[]
 }
 
+type CreateTaskWithPhotosResult = {
+  readonly task: ITask
+  readonly uploadAttempted: number
+  readonly uploadFailedCount: number
+  readonly uploadSuccessCount: number
+  readonly taskPhotosUpdateFailed: boolean
+}
+
 const Main: FC<IMainProps> = ({ tasks }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryClient = useQueryClient()
 
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: async (payload: IProblem) => {
-      const saved = await saveTaskApi(payload)
-      if (!saved) {
+    mutationFn: async (values: TaskFormValues): Promise<CreateTaskWithPhotosResult> => {
+      const createdTask = await saveTaskApi({
+        id: Date.now(),
+        control: values.control ? values.control.toISOString() : null,
+        description: values.description?.trim() || null,
+        executor: values.executor || null,
+        photos: null,
+        title: values.title
+      })
+
+      if (!createdTask) {
         throw new Error('Не удалось сохранить задачу')
       }
-      return saved
+
+      const uploadFiles =
+        values.photos
+          ?.map(file => file.originFileObj)
+          .filter((file): file is File => file instanceof File) ?? []
+
+      if (uploadFiles.length === 0) {
+        return {
+          task: createdTask,
+          uploadAttempted: 0,
+          uploadFailedCount: 0,
+          uploadSuccessCount: 0,
+          taskPhotosUpdateFailed: false
+        }
+      }
+
+      const uploadedUrls: string[] = []
+      let uploadFailedCount = 0
+
+      for (const file of uploadFiles) {
+        try {
+          const url = await addGalleryApi({ file, taskId: createdTask.id })
+          if (url) {
+            uploadedUrls.push(url)
+          } else {
+            uploadFailedCount += 1
+          }
+        } catch {
+          uploadFailedCount += 1
+        }
+      }
+
+      let task = createdTask
+      let taskPhotosUpdateFailed = false
+
+      if (uploadedUrls.length > 0) {
+        const updatedTask = await updateTaskApi(createdTask.id, { photos: uploadedUrls })
+        if (updatedTask) {
+          task = updatedTask
+        } else {
+          taskPhotosUpdateFailed = true
+        }
+      }
+
+      return {
+        task,
+        uploadAttempted: uploadFiles.length,
+        uploadFailedCount,
+        uploadSuccessCount: uploadedUrls.length,
+        taskPhotosUpdateFailed
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      await queryClient.invalidateQueries({ queryKey: ['gallery'] })
       handleCloseModal()
     }
   })
 
   const handleOpenModal = () => setIsModalOpen(true)
   const handleCloseModal = () => setIsModalOpen(false)
-  const handleSubmit = async (values: ProblemFormValues) => {
+  const handleSubmit = async (values: TaskFormValues) => {
     try {
-      await mutateAsync({
-        id: Date.now(),
-        control: values.control ? values.control.toISOString() : null,
-        description: values.description?.trim() || null,
-        executor: values.executor || null,
-        photos: values.photos?.length ? values.photos : null,
-        title: values.title
-      })
+      const result = await mutateAsync(values)
       message.success('Задача добавлена')
+
+      const parts: string[] = []
+      if (result.uploadAttempted > 0 && result.uploadFailedCount > 0) {
+        parts.push(
+          `Не удалось загрузить ${result.uploadFailedCount} из ${result.uploadAttempted} фото.`
+        )
+      }
+      if (result.taskPhotosUpdateFailed) {
+        parts.push(
+          'Список фото в задаче не обновился; успешно загруженные файлы остаются в галерее с привязкой к задаче.'
+        )
+      }
+      if (parts.length > 0) {
+        message.warning(parts.join(' '))
+      }
     } catch {
       message.error('Не удалось сохранить задачу')
     }

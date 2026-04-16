@@ -11,7 +11,7 @@ interface FetchParams {
   body?: BodyInit
   credentials?: 'include' | 'omit' | 'same-origin'
   headers: Record<string, string>
-  method?: 'DELETE' | 'GET' | 'POST'
+  method?: 'DELETE' | 'GET' | 'PATCH' | 'POST'
   mode?: 'cors' | 'no-cors' | 'same-origin'
   signal?: AbortSignal
 }
@@ -154,6 +154,35 @@ class ServerApi {
       body: JSON.stringify(params),
       headers: FETCH_PARAMS.headers,
       method: 'POST',
+      signal
+    }
+
+    return fetch(host + apiMethod, fetchParams)
+      .then(response =>
+        response.ok
+          ? response.json()
+          : response.json().then((body: any) => {
+            const msg =
+                body?.message ?? body?.error ?? response.statusText ?? String(response.status)
+            throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+          })
+      )
+      .catch(err => {
+        throw err instanceof Error ? err : new Error(String(err))
+      })
+  }
+
+  // Метод PATCH запроса
+  static patch(
+    apiMethod: string,
+    params: Record<string, any> = {},
+    signal?: AbortSignal,
+    host: string = DEFAULT_API_HOST
+  ): Promise<any> {
+    const fetchParams: FetchParams = {
+      body: JSON.stringify(params),
+      headers: FETCH_PARAMS.headers,
+      method: 'PATCH',
       signal
     }
 

@@ -1,19 +1,18 @@
 import serverApi from '@/lib/serverApi'
 
 export const addGalleryApi = async ({
-  description,
   file,
-  type
+  taskId
 }: {
-  description: string
   file: File
-  type: string
+  taskId?: number
 }) => {
   const formData = new FormData()
 
   formData.append('file', file)
-  formData.append('description', description ?? '')
-  formData.append('type', type ?? 'visual')
+  if (taskId) {
+    formData.append('task_id', String(taskId))
+  }
 
   const response = await serverApi.file('projects/gallery', formData)
 

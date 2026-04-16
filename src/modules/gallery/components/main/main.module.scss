@@ -199,6 +199,14 @@
   aspect-ratio: 4 / 3;
 }
 
+.taskTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  margin: 0;
+}
+
 .deleteButton {
   position: absolute;
   top: 8px;

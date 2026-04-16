@@ -1,18 +1,14 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
-import { Button, Form, message, Radio, Upload, UploadFile, UploadProps } from 'antd'
+import { Button, Form, message, Upload, UploadFile, UploadProps } from 'antd'
 import { useTranslations } from 'next-intl'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-import { PROJECT_TYPES } from '@/constants'
-
 import { getBase64 } from '@/lib/getBase64'
 
 import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
-
-import SimpleEditor from '@/components/tiptap-templates/simple/simple-editor'
 
 import styles from './form.module.scss'
 
@@ -33,8 +29,6 @@ const Add: FC<IGalleryAdd> = ({ onCancel }) => {
 
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [preview, setPreview] = useState<null | string>(null)
-
-  const description = Form.useWatch('description', form)
 
   const { isLoading: isUploadLoading, mutate: save } = useMutation({
     mutationFn: (params: any) => addGalleryApi(params),
@@ -73,18 +67,14 @@ const Add: FC<IGalleryAdd> = ({ onCancel }) => {
     setPreview(null)
   }
 
-  const handleChangeContent = (html: React.ReactNode) => {
-    form.setFieldValue('description', html)
-  }
-
   const onFinish = async (values: any) => {
     if (!values.file?.file) return
-    await save({ description: values.description, file: values.file.file, type: values.type })
+    await save({ file: values.file.file })
   }
 
   useEffect(() => {
     const handleReset = () => {
-      form.resetFields(['file', 'type', 'description'])
+      form.resetFields(['file'])
       setFileList([])
       setPreview(null)
     }
@@ -96,7 +86,7 @@ const Add: FC<IGalleryAdd> = ({ onCancel }) => {
     <Form
       className={styles.root}
       form={form}
-      initialValues={{ description: undefined, file: undefined, type: 'flat' }}
+      initialValues={{ file: undefined }}
       layout="vertical"
       name="gallery"
       onFinish={onFinish}
@@ -122,14 +112,6 @@ const Add: FC<IGalleryAdd> = ({ onCancel }) => {
           </picture>
         </div>
       ) : null}
-
-      <Form.Item label={t('gallery.type')} name="type">
-        <Radio.Group options={PROJECT_TYPES} value="flat" />
-      </Form.Item>
-
-      <Form.Item className={styles.editor} label={t('gallery.description')} name="description">
-        <SimpleEditor defaultContent={description} limit={100} onChange={handleChangeContent} />
-      </Form.Item>
 
       <Form.Item>
         <Button ref={buttonRef} htmlType="submit" loading={isUploadLoading} type="primary">

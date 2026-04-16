@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, useEffect, useRef, useState } from 'react'
-import { Button, message, Modal, Popconfirm } from 'antd'
+import { Button, message, Modal, Popconfirm, Tag } from 'antd'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 
@@ -58,6 +58,7 @@ const Main: FC<IMainProps> = ({ gallery }) => {
       setDeletingId(id)
       await deleteGalleryApi(id)
       await queryClient.invalidateQueries({ queryKey: ['gallery'] })
+      await queryClient.invalidateQueries({ queryKey: ['tasks'] })
       message.success('Фото удалено')
     } catch {
       message.error('Не удалось удалить фото')
@@ -77,8 +78,9 @@ const Main: FC<IMainProps> = ({ gallery }) => {
       <section className={styles.section}>
         {gallery.length > 0 ? (
           <div ref={scrollRef} className={styles.scroll}>
-            {gallery.map(({ id, url }) => (
+            {gallery.map(({ id, task_id, url }) => (
               <div key={id} className={styles.cell}>
+                {task_id ? <Tag className={styles.taskTag}>Задача #{task_id}</Tag> : null}
                 <Popconfirm
                   cancelText="Отмена"
                   description="Действие нельзя отменить"

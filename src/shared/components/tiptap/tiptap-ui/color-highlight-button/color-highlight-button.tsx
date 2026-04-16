@@ -6,7 +6,7 @@ import { forwardRef, useCallback, useMemo } from "react"
 import { parseShortcutKeys } from "@/lib/tiptap-utils"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/shared/components/tiptap/hooks/use-tiptap-editor"
 
 // --- Tiptap UI ---
 import type { UseColorHighlightConfig } from "@/shared/components/tiptap/tiptap-ui/color-highlight-button"

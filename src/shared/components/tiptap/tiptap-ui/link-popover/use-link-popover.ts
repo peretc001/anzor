@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import type { Editor } from "@tiptap/react"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/shared/components/tiptap/hooks/use-tiptap-editor"
 
 // --- Icons ---
 import { LinkIcon } from "@/shared/components/tiptap/tiptap-icons/link-icon"

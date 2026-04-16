@@ -10,7 +10,7 @@ import {
 } from "@/shared/components/tiptap/tiptap-ui/blockquote-button"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/shared/components/tiptap/hooks/use-tiptap-editor"
 
 // --- Lib ---
 import { parseShortcutKeys } from "@/lib/tiptap-utils"

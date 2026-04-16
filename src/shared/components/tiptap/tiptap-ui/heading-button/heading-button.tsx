@@ -19,7 +19,7 @@ import {
 import type { ButtonProps } from "@/shared/components/tiptap/tiptap-ui-primitive/button"
 import { Button } from "@/shared/components/tiptap/tiptap-ui-primitive/button"
 import { Badge } from "@/shared/components/tiptap/tiptap-ui-primitive/badge"
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/shared/components/tiptap/hooks/use-tiptap-editor"
 
 export interface HeadingButtonProps
   extends Omit<ButtonProps, "type">, UseHeadingConfig {

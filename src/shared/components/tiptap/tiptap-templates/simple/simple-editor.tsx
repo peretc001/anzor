@@ -35,7 +35,7 @@ import '@/shared/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scs
 import '@/shared/components/tiptap/tiptap-templates/simple/simple-editor.scss'
 
 // --- Hooks ---
-import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
+import { useIsBreakpoint } from '@/shared/components/tiptap/hooks/use-is-breakpoint'
 import { Highlight } from '@tiptap/extension-highlight'
 import { Image } from '@tiptap/extension-image'
 import { TaskItem, TaskList } from '@tiptap/extension-list'

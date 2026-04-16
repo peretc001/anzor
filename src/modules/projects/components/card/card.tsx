@@ -27,7 +27,7 @@ const Card = ({ project }: CardProps) => (
     >
       <div className={styles.left}>
         <div className={styles.iconWrap}>
-          {project.icon === 'building' ? (
+          {project.type === 'building' ? (
             <BuildingOffice2Icon className={styles.icon} />
           ) : (
             <HomeIcon className={styles.icon} />

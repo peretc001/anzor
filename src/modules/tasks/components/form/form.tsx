@@ -2,6 +2,8 @@ import React, { FC } from 'react'
 import { Button, DatePicker, Form, Input, Select } from 'antd'
 import type { Dayjs } from 'dayjs'
 
+import { EXECUTOR_TYPES } from '@/constants'
+
 import styles from './form.module.scss'
 
 type ProblemFormValues = {
@@ -17,12 +19,6 @@ type IFormProps = {
   readonly onCancel: () => void
   readonly onSubmit?: (values: ProblemFormValues) => Promise<void> | void
 }
-
-const EXECUTOR_OPTIONS = [
-  { label: 'Исполнитель', value: 'Исполнитель' },
-  { label: 'Подрядчик', value: 'Подрядчик' },
-  { label: 'Дизайнер', value: 'Дизайнер' }
-]
 
 const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) => {
   const [form] = Form.useForm<ProblemFormValues>()
@@ -56,7 +52,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
       </Form.Item>
 
       <Form.Item<ProblemFormValues> label="Ответственный" name="executor">
-        <Select options={EXECUTOR_OPTIONS} placeholder="Выберите ответственного" />
+        <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
       </Form.Item>
 
       <Form.Item<ProblemFormValues> label="Ожидаемая дата выполнения" name="control">

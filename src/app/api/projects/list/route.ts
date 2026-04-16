@@ -37,31 +37,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
   }
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null)
+  const project = body?.project
 
-  const row = {}
-  //   styles: toJsonArray(body.styles),
-  //   avatar: body.avatar ?? null,
-  //   city: toOptionalText(body.city),
-  //   city_code: toOptionalText(body.city_code),
-  //   description: toOptionalText(body.description),
-  //   experience: toOptionalText(body.experience),
-  //   first_name: toOptionalText(body.first_name),
-  //   inspected: body.inspected ?? false,
-  //   last_name: toOptionalText(body.last_name),
-  //   middle_name: toOptionalText(body.middle_name),
-  //   owner_id: user.id,
-  //   segments: toJsonArray(body.segments),
-  //   spaces: toJsonArray(body.spaces),
-  //   status: toOptionalText(body.status),
-  //   types: toJsonArray(body.types)
-  // }
-
-  const { error } = await supabase.from('projects').upsert(row, { onConflict: 'owner_id' })
-
-  if (error) {
-    return NextResponse.json({ error: error.message, status: false }, { status: 500 })
+  if (!project?.name || (project?.type !== 'building' && project?.type !== 'home')) {
+    return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
   }
 
-  return NextResponse.json({ status: true })
+  const { data: insertedProject, error } = await supabase
+    .from('projects')
+    .insert({
+      id: Date.now(),
+      active: Boolean(project.active),
+      address: project.address ?? null,
+      contractor: project.contractor ?? null,
+      customer: project.customer ?? null,
+      name: project.name,
+      owner_id: user.id,
+      type: project.type
+    })
+    .select('*')
+    .single()
+
+  if (error) {
+    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ data: insertedProject })
 }

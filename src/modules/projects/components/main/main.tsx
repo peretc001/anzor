@@ -1,11 +1,14 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { Button, Input } from 'antd'
+import { Button, Input, message } from 'antd'
+import { useQueryClient } from '@tanstack/react-query'
 
 import type { ProjectCardModel } from '@/shared/store/projects'
 
+import { saveProjectApi } from '@/modules/projects/api/saveProjectApi'
 import Card from '@/modules/projects/components/card/card'
+import FormModal, { ProjectFormValues } from '@/modules/projects/components/form/form'
 
 import styles from './main.module.scss'
 
@@ -19,7 +22,10 @@ type MainProps = {
 }
 
 const Main = ({ projects }: MainProps) => {
+  const queryClient = useQueryClient()
   const [query, setQuery] = useState('')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
   const normalizedQuery = query.trim().toLowerCase()
   const filteredProjects = useMemo(
     () =>
@@ -44,10 +50,30 @@ const Main = ({ projects }: MainProps) => {
     [filteredProjects]
   )
 
+  const handleOpenCreateModal = () => setIsCreateModalOpen(true)
+  const handleCloseCreateModal = () => setIsCreateModalOpen(false)
+
+  const handleCreateProject = async (values: ProjectFormValues) => {
+    setIsCreating(true)
+
+    const savedProject = await saveProjectApi(values)
+
+    setIsCreating(false)
+
+    if (!savedProject) {
+      message.error('Не удалось создать объект')
+      return
+    }
+
+    message.success('Объект создан')
+    setIsCreateModalOpen(false)
+    await queryClient.invalidateQueries({ queryKey: ['projects'] })
+  }
+
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <Button className={styles.addButton} type="primary">
+        <Button className={styles.addButton} type="primary" onClick={handleOpenCreateModal}>
           {UI_ADD_PROJECT}
         </Button>
         <Input
@@ -59,6 +85,13 @@ const Main = ({ projects }: MainProps) => {
           }}
         />
       </div>
+
+      <FormModal
+        open={isCreateModalOpen}
+        submitting={isCreating}
+        onCancel={handleCloseCreateModal}
+        onSubmit={handleCreateProject}
+      />
 
       <div className={styles.container}>
         {activeProjects.length > 0 ? (

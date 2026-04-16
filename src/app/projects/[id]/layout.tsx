@@ -4,8 +4,8 @@ import type { ReactNode } from 'react'
 
 import { getGalleryApi } from '@/modules/gallery/api/getGalleryApi'
 import { getProjectApi } from '@/modules/project/api/getProjectApi'
-import ProjectHeader from '@/modules/projectHeader/projectHeader'
-import ProjectMenu from '@/modules/projectMenu/projectMenu'
+import ProjectHeader from '@/shared/components/projectHeader/projectHeader'
+import ProjectMenu from '@/shared/components/projectMenu/projectMenu'
 import { getTasksApi } from '@/modules/tasks/api/getTasksApi'
 
 type Props = {

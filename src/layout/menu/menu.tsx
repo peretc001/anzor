@@ -36,17 +36,17 @@ const MAIN_MENU_ITEMS = [
     icon: <WrenchScrewdriverIcon className={styles.icon} />,
     label: 'Исполнители',
     link: paths.contractors
-  },
-  {
-    badge: 2,
-    icon: <ChatBubbleBottomCenterIcon className={styles.icon} />,
-    label: 'Чат',
-    link: paths.chat
   }
+  // {
+  //   badge: 2,
+  //   icon: <ChatBubbleBottomCenterIcon className={styles.icon} />,
+  //   label: 'Чат',
+  //   link: paths.chat
+  // }
 ] as const
 
 const BOTTOM_MENU_ITEMS = [
-  { badge: 1, icon: <BellIcon className={styles.icon} />, label: 'Уведомления' }
+  { badge: 0, icon: <BellIcon className={styles.icon} />, label: 'Уведомления' }
 ] as const
 
 const Menu = () => {

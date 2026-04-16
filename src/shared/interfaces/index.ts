@@ -20,3 +20,18 @@ export interface IGallery {
   month: string
   url: string
 }
+
+export interface IProblem {
+  id: number
+  title: string
+  description?: string | null
+  executor?: string | null
+  photos?: string[] | null
+  control?: string | null
+  /** Количество комментариев (если появится в БД) */
+  comments_count?: number | null
+  /** open — открыто, resolved — исправлено */
+  status?: 'open' | 'resolved' | null
+  owner_id?: string
+  created_at?: string
+}

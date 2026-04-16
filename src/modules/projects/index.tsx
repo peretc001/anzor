@@ -15,7 +15,7 @@ const Projects = () => {
     queryKey: ['projects']
   })
 
-  return isLoading ? <Loader isFull /> : <Main projects={data} />
+  return isLoading ? <Loader isFull /> : <Main projects={data || []} />
 }
 
 export default Projects

@@ -43,7 +43,12 @@
   "projects": {
     "header": {
       "all": "Все объекты",
-      "edit": "Редактировать"
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "deleteConfirmTitle": "Удалить объект?",
+      "deleteConfirmDescription": "Действие нельзя отменить",
+      "deleteConfirmCancel": "Отмена",
+      "deleteFailed": "Не удалось удалить объект"
     },
     "form": {
       "description": {

@@ -37,3 +37,36 @@ export async function GET(_request: Request, context: RouteContext) {
 
   return NextResponse.json({ data })
 }
+
+export async function DELETE(_request: Request, context: RouteContext) {
+  const { id } = await context.params
+  const projectId = Number(id)
+
+  if (!Number.isInteger(projectId) || projectId <= 0) {
+    return NextResponse.json({ error: 'Invalid project id', ok: false }, { status: 400 })
+  }
+
+  const user = await getCurrentUser()
+
+  if (!user?.id) {
+    return NextResponse.json({ error: 'Unauthorized', ok: false }, { status: 401 })
+  }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', projectId)
+    .eq('owner_id', user.id)
+    .select('id')
+
+  if (error) {
+    return NextResponse.json({ error: error.message, ok: false }, { status: 500 })
+  }
+
+  if (!data?.length) {
+    return NextResponse.json({ error: 'Project not found', ok: false }, { status: 404 })
+  }
+
+  return NextResponse.json({ ok: true })
+}

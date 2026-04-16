@@ -158,9 +158,9 @@ const Main: FC<IMainProps> = ({ project }) => {
         <Link
           className={cns(
             styles.tab,
-            pathname === paths.projects + '/' + project.id + '/problems' && styles.tabActive
+            pathname === paths.projects + '/' + project.id + '/tasks' && styles.tabActive
           )}
-          href={paths.projects + '/' + project.id + '/problems'}
+          href={paths.projects + '/' + project.id + '/tasks'}
         >
           {TAB_PROBLEMS}
           <span className={styles.tabBadge}>{journals.length}</span>

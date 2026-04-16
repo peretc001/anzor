@@ -5,11 +5,11 @@ import type { Dayjs } from 'dayjs'
 import styles from './form.module.scss'
 
 type ProblemFormValues = {
-  title: string
+  control?: Dayjs
   description?: string
   executor?: string
-  control?: Dayjs
   photos?: string[]
+  title: string
 }
 
 type IFormProps = {
@@ -41,9 +41,9 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
       onFinish={handleFinish}
     >
       <Form.Item<ProblemFormValues>
-        label="Заголовок нарушения"
+        label="Заголовок"
         name="title"
-        rules={[{ message: 'Введите заголовок нарушения', required: true }]}
+        rules={[{ message: 'Введите заголовок', required: true }]}
       >
         <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
       </Form.Item>
@@ -51,7 +51,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
       <Form.Item<ProblemFormValues> label="Описание" name="description">
         <Input.TextArea
           autoSize={{ maxRows: 5, minRows: 3 }}
-          placeholder="Опишите проблему и что нужно исправить"
+          placeholder="Опишите задачу и что нужно исправить"
         />
       </Form.Item>
 
@@ -59,7 +59,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <Select options={EXECUTOR_OPTIONS} placeholder="Выберите ответственного" />
       </Form.Item>
 
-      <Form.Item<ProblemFormValues> label="Ожидаемая дата исправления" name="control">
+      <Form.Item<ProblemFormValues> label="Ожидаемая дата выполнения" name="control">
         <DatePicker className={styles.fullWidth} format="DD.MM.YYYY" />
       </Form.Item>
 

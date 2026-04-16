@@ -5,33 +5,33 @@ import { Button, message, Modal } from 'antd'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { IProblem } from '@/shared/interfaces'
+import { ITask } from '@/shared/interfaces'
 
-import { saveProblemApi } from '@/modules/problems/api/saveProblemApi'
-import Card from '@/modules/problems/components/card/card'
-import type { ProblemFormValues } from '@/modules/problems/components/form/form'
-import Form from '@/modules/problems/components/form/form'
+import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
+import Card from '@/modules/tasks/components/card/card'
+import type { ProblemFormValues } from '@/modules/tasks/components/form/form'
+import Form from '@/modules/tasks/components/form/form'
 
 import styles from './main.module.scss'
 
 type IMainProps = {
-  readonly problems: IProblem[]
+  readonly tasks: ITask[]
 }
 
-const Main: FC<IMainProps> = ({ problems }) => {
+const Main: FC<IMainProps> = ({ tasks }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryClient = useQueryClient()
 
   const { isPending, mutateAsync } = useMutation({
     mutationFn: async (payload: IProblem) => {
-      const saved = await saveProblemApi(payload)
+      const saved = await saveTaskApi(payload)
       if (!saved) {
-        throw new Error('Не удалось сохранить нарушение')
+        throw new Error('Не удалось сохранить задачу')
       }
       return saved
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problems'] })
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
       handleCloseModal()
     }
   })
@@ -48,9 +48,9 @@ const Main: FC<IMainProps> = ({ problems }) => {
         photos: values.photos?.length ? values.photos : null,
         title: values.title
       })
-      message.success('Нарушение добавлено')
+      message.success('Задача добавлена')
     } catch {
-      message.error('Не удалось сохранить нарушение')
+      message.error('Не удалось сохранить задачу')
     }
   }
 
@@ -58,14 +58,14 @@ const Main: FC<IMainProps> = ({ problems }) => {
     <div className={styles.root}>
       <div className={styles.header}>
         <Button type="primary" onClick={handleOpenModal}>
-          Добавить нарушение
+          Добавить задачу
         </Button>
       </div>
 
-      {problems.length > 0 && (
+      {tasks.length > 0 && (
         <ul className={styles.list}>
-          {problems.map(problem => (
-            <Card key={problem.id} problem={problem} />
+          {tasks.map(task => (
+            <Card key={task.id} task={task} />
           ))}
         </ul>
       )}
@@ -74,7 +74,7 @@ const Main: FC<IMainProps> = ({ problems }) => {
         destroyOnHidden
         footer={null}
         open={isModalOpen}
-        title="Добавить нарушение"
+        title="Добавить задачу"
         onCancel={handleCloseModal}
       >
         <Form submitting={isPending} onCancel={handleCloseModal} onSubmit={handleSubmit} />

@@ -12,7 +12,7 @@ export async function GET() {
 
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('problems')
+    .from('tasks')
     .select('*')
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
@@ -32,23 +32,22 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null)
-  const problem = body?.problem
-
-  if (!problem?.title || typeof problem.title !== 'string') {
-    return NextResponse.json({ data: null, error: 'Invalid problem payload' }, { status: 400 })
+  const task = body?.task
+  if (!task?.title || typeof task.title !== 'string') {
+    return NextResponse.json({ data: null, error: 'Invalid task payload' }, { status: 400 })
   }
 
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('problems')
+    .from('tasks')
     .insert({
-      id: Number(problem.id) || Date.now(),
-      title: problem.title.trim(),
-      description: problem.description ?? null,
-      executor: problem.executor ?? null,
-      photos: Array.isArray(problem.photos) ? problem.photos : null,
-      control: problem.control ?? null,
-      owner_id: user.id
+      id: Number(task.id) || Date.now(),
+      control: task.control ?? null,
+      description: task.description ?? null,
+      executor: task.executor ?? null,
+      owner_id: user.id,
+      photos: Array.isArray(task.photos) ? task.photos : null,
+      title: task.title.trim()
     })
     .select('*')
     .single()

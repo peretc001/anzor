@@ -21,17 +21,17 @@ export interface IGallery {
   url: string
 }
 
-export interface IProblem {
+export interface ITask {
   id: number
-  title: string
-  description?: string | null
-  executor?: string | null
-  photos?: string[] | null
-  control?: string | null
   /** Количество комментариев (если появится в БД) */
-  comments_count?: number | null
+  comments_count?: null | number
+  control?: null | string
+  created_at?: string
+  description?: null | string
+  executor?: null | string
+  owner_id?: string
+  photos?: null | string[]
   /** open — открыто, resolved — исправлено */
   status?: 'open' | 'resolved' | null
-  owner_id?: string
-  created_at?: string
+  title: string
 }

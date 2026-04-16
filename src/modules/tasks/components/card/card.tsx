@@ -1,7 +1,7 @@
 import React from 'react'
 import cns from 'classnames'
-import Link from 'next/link'
 import dayjs from 'dayjs'
+import Link from 'next/link'
 
 import {
   ArrowLongRightIcon,
@@ -11,8 +11,9 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 
+import type { ITask } from '@/shared/interfaces'
+
 import { paths } from '@/constants'
-import type { IProblem } from '@/shared/interfaces'
 
 import styles from './card.module.scss'
 
@@ -31,7 +32,7 @@ const MONTHS_SHORT = [
   'дек.'
 ] as const
 
-const formatDeadline = (iso?: string | null) => {
+const formatDeadline = (iso?: null | string) => {
   if (!iso) return null
   const d = dayjs(iso)
   if (!d.isValid()) return null
@@ -39,34 +40,31 @@ const formatDeadline = (iso?: string | null) => {
 }
 
 type CardProps = {
-  readonly problem: IProblem
+  readonly task: ITask
 }
 
-const Card = ({ problem }: CardProps) => {
-  const deadline = formatDeadline(problem.control)
-  const comments = problem.comments_count ?? 0
-  const isOpen = problem.status !== 'resolved'
+const Card = ({ task }: CardProps) => {
+  const deadline = formatDeadline(task.control)
+  const comments = task.comments_count ?? 0
+  const isOpen = task.status !== 'resolved'
 
   return (
     <li className={styles.root}>
       <div className={styles.left}>
-        <span
-          className={cns(styles.statusDot, !isOpen && styles.statusDotResolved)}
-          aria-hidden
-        />
+        <span className={cns(styles.statusDot, !isOpen && styles.statusDotResolved)} aria-hidden />
         <div className={styles.content}>
           <Link
             className={styles.titleLink}
-            href={`${paths.projects}/problem?id=${encodeURIComponent(String(problem.id))}`}
+            href={`${paths.projects}/task?id=${encodeURIComponent(String(task.id))}`}
           >
-            <h3 className={styles.title}>{problem.title}</h3>
+            <h3 className={styles.title}>{task.title}</h3>
           </Link>
-          {(problem.executor || deadline) && (
+          {task.executor || deadline ? (
             <div className={styles.meta}>
-              {problem.executor ? (
+              {task.executor ? (
                 <>
                   <ArrowLongRightIcon className={styles.metaArrow} aria-hidden />
-                  <span className={styles.executor}>{problem.executor}</span>
+                  <span className={styles.executor}>{task.executor}</span>
                 </>
               ) : null}
               {deadline ? (
@@ -76,7 +74,7 @@ const Card = ({ problem }: CardProps) => {
                 </span>
               ) : null}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -86,7 +84,7 @@ const Card = ({ problem }: CardProps) => {
           <span className={styles.commentCount}>{comments}</span>
         </span>
 
-        <button className={styles.iconBtn} type="button" aria-label="Развернуть">
+        <button className={styles.iconBtn} aria-label="Развернуть" type="button">
           <ChevronDownIcon className={styles.chevron} aria-hidden />
         </button>
 

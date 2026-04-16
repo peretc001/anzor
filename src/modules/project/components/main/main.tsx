@@ -1,7 +1,7 @@
 'use client'
 
-import React, { FC } from 'react'
-import { Button } from 'antd'
+import React, { FC, useState } from 'react'
+import { Button, message } from 'antd'
 import cns from 'classnames'
 import dayjs from 'dayjs'
 import Link from 'next/link'
@@ -16,6 +16,8 @@ import {
 import { IProject } from '@/shared/interfaces'
 import type { ProjectJournal } from '@/shared/store/projects'
 
+import { saveProjectApi } from '../../api/saveProjectApi'
+import FormModal, { ProjectFormValues } from '../form/form'
 import styles from './main.module.scss'
 
 dayjs.locale('ru')
@@ -54,12 +56,35 @@ type IMainProps = {
 }
 
 const Main: FC<IMainProps> = ({ project }) => {
+  const [projectData, setProjectData] = useState<IProject>(project)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const journals: ProjectJournal[] = []
-  const icon = project.type
+  const icon = projectData.type
   const photoReportsCount = 0
 
   const openedCount = journals.reduce((acc, journal) => acc + journal.openIssues, 0)
   const resolvedCount = journals.reduce((acc, journal) => acc + journal.resolvedIssues, 0)
+
+  const handleOpenEditModal = () => setIsEditModalOpen(true)
+  const handleCloseEditModal = () => setIsEditModalOpen(false)
+
+  const handleSubmitProject = async (values: ProjectFormValues) => {
+    setIsSaving(true)
+
+    const savedProject = await saveProjectApi({ ...projectData, ...values })
+
+    setIsSaving(false)
+
+    if (!savedProject) {
+      message.error('Не удалось сохранить изменения')
+      return
+    }
+
+    setProjectData(savedProject)
+    setIsEditModalOpen(false)
+    message.success('Изменения сохранены')
+  }
 
   return (
     <div className={styles.root}>
@@ -78,14 +103,14 @@ const Main: FC<IMainProps> = ({ project }) => {
             )}
           </div>
           <div className={styles.titleWrap}>
-            <h1 className={styles.title}>{project.name}</h1>
-            <p className={styles.address}>{project.address}</p>
+            <h1 className={styles.title}>{projectData.name}</h1>
+            <p className={styles.address}>{projectData.address}</p>
             <div className={styles.parties}>
-              {project.customer ? (
-                <span className={styles.customer}>{project.customer}</span>
+              {projectData.customer ? (
+                <span className={styles.customer}>{projectData.customer}</span>
               ) : null}
-              {project.contractor ? (
-                <span className={styles.contractor}>{project.contractor}</span>
+              {projectData.contractor ? (
+                <span className={styles.contractor}>{projectData.contractor}</span>
               ) : null}
             </div>
             <div className={styles.meta}>
@@ -100,10 +125,20 @@ const Main: FC<IMainProps> = ({ project }) => {
         <Button
           className={styles.editButton}
           icon={<PencilSquareIcon className={styles.editIcon} />}
+          onClick={handleOpenEditModal}
+          loading={isSaving}
         >
           {EDIT_BUTTON_LABEL}
         </Button>
       </div>
+
+      <FormModal
+        open={isEditModalOpen}
+        project={projectData}
+        onCancel={handleCloseEditModal}
+        onSubmit={handleSubmitProject}
+        submitting={isSaving}
+      />
 
       <div className={styles.tabs}>
         <button className={cns(styles.tab, styles.tabActive)} type="button">

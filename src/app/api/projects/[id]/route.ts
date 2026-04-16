@@ -37,3 +37,51 @@ export async function GET(_request: Request, context: RouteContext) {
 
   return NextResponse.json({ data })
 }
+
+export async function POST(request: Request, context: RouteContext) {
+  const { id } = await context.params
+  const projectId = Number(id)
+
+  if (!Number.isInteger(projectId) || projectId <= 0) {
+    return NextResponse.json({ data: null, error: 'Invalid project id' }, { status: 400 })
+  }
+
+  const user = await getCurrentUser()
+
+  if (!user?.id) {
+    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const body = await request.json().catch(() => null)
+  const project = body?.project
+
+  if (!project?.name || (project?.type !== 'building' && project?.type !== 'home')) {
+    return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
+  }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('projects')
+    .update({
+      active: Boolean(project.active),
+      address: project.address ?? null,
+      contractor: project.contractor ?? null,
+      customer: project.customer ?? null,
+      name: project.name,
+      type: project.type
+    })
+    .eq('id', projectId)
+    .eq('owner_id', user.id)
+    .select('*')
+    .maybeSingle()
+
+  if (error) {
+    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
+  }
+
+  if (!data) {
+    return NextResponse.json({ data: null, error: 'Project not found' }, { status: 404 })
+  }
+
+  return NextResponse.json({ data })
+}

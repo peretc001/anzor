@@ -1,12 +1,19 @@
 import React, { FC } from 'react'
 import { Button, DatePicker, Form, Input, Select, Upload } from 'antd'
+import datePickerRu from 'antd/es/date-picker/locale/ru_RU'
 import type { UploadFile } from 'antd/es/upload/interface'
-import type { Dayjs } from 'dayjs'
-import { UploadOutlined } from '@ant-design/icons'
+import dayjs, { type Dayjs } from 'dayjs'
 
 import { EXECUTOR_TYPES } from '@/constants'
 
 import styles from './form.module.scss'
+
+import 'dayjs/locale/ru'
+import { UploadOutlined } from '@ant-design/icons'
+
+dayjs.locale('ru')
+
+const MAX_TASK_PHOTOS = 10
 
 type TaskFormValues = {
   control?: Dayjs
@@ -21,6 +28,8 @@ type IFormProps = {
   readonly onCancel: () => void
   readonly onSubmit?: (values: TaskFormValues) => Promise<void> | void
 }
+
+const disablePastDates = (current: Dayjs) => current.isBefore(dayjs(), 'day')
 
 const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) => {
   const [form] = Form.useForm<TaskFormValues>()
@@ -57,30 +66,43 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
       </Form.Item>
 
-      <Form.Item<TaskFormValues> label="Ожидаемая дата выполнения" name="control">
-        <DatePicker className={styles.fullWidth} format="DD.MM.YYYY" />
+      <Form.Item<TaskFormValues>
+        label="Ожидаемая дата выполнения"
+        name="control"
+        rules={[
+          {
+            validator: (_: unknown, value: Dayjs | undefined) => {
+              if (!value) return Promise.resolve()
+              return value.isBefore(dayjs(), 'day')
+                ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
+                : Promise.resolve()
+            }
+          }
+        ]}
+      >
+        <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
       </Form.Item>
 
       <Form.Item<TaskFormValues>
-        extra="Можно выбрать до 20 изображений"
+        extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}
+        getValueFromEvent={event => event?.fileList}
         label="Фото"
         name="photos"
         rules={[
           {
             validator: (_, value: UploadFile[] | undefined) => {
-              if (!value || value.length <= 20) return Promise.resolve()
-              return Promise.reject(new Error('Максимум 20 фотографий'))
+              if (!value || value.length <= MAX_TASK_PHOTOS) return Promise.resolve()
+              return Promise.reject(new Error(`Максимум ${MAX_TASK_PHOTOS} фотографий`))
             }
           }
         ]}
         valuePropName="fileList"
-        getValueFromEvent={event => event?.fileList}
       >
         <Upload
           accept="image/jpeg,image/png,image/webp,image/gif"
           beforeUpload={() => false}
           listType="picture"
-          maxCount={20}
+          maxCount={MAX_TASK_PHOTOS}
           multiple
         >
           <Button icon={<UploadOutlined />}>Выбрать фото</Button>

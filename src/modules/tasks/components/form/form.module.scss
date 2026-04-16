@@ -1,13 +1,25 @@
+@use "@/styles/typography";
+
 .root {
-  margin-top: 20px;
-}
-
-.actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
 
-.fullWidth {
-  width: 100%;
+  :global(.ant-form-item-label > label) {
+    @include typography.text-sm;
+    color: var(--gray-400);
+  }
+
+  :global(.ant-form-item-extra) {
+    @include typography.text-xs;
+    color: var(--gray-400);
+    margin-top: 8px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
 }

@@ -34,9 +34,9 @@ const META_RESOLVED_LABEL = 'устранено'
 const OPEN_SHORT_LABEL = 'откр.'
 const EDIT_BUTTON_LABEL = 'Редактировать'
 const TAB_JOURNALS = 'Журналы'
-const TAB_PROBLEMS = 'Нарушения'
+const TAB_TASKS = 'Задачи'
 const TAB_DOCS = 'Документы'
-const TAB_PHOTO = 'Фотоотчёт'
+const TAB_GALLERY = 'Фотогалерея'
 const TAB_PARTICIPANTS = 'Участники'
 
 const statusMap = {
@@ -55,17 +55,18 @@ function pluralizeJournals(count: number): string {
 }
 
 type IMainProps = {
+  readonly galleryPhotosCount?: number
   readonly project: IProject
+  readonly tasksCount?: number
 }
 
-const Main: FC<IMainProps> = ({ project }) => {
+const Main: FC<IMainProps> = ({ galleryPhotosCount = 0, project, tasksCount = 0 }) => {
   const pathname = usePathname()
   const [projectData, setProjectData] = useState<IProject>(project)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const journals: ProjectJournal[] = []
   const icon = projectData.type
-  const photoReportsCount = 0
 
   const openedCount = journals.reduce((acc, journal) => acc + journal.openIssues, 0)
   const resolvedCount = journals.reduce((acc, journal) => acc + journal.resolvedIssues, 0)
@@ -162,8 +163,8 @@ const Main: FC<IMainProps> = ({ project }) => {
           )}
           href={paths.projects + '/' + project.id + '/tasks'}
         >
-          {TAB_PROBLEMS}
-          <span className={styles.tabBadge}>{journals.length}</span>
+          {TAB_TASKS}
+          <span className={styles.tabBadge}>{tasksCount}</span>
         </Link>
         <Link
           className={cns(
@@ -172,8 +173,8 @@ const Main: FC<IMainProps> = ({ project }) => {
           )}
           href={paths.projects + '/' + project.id + '/gallery'}
         >
-          {TAB_PHOTO}
-          <span className={styles.tabBadge}>{photoReportsCount}</span>
+          {TAB_GALLERY}
+          <span className={styles.tabBadge}>{galleryPhotosCount}</span>
         </Link>
         <Link
           className={cns(

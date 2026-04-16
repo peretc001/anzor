@@ -9,8 +9,13 @@ import { paths } from '@/constants'
 
 import styles from './card.module.scss'
 
+interface IProjectData extends IProject {
+  photos_count: number
+  tasks_count: number
+}
+
 interface ICardProps {
-  readonly project: IProject
+  readonly project: IProjectData
 }
 
 const Card: FC<ICardProps> = ({ project }) => (
@@ -19,7 +24,7 @@ const Card: FC<ICardProps> = ({ project }) => (
       className={cns(styles.card, !project.active && styles.archive)}
       href={paths.projects + '/' + project.id}
     >
-      <ProjectInfo project={project} />
+      <ProjectInfo photos={project.photos_count} project={project} tasks={project.tasks_count} />
     </Link>
   </div>
 )

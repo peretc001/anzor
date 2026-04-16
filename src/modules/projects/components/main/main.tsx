@@ -15,8 +15,13 @@ const UI_SEARCH_PLACEHOLDER = 'Поиск по названию и адресу'
 const UI_SECTION_ACTIVE = 'Объекты'
 const UI_SECTION_ARCHIVE = 'Завершенные'
 
+interface IProjectData extends IProject {
+  photos_count: number
+  tasks_count: number
+}
+
 type MainProps = {
-  readonly projects: IProject[]
+  readonly projects: IProjectData[]
 }
 
 const Main = ({ projects }: MainProps) => {

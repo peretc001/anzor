@@ -12,7 +12,9 @@ export interface IProject {
   contractor?: string
   customer?: string
   name: string
+  photos_count?: number
   type: 'flat' | 'house'
+  tasks_count?: number
 }
 
 export interface IGallery {

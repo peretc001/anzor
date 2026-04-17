@@ -2,6 +2,7 @@
 
 import React, { FC, useState } from 'react'
 import { Button, message, Modal } from 'antd'
+import { useRouter } from 'next/navigation'
 
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -19,7 +20,10 @@ type IMainProps = {
   readonly projectId: number
 }
 
+const GALLERY_UPLOAD_BTN = 'Загрузить фото'
+
 const Main: FC<IMainProps> = ({ gallery, projectId }) => {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [deletingId, setDeletingId] = useState<null | number>(null)
@@ -32,6 +36,7 @@ const Main: FC<IMainProps> = ({ gallery, projectId }) => {
       await deleteGalleryApi(id)
       await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
       await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
+      router.refresh()
       message.success('Фото удалено')
     } catch {
       message.error('Не удалось удалить фото')
@@ -44,7 +49,7 @@ const Main: FC<IMainProps> = ({ gallery, projectId }) => {
     <div className={styles.root}>
       <div className={styles.header}>
         <Button type="primary" onClick={handleOpenUploadModal}>
-          Загрузить фото
+          {GALLERY_UPLOAD_BTN}
         </Button>
       </div>
 

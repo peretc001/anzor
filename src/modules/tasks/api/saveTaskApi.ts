@@ -2,7 +2,7 @@ import { ITask } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-export const saveTaskApi = async (task: ITask) => {
+export const saveTaskApi = async (task: Omit<ITask, 'id'> & { id?: number }) => {
   try {
     const response = await serverApi.post('projects/tasks/', { task })
 

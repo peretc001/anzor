@@ -17,6 +17,15 @@
     margin-top: 8px;
   }
 
+  .types {
+    display: flex;
+    gap: 16px;
+
+    :global(.ant-form-item) {
+      flex: 1 1 50%;
+    }
+  }
+
   .editor :global(.simple-editor-content) {
     min-height: 100px;
   }
@@ -26,6 +35,10 @@
     font-size: 10px;
     text-align: right;
     margin-top: -8px;
+  }
+
+  .executor {
+    max-width: 200px;
   }
 
   .date :global(.ant-picker) {

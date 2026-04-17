@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { Button, Form, message, Upload, UploadFile, UploadProps } from 'antd'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -15,12 +16,13 @@ import styles from './form.module.scss'
 import { UploadOutlined } from '@ant-design/icons'
 
 interface IGalleryAdd {
-  readonly onCancel: () => void
   readonly projectId: number
+  readonly onCancel: () => void
 }
 
-const Add: FC<IGalleryAdd> = ({ onCancel, projectId }) => {
+const Add: FC<IGalleryAdd> = ({ projectId, onCancel }) => {
   const t = useTranslations('account')
+  const router = useRouter()
 
   const queryClient = useQueryClient()
 
@@ -34,9 +36,10 @@ const Add: FC<IGalleryAdd> = ({ onCancel, projectId }) => {
   const { isLoading: isUploadLoading, mutate: save } = useMutation({
     mutationFn: (params: { file: File }) => addGalleryApi({ ...params, projectId }),
     onError: () => message.error(t('gallery.upload.error')),
-    onSuccess: url => {
+    onSuccess: async url => {
       if (url) {
-        queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
+        await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
+        router.refresh()
         if (onCancel) onCancel()
       }
     }

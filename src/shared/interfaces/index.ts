@@ -13,8 +13,8 @@ export interface IProject {
   customer?: string
   name: string
   photos_count?: number
-  type: 'flat' | 'house'
   tasks_count?: number
+  type: 'flat' | 'house'
 }
 
 export interface IGallery {
@@ -26,7 +26,6 @@ export interface IGallery {
 
 export interface ITask {
   id: number
-  /** Количество комментариев (если появится в БД) */
   comments_count?: null | number
   control?: null | string
   created_at?: string
@@ -35,7 +34,7 @@ export interface ITask {
   owner_id?: string
   photos?: null | string[]
   project_id?: number
-  /** open — открыто, resolved — исправлено */
-  status?: 'open' | 'resolved' | null
+  status: string
   title: string
+  type: string
 }

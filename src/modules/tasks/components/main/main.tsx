@@ -2,6 +2,7 @@
 
 import React, { FC, useState } from 'react'
 import { Button, message, Modal } from 'antd'
+import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -9,10 +10,10 @@ import { ITask } from '@/shared/interfaces'
 
 import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
 import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
+import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 import Card from '@/modules/tasks/components/card/card'
 import type { TaskFormValues } from '@/modules/tasks/components/form/form'
 import Form from '@/modules/tasks/components/form/form'
-import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 
 import styles from './main.module.scss'
 
@@ -23,26 +24,30 @@ type IMainProps = {
 
 type CreateTaskWithPhotosResult = {
   readonly task: ITask
+  readonly taskPhotosUpdateFailed: boolean
   readonly uploadAttempted: number
   readonly uploadFailedCount: number
   readonly uploadSuccessCount: number
-  readonly taskPhotosUpdateFailed: boolean
 }
 
+const ADD_TASK_LABEL = 'Добавить задачу'
+
 const Main: FC<IMainProps> = ({ projectId, tasks }) => {
+  const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryClient = useQueryClient()
 
   const { isPending, mutateAsync } = useMutation({
     mutationFn: async (values: TaskFormValues): Promise<CreateTaskWithPhotosResult> => {
       const createdTask = await saveTaskApi({
-        id: Date.now(),
         control: values.control ? values.control.toISOString() : null,
         description: values.description?.trim() || null,
         executor: values.executor || null,
         photos: null,
         project_id: projectId,
-        title: values.title
+        status: values.status,
+        title: values.title,
+        type: values.type
       })
 
       if (!createdTask) {
@@ -57,10 +62,10 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       if (uploadFiles.length === 0) {
         return {
           task: createdTask,
+          taskPhotosUpdateFailed: false,
           uploadAttempted: 0,
           uploadFailedCount: 0,
-          uploadSuccessCount: 0,
-          taskPhotosUpdateFailed: false
+          uploadSuccessCount: 0
         }
       }
 
@@ -94,15 +99,16 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
 
       return {
         task,
+        taskPhotosUpdateFailed,
         uploadAttempted: uploadFiles.length,
         uploadFailedCount,
-        uploadSuccessCount: uploadedUrls.length,
-        taskPhotosUpdateFailed
+        uploadSuccessCount: uploadedUrls.length
       }
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
       await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
+      router.refresh()
       handleCloseModal()
     }
   })
@@ -137,14 +143,14 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
     <div className={styles.root}>
       <div className={styles.header}>
         <Button type="primary" onClick={handleOpenModal}>
-          Добавить задачу
+          {ADD_TASK_LABEL}
         </Button>
       </div>
 
       {tasks.length > 0 && (
         <ul className={styles.list}>
           {tasks.map(task => (
-            <Card key={task.id} task={task} />
+            <Card key={task.id} projectId={projectId} task={task} />
           ))}
         </ul>
       )}
@@ -153,7 +159,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
         destroyOnHidden
         footer={null}
         open={isModalOpen}
-        title="Добавить задачу"
+        title={ADD_TASK_LABEL}
         onCancel={handleCloseModal}
       >
         <Form submitting={isPending} onCancel={handleCloseModal} onSubmit={handleSubmit} />

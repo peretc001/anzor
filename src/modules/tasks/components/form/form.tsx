@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import SimpleEditor from '@/shared/components/tiptap/tiptap-templates/simple/simple-editor'
 
-import { EXECUTOR_TYPES } from '@/constants'
+import { EXECUTOR_TYPES, STATUS_TYPES, TASK_TYPES } from '@/constants'
 
 import styles from './form.module.scss'
 
@@ -22,8 +22,10 @@ type TaskFormValues = {
   control?: Dayjs
   description?: string
   executor?: string
-  photos?: UploadFile[]
+  photos: UploadFile[]
+  status: string
   title: string
+  type: string
 }
 
 type IFormProps = {
@@ -52,14 +54,32 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
     <Form
       className={styles.root}
       form={form}
-      initialValues={{ executor: 'Исполнитель', photos: [] }}
+      initialValues={{ executor: 'Исполнитель', photos: [], status: 'do', type: 'task' }}
       layout="vertical"
       onFinish={handleFinish}
     >
+      <div className={styles.types}>
+        <Form.Item<TaskFormValues>
+          label="Тип задачи"
+          name="type"
+          rules={[{ message: 'Выберите тип', required: true }]}
+        >
+          <Select options={TASK_TYPES} placeholder="Выберите тип" />
+        </Form.Item>
+
+        <Form.Item<TaskFormValues>
+          label="Статус"
+          name="status"
+          rules={[{ message: 'Выберите статус', required: true }]}
+        >
+          <Select options={STATUS_TYPES} placeholder="Выберите статус" />
+        </Form.Item>
+      </div>
+
       <Form.Item<TaskFormValues>
-        label="Заголовок"
+        label="Название"
         name="title"
-        rules={[{ message: 'Введите заголовок', required: true }]}
+        rules={[{ message: 'Введите название', required: true }]}
       >
         <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
       </Form.Item>
@@ -68,28 +88,6 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <SimpleEditor defaultContent="" onChange={handleChangeContent} />
       </Form.Item>
       <span className={styles.limit}>{t('form.description.limit')}</span>
-
-      <Form.Item<TaskFormValues> label="Ответственный" name="executor">
-        <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
-      </Form.Item>
-
-      <Form.Item<TaskFormValues>
-        className={styles.date}
-        label="Ожидаемая дата выполнения"
-        name="control"
-        rules={[
-          {
-            validator: (_: unknown, value: Dayjs | undefined) => {
-              if (!value) return Promise.resolve()
-              return value.isBefore(dayjs(), 'day')
-                ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
-                : Promise.resolve()
-            }
-          }
-        ]}
-      >
-        <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
-      </Form.Item>
 
       <Form.Item<TaskFormValues>
         extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}
@@ -115,6 +113,33 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         >
           <Button icon={<UploadOutlined />}>Выбрать фото</Button>
         </Upload>
+      </Form.Item>
+
+      <Form.Item<TaskFormValues>
+        className={styles.executor}
+        label="Ответственный"
+        name="executor"
+        rules={[{ message: 'Выберите ответственного', required: true }]}
+      >
+        <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
+      </Form.Item>
+
+      <Form.Item<TaskFormValues>
+        className={styles.date}
+        label="Ожидаемая дата выполнения"
+        name="control"
+        rules={[
+          {
+            validator: (_: unknown, value: Dayjs | undefined) => {
+              if (!value) return Promise.resolve()
+              return value.isBefore(dayjs(), 'day')
+                ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
+                : Promise.resolve()
+            }
+          }
+        ]}
+      >
+        <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
       </Form.Item>
 
       <div className={styles.actions}>

@@ -1,19 +1,21 @@
+'use client'
+
 import React from 'react'
-import cns from 'classnames'
+import { message, Popconfirm, Select } from 'antd'
 import dayjs from 'dayjs'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
-import {
-  ArrowLongRightIcon,
-  ChatBubbleLeftRightIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { ArrowLongRightIcon, ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 import type { ITask } from '@/shared/interfaces'
 
-import { paths } from '@/constants'
+import { paths, STATUS_TYPES, TASK_TYPES } from '@/constants'
+
+import { deleteTaskApi } from '@/modules/tasks/api/deleteTaskApi'
+import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 
 import styles from './card.module.scss'
 
@@ -39,19 +41,60 @@ const formatDeadline = (iso?: null | string) => {
   return `до ${d.date()} ${MONTHS_SHORT[d.month()]} ${d.year()}`
 }
 
+const STATUS_CAPTION = 'Статус'
+
 type CardProps = {
+  readonly projectId: number
   readonly task: ITask
 }
 
-const Card = ({ task }: CardProps) => {
+const Card = ({ projectId, task }: CardProps) => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const deadline = formatDeadline(task.control)
-  const comments = task.comments_count ?? 0
-  const isOpen = task.status !== 'resolved'
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: () => deleteTaskApi(task.id),
+    onSuccess: async ok => {
+      if (!ok) {
+        message.error('Не удалось удалить задачу')
+        return
+      }
+      message.success('Задача удалена')
+      await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
+      await queryClient.invalidateQueries({ queryKey: ['gallery', projectId] })
+      router.refresh()
+    }
+  })
+
+  const { isPending: isSavingStatus, mutateAsync: saveStatus } = useMutation({
+    mutationFn: (status: string) => updateTaskApi(task.id, { status }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
+    },
+    onSuccess: data => {
+      if (!data) {
+        message.error('Не удалось сохранить статус')
+      }
+    }
+  })
+
+  const handleConfirmDelete = async () => {
+    try {
+      await mutateAsync()
+    } catch {
+      message.error('Не удалось удалить задачу')
+    }
+  }
+
+  const handleStatusChange = (status: string) => {
+    void saveStatus(status)
+  }
 
   return (
     <li className={styles.root}>
       <div className={styles.left}>
-        <span className={cns(styles.statusDot, !isOpen && styles.statusDotResolved)} aria-hidden />
+        {`#${task.id}`}
         <div className={styles.content}>
           <Link
             className={styles.titleLink}
@@ -59,6 +102,7 @@ const Card = ({ task }: CardProps) => {
           >
             <h3 className={styles.title}>{task.title}</h3>
           </Link>
+
           {task.executor || deadline ? (
             <div className={styles.meta}>
               {task.executor ? (
@@ -75,6 +119,7 @@ const Card = ({ task }: CardProps) => {
               ) : null}
             </div>
           ) : null}
+
           {task.photos?.length ? (
             <div className={styles.photos}>
               {task.photos.slice(0, 4).map(photo => (
@@ -94,7 +139,7 @@ const Card = ({ task }: CardProps) => {
                 </a>
               ))}
               {task.photos.length > 4 ? (
-                <span className={styles.photoMore}>+{task.photos.length - 4}</span>
+                <span className={styles.photoMore}>{`+${task.photos.length - 4}`}</span>
               ) : null}
             </div>
           ) : null}
@@ -102,26 +147,35 @@ const Card = ({ task }: CardProps) => {
       </div>
 
       <div className={styles.right}>
-        <span className={styles.commentBadge} aria-label={`Комментариев: ${comments}`}>
-          <ChatBubbleLeftRightIcon className={styles.commentIcon} aria-hidden />
-          <span className={styles.commentCount}>{comments}</span>
-        </span>
+        <div className={styles.status}>
+          <span className={styles.caption}>{STATUS_CAPTION}</span>
+          <Select
+            className={styles.statusSelect}
+            loading={isSavingStatus}
+            options={STATUS_TYPES}
+            popupMatchSelectWidth={false}
+            value={task.status}
+            onChange={handleStatusChange}
+          />
+        </div>
 
-        <button className={styles.iconBtn} aria-label="Развернуть" type="button">
-          <ChevronDownIcon className={styles.chevron} aria-hidden />
-        </button>
-
-        {isOpen ? (
-          <>
-            <span className={styles.badgeOpen}>Открыто</span>
-            <button className={styles.fixedBtn} type="button">
-              <CheckCircleIcon className={styles.fixedIcon} aria-hidden />
-              Исправлено
-            </button>
-          </>
-        ) : (
-          <span className={styles.badgeResolved}>Исправлено</span>
-        )}
+        <Popconfirm
+          cancelText="Отмена"
+          description="Будут удалены задача и все привязанные к ней фото"
+          okButtonProps={{ danger: true, loading: isPending }}
+          okText="Удалить"
+          title="Удалить задачу?"
+          onConfirm={handleConfirmDelete}
+        >
+          <button
+            className={styles.deleteBtn}
+            aria-label="Удалить задачу"
+            disabled={isPending}
+            type="button"
+          >
+            <TrashIcon className={styles.deleteIcon} aria-hidden />
+          </button>
+        </Popconfirm>
       </div>
     </li>
   )

@@ -49,6 +49,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null)
   const task = body?.task
+
   if (!task?.title || typeof task.title !== 'string') {
     return NextResponse.json({ data: null, error: 'Invalid task payload' }, { status: 400 })
   }
@@ -70,14 +71,15 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from('tasks')
     .insert({
-      id: Number(task.id) || Date.now(),
       control: task.control ?? null,
       description: task.description ?? null,
       executor: task.executor ?? null,
       owner_id: user.id,
       photos: Array.isArray(task.photos) ? task.photos : null,
       project_id: projectId,
-      title: task.title.trim()
+      status: task.status,
+      title: task.title.trim(),
+      type: task.type
     })
     .select('*')
     .single()

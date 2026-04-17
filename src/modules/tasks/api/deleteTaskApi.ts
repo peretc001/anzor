@@ -1,0 +1,11 @@
+import serverApi from '@/lib/serverApi'
+
+export const deleteTaskApi = async (id: number) => {
+  try {
+    const response = await serverApi.delete(`projects/tasks/${id}`)
+
+    return response?.ok === true
+  } catch {
+    return false
+  }
+}

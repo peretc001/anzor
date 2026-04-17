@@ -26,6 +26,7 @@ const ProjectMenu: FC<IProjectMenu> = ({ galleryPhotosCount, projectId, tasksCou
       <Link
         className={cns(
           styles.tab,
+          pathname === paths.projects + '/' + projectId && styles.active,
           pathname === paths.projects + '/' + projectId + '/tasks' && styles.active
         )}
         href={paths.projects + '/' + projectId + '/tasks'}

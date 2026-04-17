@@ -16,3 +16,17 @@ export const EXECUTOR_TYPES = [
   { label: 'Заказчик', value: 'customer' },
   { label: 'Дизайнер', value: 'designer' },
 ]
+
+export const TASK_TYPES = [
+  { label: 'Задача', value: 'task' },
+  { label: 'Нарушение', value: 'infraction' },
+  { label: 'Вопрос', value: 'question' },
+]
+
+export const STATUS_TYPES = [
+  { label: 'К выполнению', value: 'do' },
+  { label: 'В работе', value: 'progress' },
+  { label: 'Черновик', value: 'draft' },
+  { label: 'Выполненно', value: 'completed' },
+  { label: 'Готово', value: 'done' },
+]

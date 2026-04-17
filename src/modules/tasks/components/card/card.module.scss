@@ -1,3 +1,5 @@
+@use "@/styles/typography";
+
 .root {
   display: flex;
   align-items: center;
@@ -32,6 +34,10 @@
   background: var(--status-success);
 }
 
+.statusDotInProgress {
+  background: var(--status-warning);
+}
+
 .content {
   min-width: 0;
   flex: 1;
@@ -40,10 +46,6 @@
 .titleLink {
   color: inherit;
   text-decoration: none;
-
-  &:hover .title {
-    color: var(--main-blue, #2563eb);
-  }
 }
 
 .title {
@@ -125,6 +127,24 @@
   flex-shrink: 0;
   align-items: center;
   gap: 10px;
+
+  .status {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+
+    .caption {
+      @include typography.text-xs;
+      color: var(--gray-400);
+    }
+  }
+}
+
+.statusSelect {
+  min-width: 148px;
 }
 
 .commentBadge {
@@ -170,53 +190,34 @@
   height: 18px;
 }
 
-.badgeOpen {
+.deleteBtn {
+  align-self: flex-end;
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--red-100);
-  color: var(--status-error);
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.badgeResolved {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--green-50);
-  color: var(--status-success);
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.fixedBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
+  justify-content: center;
+  padding: 4px;
   border: none;
-  border-radius: 10px;
-  background: var(--green-50);
-  color: var(--green-600);
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--gray-500, #7a7a85);
   cursor: pointer;
-  white-space: nowrap;
+  margin-bottom: 4px;
+  margin-left: 16px;
 
-  &:hover {
-    filter: brightness(0.96);
+  &:hover:not(:disabled) {
+    background: var(--gray-700);
+    color: var(--main-white);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
-.fixedIcon {
+.deleteIcon {
   width: 18px;
   height: 18px;
-  color: var(--green-600);
 }
 
 @media (max-width: 720px) {

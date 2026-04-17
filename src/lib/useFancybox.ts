@@ -14,7 +14,8 @@ export default function useFancybox(options: Partial<FancyboxOptions> = {}) {
       Fancybox.bind(root, '[data-fancybox]', options)
       return () => Fancybox.unbind(root)
     }
-  }, [root, options])
+    // options намеренно не в deps: дефолтный аргумент {} иначе новый объект каждый рендер
+  }, [root])
 
   return [setRoot]
 }

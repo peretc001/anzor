@@ -10,16 +10,19 @@ import styles from './card.module.scss'
 
 type GalleryCardProps = {
   readonly deletingId: null | number
+  readonly fancyboxGroup: string
   readonly item: Pick<IGallery, 'id' | 'task_id' | 'url'>
   readonly onDelete: (id: number) => void
 }
 
 const GalleryCard: FC<GalleryCardProps> = ({
   deletingId,
+  fancyboxGroup,
   item: { id, task_id, url },
   onDelete
 }) => {
   const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
+  const caption = task_id != null ? `Задача #${task_id}` : 'Галерея проекта'
 
   return (
     <div className={styles.root}>
@@ -46,9 +49,10 @@ const GalleryCard: FC<GalleryCardProps> = ({
       <a
         className={styles.thumbLink}
         aria-label="Открыть в полном размере"
+        data-caption={caption}
+        data-fancybox={fancyboxGroup}
         href={s3Base + url}
         rel="noreferrer"
-        target="_blank"
       >
         <Image className={styles.thumb} alt="" height={200} loading="lazy" src={url} width={200} />
       </a>

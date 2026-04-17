@@ -12,7 +12,9 @@ import { ArrowLongRightIcon, ExclamationTriangleIcon, TrashIcon } from '@heroico
 
 import type { ITask } from '@/shared/interfaces'
 
-import { paths, STATUS_TYPES, TASK_TYPES } from '@/constants'
+import useFancybox from '@/lib/useFancybox'
+
+import { paths, STATUS_TYPES } from '@/constants'
 
 import { deleteTaskApi } from '@/modules/tasks/api/deleteTaskApi'
 import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
@@ -49,9 +51,12 @@ type CardProps = {
 }
 
 const Card = ({ projectId, task }: CardProps) => {
+  const [setFancyboxRoot] = useFancybox()
   const router = useRouter()
   const queryClient = useQueryClient()
   const deadline = formatDeadline(task.control)
+  const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
+  const fancyboxGroup = `task-${task.id}`
 
   const { isPending, mutateAsync } = useMutation({
     mutationFn: () => deleteTaskApi(task.id),
@@ -93,7 +98,7 @@ const Card = ({ projectId, task }: CardProps) => {
 
   return (
     <li className={styles.root}>
-      <div className={styles.left}>
+      <div ref={setFancyboxRoot} className={styles.left}>
         {`#${task.id}`}
         <div className={styles.content}>
           <Link
@@ -126,15 +131,16 @@ const Card = ({ projectId, task }: CardProps) => {
                 <a
                   key={photo}
                   className={styles.photoLink}
-                  href={`${process.env.NEXT_PUBLIC_S3_PATH}${photo}`}
+                  data-caption={task.title}
+                  data-fancybox={fancyboxGroup}
+                  href={`${s3Base}${photo}`}
                   rel="noreferrer"
-                  target="_blank"
                 >
                   <img
                     className={styles.photoThumb}
                     alt=""
                     loading="lazy"
-                    src={`${process.env.NEXT_PUBLIC_S3_PATH}${photo}`}
+                    src={`${s3Base}${photo}`}
                   />
                 </a>
               ))}

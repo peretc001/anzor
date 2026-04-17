@@ -8,6 +8,8 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { IGallery } from '@/shared/interfaces'
 
+import useFancybox from '@/lib/useFancybox'
+
 import Card from '@/modules/gallery/components/card/card'
 
 import styles from './main.module.scss'
@@ -23,10 +25,12 @@ type IMainProps = {
 const GALLERY_UPLOAD_BTN = 'Загрузить фото'
 
 const Main: FC<IMainProps> = ({ gallery, projectId }) => {
+  const [setFancyboxRoot] = useFancybox()
   const router = useRouter()
   const queryClient = useQueryClient()
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [deletingId, setDeletingId] = useState<null | number>(null)
+  const fancyboxGroup = `gallery-${projectId}`
 
   const handleOpenUploadModal = () => setIsUploadModalOpen(true)
   const handleCloseUploadModal = () => setIsUploadModalOpen(false)
@@ -54,9 +58,15 @@ const Main: FC<IMainProps> = ({ gallery, projectId }) => {
       </div>
 
       {gallery.length > 0 ? (
-        <div className={styles.list}>
+        <div ref={setFancyboxRoot} className={styles.list}>
           {gallery.map(item => (
-            <Card key={item.id} deletingId={deletingId} item={item} onDelete={handleDeletePhoto} />
+            <Card
+              key={item.id}
+              deletingId={deletingId}
+              fancyboxGroup={fancyboxGroup}
+              item={item}
+              onDelete={handleDeletePhoto}
+            />
           ))}
         </div>
       ) : null}

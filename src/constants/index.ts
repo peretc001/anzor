@@ -29,3 +29,11 @@ export const STATUS_TYPES = [
   { label: 'Выполненно', value: 'completed' },
   { label: 'Готово', value: 'done' },
 ]
+
+export const PRIORITY_TYPES = [
+  { label: 'Наивысший', value: 'highest' },
+  { label: 'Высокий', value: 'high' },
+  { label: 'Средний', value: 'medium' },
+  { label: 'Низкий', value: 'low' },
+  { label: 'Низший', value: 'lowest' },
+]

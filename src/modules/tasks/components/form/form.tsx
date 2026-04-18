@@ -23,6 +23,7 @@ type TaskFormValues = {
   description?: string
   executor?: string
   photos: UploadFile[]
+  priority: string
   status: string
   title: string
   type: string
@@ -115,32 +116,33 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         </Upload>
       </Form.Item>
 
-      <Form.Item<TaskFormValues>
-        className={styles.executor}
-        label="Ответственный"
-        name="executor"
-        rules={[{ message: 'Выберите ответственного', required: true }]}
-      >
-        <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
-      </Form.Item>
+      <div className={styles.types}>
+        <Form.Item<TaskFormValues>
+          label="Ответственный"
+          name="executor"
+          rules={[{ message: 'Выберите ответственного', required: true }]}
+        >
+          <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
+        </Form.Item>
 
-      <Form.Item<TaskFormValues>
-        className={styles.date}
-        label="Ожидаемая дата выполнения"
-        name="control"
-        rules={[
-          {
-            validator: (_: unknown, value: Dayjs | undefined) => {
-              if (!value) return Promise.resolve()
-              return value.isBefore(dayjs(), 'day')
-                ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
-                : Promise.resolve()
+        <Form.Item<TaskFormValues>
+          className={styles.date}
+          label="Ожидаемая дата выполнения"
+          name="control"
+          rules={[
+            {
+              validator: (_: unknown, value: Dayjs | undefined) => {
+                if (!value) return Promise.resolve()
+                return value.isBefore(dayjs(), 'day')
+                  ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
+                  : Promise.resolve()
+              }
             }
-          }
-        ]}
-      >
-        <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
-      </Form.Item>
+          ]}
+        >
+          <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
+        </Form.Item>
+      </div>
 
       <div className={styles.actions}>
         <Button disabled={submitting} onClick={onCancel}>

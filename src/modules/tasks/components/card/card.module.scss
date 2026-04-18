@@ -133,19 +133,28 @@
   flex-shrink: 0;
   align-items: center;
   gap: 10px;
+}
 
-  .status {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: 6px;
-    min-width: 0;
+.taskControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
 
-    .caption {
-      @include typography.text-xs;
-      color: var(--gray-400);
-    }
+.taskControls .status,
+.taskControls .priority {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+
+  .caption {
+    @include typography.text-xs;
+    color: var(--gray-400);
   }
 }
 
@@ -154,7 +163,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-width: 140px;
   min-height: 32px;
   border-radius: var(--rounded-md);
   font: inherit;
@@ -220,6 +228,46 @@
   :global(.ant-dropdown-menu-item-selected) {
     background: transparent !important;
   }
+}
+
+.priorityGlyph {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.priorityIconOrange {
+  color: #fa8c16;
+}
+
+.priorityIconBlue {
+  color: #1677ff;
+}
+
+.priorityIconNeutral {
+  color: #fa8c16;
+}
+
+.priorityMenuItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  @include typography.text-sm;
+  color: var(--main-black);
+}
+
+.priorityTriggerMain {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  @include typography.text-sm;
+}
+
+.priorityTriggerLabel {
+  color: var(--gray-1000, #1a1a1f);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .deleteBtn {

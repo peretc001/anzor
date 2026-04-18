@@ -22,7 +22,12 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   const body = await request.json().catch(() => null)
 
-  const updates: { photos?: null | string[]; status?: string; type?: string } = {}
+  const updates: {
+    photos?: null | string[]
+    priority?: string
+    status?: string
+    type?: string
+  } = {}
 
   if (body && 'photos' in body) {
     const photos = body.photos
@@ -38,6 +43,10 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   if (body && 'type' in body) {
     updates.type = body.type
+  }
+
+  if (body && 'priority' in body) {
+    updates.priority = body.priority
   }
 
   if (Object.keys(updates).length === 0) {

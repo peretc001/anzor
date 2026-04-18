@@ -11,14 +11,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
   ArrowLongRightIcon,
+  ChevronDoubleDownIcon,
+  ChevronDoubleUpIcon,
   ChevronDownIcon,
+  ChevronUpIcon,
+  EqualsIcon,
   ExclamationTriangleIcon,
   TrashIcon
 } from '@heroicons/react/24/outline'
 
 import type { ITask } from '@/shared/interfaces'
 
-import { paths, STATUS_TYPES } from '@/constants'
+import { paths, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 
 import useFancybox from '@/lib/useFancybox'
 
@@ -26,21 +30,6 @@ import { deleteTaskApi } from '@/modules/tasks/api/deleteTaskApi'
 import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 
 import styles from './card.module.scss'
-
-const MONTHS_SHORT = [
-  'янв.',
-  'фев.',
-  'мар.',
-  'апр.',
-  'мая',
-  'июн.',
-  'июл.',
-  'авг.',
-  'сен.',
-  'окт.',
-  'ноя.',
-  'дек.'
-] as const
 
 const formatDeadline = (date?: null | string) => {
   if (!date) return null
@@ -51,6 +40,23 @@ const formatDeadline = (date?: null | string) => {
 type CardProps = {
   readonly projectId: number
   readonly task: ITask
+}
+
+const priorityIconClass = (value: string) =>
+  cns(styles.priorityGlyph, {
+    [styles.priorityIconBlue]: value === 'low' || value === 'lowest',
+    [styles.priorityIconNeutral]: value === 'medium',
+    [styles.priorityIconOrange]: value === 'highest' || value === 'high'
+  })
+
+const PriorityGlyph = ({ value }: { readonly value: string }) => {
+  const cls = priorityIconClass(value)
+  if (value === 'highest') return <ChevronDoubleUpIcon className={cls} aria-hidden />
+  if (value === 'high') return <ChevronUpIcon className={cls} aria-hidden />
+  if (value === 'medium') return <EqualsIcon className={cls} aria-hidden />
+  if (value === 'low') return <ChevronDownIcon className={cls} aria-hidden />
+  if (value === 'lowest') return <ChevronDoubleDownIcon className={cls} aria-hidden />
+  return <EqualsIcon className={priorityIconClass('medium')} aria-hidden />
 }
 
 const Card = ({ projectId, task }: CardProps) => {
@@ -87,6 +93,18 @@ const Card = ({ projectId, task }: CardProps) => {
     }
   })
 
+  const { isPending: isSavingPriority, mutateAsync: savePriority } = useMutation({
+    mutationFn: (priority: string) => updateTaskApi(task.id, { priority }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
+    },
+    onSuccess: data => {
+      if (!data) {
+        message.error('Не удалось сохранить приоритет')
+      }
+    }
+  })
+
   const handleConfirmDelete = async () => {
     try {
       await mutateAsync()
@@ -99,7 +117,14 @@ const Card = ({ projectId, task }: CardProps) => {
     void saveStatus(status)
   }
 
+  const handlePriorityChange = (priority: string) => {
+    void savePriority(priority)
+  }
+
   const currentStatus = STATUS_TYPES.find(s => s.value === task.status)
+  const currentPriority = PRIORITY_TYPES.find(p => p.value === task.priority)
+  const priorityFromApi =
+    task.priority && PRIORITY_TYPES.some(p => p.value === task.priority) ? task.priority : null
 
   return (
     <li className={styles.root}>
@@ -159,40 +184,75 @@ const Card = ({ projectId, task }: CardProps) => {
       </div>
 
       <div className={styles.right}>
-        <div className={styles.status}>
-          <Dropdown
-            classNames={{ root: styles.statusDropdown }}
-            disabled={isSavingStatus}
-            menu={{
-              items: STATUS_TYPES.map(s => ({
-                key: s.value,
-                label: <span className={cns(styles.statusOption, styles[s.value])}>{s.label}</span>
-              })),
-              selectable: true,
-              selectedKeys:
-                task.status && STATUS_TYPES.some(s => s.value === task.status) ? [task.status] : [],
-              onClick: ({ key }) => {
-                if (key !== task.status) handleStatusChange(String(key))
-              }
-            }}
-            placement="bottomRight"
-            trigger={['click']}
-          >
-            <button className={styles.statusTrigger} disabled={isSavingStatus} type="button">
-              {currentStatus ? (
-                <span className={cns(styles.statusLabel, styles[currentStatus.value])}>
-                  {currentStatus.label}
+        <div className={styles.taskControls}>
+          <div className={styles.status}>
+            <Dropdown
+              classNames={{ root: styles.statusDropdown }}
+              disabled={isSavingStatus}
+              menu={{
+                items: STATUS_TYPES.map(s => ({
+                  key: s.value,
+                  label: (
+                    <span className={cns(styles.statusOption, styles[s.value])}>{s.label}</span>
+                  )
+                })),
+                selectable: true,
+                selectedKeys:
+                  task.status && STATUS_TYPES.some(s => s.value === task.status)
+                    ? [task.status]
+                    : [],
+                onClick: ({ key }) => {
+                  if (key !== task.status) handleStatusChange(String(key))
+                }
+              }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <button className={styles.statusTrigger} disabled={isSavingStatus} type="button">
+                {currentStatus ? (
+                  <span className={cns(styles.statusLabel, styles[currentStatus.value])}>
+                    {currentStatus.label}
+                  </span>
+                ) : task.status != null && task.status !== '' ? (
+                  String(task.status)
+                ) : null}
+              </button>
+            </Dropdown>
+          </div>
+
+          <div className={styles.priority}>
+            <Dropdown
+              classNames={{ root: styles.statusDropdown }}
+              disabled={isSavingPriority}
+              menu={{
+                items: PRIORITY_TYPES.map(p => ({
+                  key: p.value,
+                  label: (
+                    <span className={styles.priorityMenuItem}>
+                      <PriorityGlyph value={p.value} />
+                      <span>{p.label}</span>
+                    </span>
+                  )
+                })),
+                selectable: true,
+                selectedKeys: priorityFromApi ? [priorityFromApi] : [],
+                onClick: ({ key }) => {
+                  if (String(key) !== task.priority) handlePriorityChange(String(key))
+                }
+              }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <button className={styles.statusTrigger} disabled={isSavingPriority} type="button">
+                <span className={styles.priorityTriggerMain}>
+                  <PriorityGlyph value={currentPriority?.value ?? 'medium'} />
+                  <span className={styles.priorityTriggerLabel}>
+                    {currentPriority?.label ?? 'Приоритет'}
+                  </span>
                 </span>
-              ) : task.status != null && task.status !== '' ? (
-                String(task.status)
-              ) : null}
-              {isSavingStatus ? (
-                <Spin className={styles.statusSavingSpin} size="small" />
-              ) : (
-                <ChevronDownIcon className={styles.statusChevron} aria-hidden />
-              )}
-            </button>
-          </Dropdown>
+              </button>
+            </Dropdown>
+          </div>
         </div>
 
         <Popconfirm

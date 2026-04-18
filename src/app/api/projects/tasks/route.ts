@@ -76,6 +76,7 @@ export async function POST(request: Request) {
       executor: task.executor ?? null,
       owner_id: user.id,
       photos: Array.isArray(task.photos) ? task.photos : null,
+      priority: task.priority,
       project_id: projectId,
       status: task.status,
       title: task.title.trim(),

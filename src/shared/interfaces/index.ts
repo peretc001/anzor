@@ -33,6 +33,7 @@ export interface ITask {
   executor?: null | string
   owner_id?: string
   photos?: null | string[]
+  priority: string
   project_id?: number
   status: string
   title: string

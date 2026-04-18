@@ -62,6 +62,7 @@ const ProjectHeader: FC<IProjectHeader> = ({ project }) => {
         <Button icon={<PencilSquareIcon className={styles.icon} />} onClick={handleOpenEditModal}>
           {t('header.edit')}
         </Button>
+
         <Popconfirm
           cancelText={t('header.deleteConfirmCancel')}
           description={t('header.deleteConfirmDescription')}

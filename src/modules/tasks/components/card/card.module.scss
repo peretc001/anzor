@@ -19,6 +19,12 @@
   gap: 12px;
   min-width: 0;
   flex: 1;
+
+  .taskId {
+    @include typography.text-xs;
+    color: var(--gray-400);
+    padding-top: 2px;
+  }
 }
 
 .statusDot {
@@ -143,51 +149,77 @@
   }
 }
 
-.statusSelect {
-  min-width: 148px;
-}
-
-.commentBadge {
+.statusTrigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #ececf0;
-  color: var(--gray-500, #7a7a85);
-}
-
-.commentIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.commentCount {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gray-1000, #1a1a1f);
-}
-
-.iconBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--gray-500, #7a7a85);
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 140px;
+  min-height: 32px;
+  border-radius: var(--rounded-md);
+  font: inherit;
+  text-align: left;
   cursor: pointer;
 
-  &:hover {
-    background: var(--gray-100, #f5f5f7);
-    color: var(--gray-1000, #1a1a1f);
+  &:hover:not(:disabled) {
+    border-color: #4096ff;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  .statusChevron {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--gray-500);
+  }
+
+  .statusSavingSpin {
+    flex-shrink: 0;
   }
 }
 
-.chevron {
-  width: 18px;
-  height: 18px;
+.statusLabel, .statusOption {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--rounded-xs);
+  @include typography.text-sm;
+
+  &.do {
+    color: var(--gray-600);
+    background: var(--gray-200);
+  }
+  &.progress {
+    color: var(--blue-600);
+    background: var(--blue-100);
+  }
+  &.completed {
+    color: var(--main-white);
+    background: var(--main-blue);
+  }
+  &.done {
+    color: var(--main-white);
+    background: var(--status-success);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+/* меню в портале — класс на корне попапа + :global для префикса ant */
+.statusDropdown {
+  :global(.ant-dropdown-menu-item:hover),
+  :global(.ant-dropdown-menu-item-active) {
+    background: transparent !important;
+  }
+
+  :global(.ant-dropdown-menu-item-selected) {
+    background: transparent !important;
+  }
 }
 
 .deleteBtn {

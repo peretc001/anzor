@@ -26,7 +26,6 @@ export const TASK_TYPES = [
 export const STATUS_TYPES = [
   { label: 'К выполнению', value: 'do' },
   { label: 'В работе', value: 'progress' },
-  { label: 'Черновик', value: 'draft' },
   { label: 'Выполненно', value: 'completed' },
   { label: 'Готово', value: 'done' },
 ]

@@ -1,20 +1,26 @@
 'use client'
 
 import React from 'react'
-import { message, Popconfirm, Select } from 'antd'
+import { Dropdown, message, Popconfirm, Spin } from 'antd'
+import cns from 'classnames'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { ArrowLongRightIcon, ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowLongRightIcon,
+  ChevronDownIcon,
+  ExclamationTriangleIcon,
+  TrashIcon
+} from '@heroicons/react/24/outline'
 
 import type { ITask } from '@/shared/interfaces'
 
-import useFancybox from '@/lib/useFancybox'
-
 import { paths, STATUS_TYPES } from '@/constants'
+
+import useFancybox from '@/lib/useFancybox'
 
 import { deleteTaskApi } from '@/modules/tasks/api/deleteTaskApi'
 import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
@@ -36,14 +42,11 @@ const MONTHS_SHORT = [
   'дек.'
 ] as const
 
-const formatDeadline = (iso?: null | string) => {
-  if (!iso) return null
-  const d = dayjs(iso)
-  if (!d.isValid()) return null
-  return `до ${d.date()} ${MONTHS_SHORT[d.month()]} ${d.year()}`
+const formatDeadline = (date?: null | string) => {
+  if (!date) return null
+  const d = dayjs(date).format('DD MMM YYYY')
+  return `до ${d}`
 }
-
-const STATUS_CAPTION = 'Статус'
 
 type CardProps = {
   readonly projectId: number
@@ -96,10 +99,13 @@ const Card = ({ projectId, task }: CardProps) => {
     void saveStatus(status)
   }
 
+  const currentStatus = STATUS_TYPES.find(s => s.value === task.status)
+
   return (
     <li className={styles.root}>
       <div ref={setFancyboxRoot} className={styles.left}>
-        {`#${task.id}`}
+        {task.id ? <div className={styles.taskId}>#{task.id}</div> : null}
+
         <div className={styles.content}>
           <Link
             className={styles.titleLink}
@@ -154,15 +160,39 @@ const Card = ({ projectId, task }: CardProps) => {
 
       <div className={styles.right}>
         <div className={styles.status}>
-          <span className={styles.caption}>{STATUS_CAPTION}</span>
-          <Select
-            className={styles.statusSelect}
-            loading={isSavingStatus}
-            options={STATUS_TYPES}
-            popupMatchSelectWidth={false}
-            value={task.status}
-            onChange={handleStatusChange}
-          />
+          <Dropdown
+            classNames={{ root: styles.statusDropdown }}
+            disabled={isSavingStatus}
+            menu={{
+              items: STATUS_TYPES.map(s => ({
+                key: s.value,
+                label: <span className={cns(styles.statusOption, styles[s.value])}>{s.label}</span>
+              })),
+              selectable: true,
+              selectedKeys:
+                task.status && STATUS_TYPES.some(s => s.value === task.status) ? [task.status] : [],
+              onClick: ({ key }) => {
+                if (key !== task.status) handleStatusChange(String(key))
+              }
+            }}
+            placement="bottomRight"
+            trigger={['click']}
+          >
+            <button className={styles.statusTrigger} disabled={isSavingStatus} type="button">
+              {currentStatus ? (
+                <span className={cns(styles.statusLabel, styles[currentStatus.value])}>
+                  {currentStatus.label}
+                </span>
+              ) : task.status != null && task.status !== '' ? (
+                String(task.status)
+              ) : null}
+              {isSavingStatus ? (
+                <Spin className={styles.statusSavingSpin} size="small" />
+              ) : (
+                <ChevronDownIcon className={styles.statusChevron} aria-hidden />
+              )}
+            </button>
+          </Dropdown>
         </div>
 
         <Popconfirm

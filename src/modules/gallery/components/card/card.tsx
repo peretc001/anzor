@@ -22,7 +22,6 @@ const GalleryCard: FC<GalleryCardProps> = ({
   onDelete
 }) => {
   const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
-  const caption = task_id != null ? `Задача #${task_id}` : 'Галерея проекта'
 
   return (
     <div className={styles.root}>
@@ -49,7 +48,6 @@ const GalleryCard: FC<GalleryCardProps> = ({
       <a
         className={styles.thumbLink}
         aria-label="Открыть в полном размере"
-        data-caption={caption}
         data-fancybox={fancyboxGroup}
         href={s3Base + url}
         rel="noreferrer"

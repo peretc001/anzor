@@ -77,8 +77,10 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         <Form.Item<TaskFormValues>
           hidden
           name="priority"
-          rules={[{ message: 'Выберите тип', required: true }]}
-        />
+          rules={[{ message: 'Укажите приоритет', required: true }]}
+        >
+          <Input type="hidden" />
+        </Form.Item>
 
         <Form.Item<TaskFormValues>
           label="Статус"

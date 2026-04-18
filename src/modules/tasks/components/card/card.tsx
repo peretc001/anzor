@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Dropdown, message, Popconfirm, Spin } from 'antd'
+import { Dropdown, message, Popconfirm } from 'antd'
 import cns from 'classnames'
 import dayjs from 'dayjs'
 import Link from 'next/link'
@@ -22,7 +22,7 @@ import {
 
 import type { ITask } from '@/shared/interfaces'
 
-import { paths, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
+import { EXECUTOR_TYPES, paths, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 
 import useFancybox from '@/lib/useFancybox'
 
@@ -66,6 +66,8 @@ const Card = ({ projectId, task }: CardProps) => {
   const deadline = formatDeadline(task.control)
   const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
   const fancyboxGroup = `task-${task.id}`
+
+  const executorLabel = EXECUTOR_TYPES.find(t => t.value === task.executor)?.label
 
   const { isPending, mutateAsync } = useMutation({
     mutationFn: () => deleteTaskApi(task.id),
@@ -144,7 +146,7 @@ const Card = ({ projectId, task }: CardProps) => {
               {task.executor ? (
                 <>
                   <ArrowLongRightIcon className={styles.metaArrow} aria-hidden />
-                  <span className={styles.executor}>{task.executor}</span>
+                  <span className={styles.executor}>{executorLabel}</span>
                 </>
               ) : null}
               {deadline ? (

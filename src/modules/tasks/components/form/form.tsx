@@ -55,7 +55,13 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
     <Form
       className={styles.root}
       form={form}
-      initialValues={{ executor: 'Исполнитель', photos: [], status: 'do', type: 'task' }}
+      initialValues={{
+        executor: 'contractor',
+        photos: [],
+        priority: 'medium',
+        status: 'do',
+        type: 'task'
+      }}
       layout="vertical"
       onFinish={handleFinish}
     >
@@ -67,6 +73,12 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         >
           <Select options={TASK_TYPES} placeholder="Выберите тип" />
         </Form.Item>
+
+        <Form.Item<TaskFormValues>
+          hidden
+          name="priority"
+          rules={[{ message: 'Выберите тип', required: true }]}
+        />
 
         <Form.Item<TaskFormValues>
           label="Статус"
@@ -87,8 +99,8 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
 
       <Form.Item className={styles.editor} label="Описание" name="description">
         <SimpleEditor defaultContent="" onChange={handleChangeContent} />
+        <span className={styles.limit}>{t('form.description.limit')}</span>
       </Form.Item>
-      <span className={styles.limit}>{t('form.description.limit')}</span>
 
       <Form.Item<TaskFormValues>
         extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}

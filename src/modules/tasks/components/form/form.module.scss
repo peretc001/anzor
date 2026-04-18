@@ -26,11 +26,18 @@
     }
   }
 
-  .editor :global(.simple-editor-content) {
-    min-height: 100px;
+  .editor {
+    position: relative;
+
+    :global(.simple-editor-content) {
+      min-height: 100px;
+    }
   }
 
   .limit {
+    position: absolute;
+    bottom: -20px;
+    right: 0;
     color: var(--gray-400);
     font-size: 10px;
     text-align: right;

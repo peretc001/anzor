@@ -44,7 +44,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
         description: values.description?.trim() || null,
         executor: values.executor || null,
         photos: null,
-        priority: 'medium',
+        priority: values.priority,
         project_id: projectId,
         status: values.status,
         title: values.title,

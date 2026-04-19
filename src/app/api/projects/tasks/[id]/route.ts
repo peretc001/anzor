@@ -87,6 +87,54 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const supabase = await createClient()
+
+  if ('photos' in updates) {
+    const { data: existingTask, error: existingError } = await supabase
+      .from('tasks')
+      .select('id, photos')
+      .eq('id', taskId)
+      .eq('owner_id', user.id)
+      .maybeSingle()
+
+    if (existingError) {
+      return NextResponse.json({ data: null, error: existingError.message }, { status: 500 })
+    }
+
+    if (!existingTask) {
+      return NextResponse.json({ data: null, error: 'Task not found' }, { status: 404 })
+    }
+
+    const oldPhotos = Array.isArray(existingTask.photos)
+      ? existingTask.photos.filter((p): p is string => typeof p === 'string' && p.trim() !== '')
+      : []
+
+    const newPhotos =
+      updates.photos == null
+        ? []
+        : updates.photos.filter((p): p is string => typeof p === 'string' && p.trim() !== '')
+
+    const nextSet = new Set(newPhotos)
+    const removedPhotoUrls = oldPhotos.filter(url => !nextSet.has(url))
+
+    for (const url of removedPhotoUrls) {
+      const { error: galleryDeleteError } = await supabase
+        .from('gallery')
+        .delete()
+        .eq('task_id', taskId)
+        .eq('owner_id', user.id)
+        .eq('url', url)
+
+      if (galleryDeleteError) {
+        return NextResponse.json({ data: null, error: galleryDeleteError.message }, { status: 500 })
+      }
+
+      const key = s3KeyFromStoredUrl(url)
+      if (key) {
+        await s3DeleteObject(key).catch(() => {})
+      }
+    }
+  }
+
   const { data, error } = await supabase
     .from('tasks')
     .update(updates)

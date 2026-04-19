@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 import { ITask } from '@/shared/interfaces'
+
+import { EXECUTOR_TYPES, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 
 import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
 import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
@@ -41,6 +42,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const [searchText, setSearchText] = useState('')
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
   const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined)
+  const [executorFilter, setExecutorFilter] = useState<string | undefined>(undefined)
   const queryClient = useQueryClient()
 
   const filteredTasks = useMemo(() => {
@@ -54,6 +56,9 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       if (priorityFilter != null && task.priority !== priorityFilter) {
         return false
       }
+      if (executorFilter != null && task.executor !== executorFilter) {
+        return false
+      }
       if (!q) {
         return true
       }
@@ -62,7 +67,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       }
       return task.title.toLowerCase().includes(q)
     })
-  }, [tasks, searchText, statusFilter, priorityFilter])
+  }, [tasks, searchText, statusFilter, priorityFilter, executorFilter])
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
@@ -267,24 +272,34 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
           {ADD_TASK_LABEL}
         </Button>
         <div className={styles.filters}>
+          <span className={styles.caption}>Фильтр:</span>
+
           <Input
-            allowClear
             className={styles.filterSearch}
+            allowClear
             placeholder="Номер или название"
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
           />
           <Select
-            allowClear
             className={styles.filterSelect}
+            allowClear
+            options={EXECUTOR_TYPES.map(e => ({ label: e.label, value: e.value }))}
+            placeholder="Исполнитель"
+            value={executorFilter}
+            onChange={v => setExecutorFilter(v)}
+          />
+          <Select
+            className={styles.filterSelect}
+            allowClear
             options={STATUS_TYPES.map(s => ({ label: s.label, value: s.value }))}
             placeholder="Статус"
             value={statusFilter}
             onChange={v => setStatusFilter(v)}
           />
           <Select
-            allowClear
             className={styles.filterSelect}
+            allowClear
             options={PRIORITY_TYPES.map(p => ({ label: p.label, value: p.value }))}
             placeholder="Приоритет"
             value={priorityFilter}

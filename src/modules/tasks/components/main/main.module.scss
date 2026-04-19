@@ -22,6 +22,11 @@
     gap: 8px;
     flex: 1;
     min-width: 0;
+
+    .caption {
+      @include typography.text-sm;
+      color: var(--gray-500);
+    }
   }
 
   .filterSearch {

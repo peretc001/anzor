@@ -1,0 +1,46 @@
+@use "@/styles/typography";
+
+.feed {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.weekTitle {
+  margin: 0;
+  color: var(--gray-700);
+  @include typography.text-sm;
+  @include typography.semibold;
+}
+
+.subgroups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subgroupTitle {
+  margin: 0;
+  color: var(--gray-600);
+  @include typography.text-xs;
+  @include typography.semibold;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}

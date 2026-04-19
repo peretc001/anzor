@@ -157,8 +157,8 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       )}
 
       <Modal
-        centered={false}
         className={styles.modal}
+        centered={false}
         destroyOnHidden
         footer={null}
         open={isModalOpen}

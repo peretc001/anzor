@@ -1,11 +1,12 @@
 'use client'
 
-import React, { FC, useCallback, useState } from 'react'
-import { Button, message, Modal } from 'antd'
+import React, { FC, useCallback, useMemo, useState } from 'react'
+import { Button, Input, message, Modal, Select } from 'antd'
 import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 import { ITask } from '@/shared/interfaces'
 
 import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
@@ -37,7 +38,31 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<ITask | null>(null)
+  const [searchText, setSearchText] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
+  const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined)
   const queryClient = useQueryClient()
+
+  const filteredTasks = useMemo(() => {
+    const q = searchText.trim().toLowerCase()
+    const idQuery = q.replace(/^#/, '')
+
+    return tasks.filter(task => {
+      if (statusFilter != null && task.status !== statusFilter) {
+        return false
+      }
+      if (priorityFilter != null && task.priority !== priorityFilter) {
+        return false
+      }
+      if (!q) {
+        return true
+      }
+      if (idQuery !== '' && /^\d+$/.test(idQuery)) {
+        return String(task.id) === idQuery || task.title.toLowerCase().includes(q)
+      }
+      return task.title.toLowerCase().includes(q)
+    })
+  }, [tasks, searchText, statusFilter, priorityFilter])
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
@@ -241,11 +266,40 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
         <Button type="primary" onClick={handleOpenModal}>
           {ADD_TASK_LABEL}
         </Button>
+        <div className={styles.filters}>
+          <Input
+            allowClear
+            className={styles.filterSearch}
+            placeholder="Номер или название"
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+          />
+          <Select
+            allowClear
+            className={styles.filterSelect}
+            options={STATUS_TYPES.map(s => ({ label: s.label, value: s.value }))}
+            placeholder="Статус"
+            value={statusFilter}
+            onChange={v => setStatusFilter(v)}
+          />
+          <Select
+            allowClear
+            className={styles.filterSelect}
+            options={PRIORITY_TYPES.map(p => ({ label: p.label, value: p.value }))}
+            placeholder="Приоритет"
+            value={priorityFilter}
+            onChange={v => setPriorityFilter(v)}
+          />
+        </div>
       </div>
 
-      {tasks.length > 0 && (
+      {tasks.length > 0 && filteredTasks.length === 0 && (
+        <p className={styles.emptyFiltered}>Нет задач, подходящих под фильтры.</p>
+      )}
+
+      {filteredTasks.length > 0 && (
         <ul className={styles.list}>
-          {tasks.map(task => (
+          {filteredTasks.map(task => (
             <Card key={task.id} projectId={projectId} task={task} onEdit={handleOpenEdit} />
           ))}
         </ul>

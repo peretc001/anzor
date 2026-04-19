@@ -8,6 +8,40 @@
   padding: 16px 0;
   overflow: hidden;
 
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filterSearch {
+    flex: 1 1 200px;
+    min-width: 160px;
+    max-width: 320px;
+  }
+
+  .filterSelect {
+    flex: 0 1 180px;
+    min-width: 140px;
+  }
+
+  .emptyFiltered {
+    @include typography.text-sm;
+    @include typography.regular;
+    margin: 0;
+    color: var(--gray-600);
+  }
+
   .list {
     flex: 1;
     width: 100%;

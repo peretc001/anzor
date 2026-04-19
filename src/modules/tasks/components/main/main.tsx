@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ITask } from '@/shared/interfaces'
 
-import { EXECUTOR_TYPES, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
+import { EXECUTOR_TYPES, PRIORITY_TYPES, STATUS_TYPES, TASK_TYPES } from '@/constants'
 
 import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
 import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
@@ -43,6 +43,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
   const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined)
   const [executorFilter, setExecutorFilter] = useState<string | undefined>(undefined)
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined)
   const queryClient = useQueryClient()
 
   const filteredTasks = useMemo(() => {
@@ -59,6 +60,9 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       if (executorFilter != null && task.executor !== executorFilter) {
         return false
       }
+      if (typeFilter != null && task.type !== typeFilter) {
+        return false
+      }
       if (!q) {
         return true
       }
@@ -67,7 +71,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       }
       return task.title.toLowerCase().includes(q)
     })
-  }, [tasks, searchText, statusFilter, priorityFilter, executorFilter])
+  }, [tasks, searchText, statusFilter, priorityFilter, executorFilter, typeFilter])
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
@@ -280,6 +284,14 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
             placeholder="Номер или название"
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
+          />
+          <Select
+            className={styles.filterSelect}
+            allowClear
+            options={TASK_TYPES.map(t => ({ label: t.label, value: t.value }))}
+            placeholder="Тип задачи"
+            value={typeFilter}
+            onChange={v => setTypeFilter(v)}
           />
           <Select
             className={styles.filterSelect}

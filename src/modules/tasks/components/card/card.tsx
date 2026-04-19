@@ -10,12 +10,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
   ArrowLongRightIcon,
+  BugAntIcon,
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  DocumentTextIcon,
   EqualsIcon,
   ExclamationTriangleIcon,
+  QuestionMarkCircleIcon,
   TrashIcon
 } from '@heroicons/react/24/outline'
 
@@ -37,9 +40,9 @@ const formatDeadline = (date?: null | string) => {
 }
 
 type CardProps = {
-  readonly onEdit: (task: ITask) => void
   readonly projectId: number
   readonly task: ITask
+  readonly onEdit: (task: ITask) => void
 }
 
 const priorityIconClass = (value: string) =>
@@ -59,7 +62,7 @@ const PriorityGlyph = ({ value }: { readonly value: string }) => {
   return <EqualsIcon className={priorityIconClass('medium')} aria-hidden />
 }
 
-const Card = ({ onEdit, projectId, task }: CardProps) => {
+const Card = ({ projectId, task, onEdit }: CardProps) => {
   const [setFancyboxRoot] = useFancybox()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -137,9 +140,19 @@ const Card = ({ onEdit, projectId, task }: CardProps) => {
   }
 
   return (
-    <li className={styles.root} onClick={handleCardClick} role="presentation">
+    <li className={styles.root} role="presentation" onClick={handleCardClick}>
       <div ref={setFancyboxRoot} className={styles.left}>
         {task.id ? <div className={styles.taskId}>#{task.id}</div> : null}
+
+        <div className={styles.type}>
+          {task.type === 'task' && <DocumentTextIcon className={cns(styles.icon, styles.task)} />}
+          {task.type === 'infraction' && (
+            <BugAntIcon className={cns(styles.icon, styles.infraction)} />
+          )}
+          {task.type === 'question' && (
+            <QuestionMarkCircleIcon className={cns(styles.icon, styles.question)} />
+          )}
+        </div>
 
         <div className={styles.content}>
           <h3 className={styles.title}>{task.title}</h3>

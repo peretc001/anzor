@@ -26,6 +26,33 @@
     color: var(--gray-400);
     padding-top: 2px;
   }
+
+  .type {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon {
+      flex: none;
+      width: 16px;
+      height: 16px;
+
+      &.task {
+        color: var(--main-blue);
+      }
+
+      &.infraction {
+        color: var(--status-error);
+      }
+
+      &.question {
+        color: var(--yellow-500);
+      }
+    }
+  }
 }
 
 .statusDot {

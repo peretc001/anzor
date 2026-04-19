@@ -28,17 +28,19 @@
 .brand {
   padding: 16px 16px 16px 24px;
   border-bottom: 1px solid var(--gray-100);
-}
 
-.logo {
-  @include typography.display-sm;
-  @include typography.bold;
-  color: var(--main-blue);
-}
+  .logo {
+    @include typography.display-sm;
+    line-height: 1.1;
+    @include typography.bold;
+    color: var(--main-blue);
+  }
 
-.subtitle {
-  @include typography.text-xs;
-  color: var(--gray-400);
+  .subtitle {
+    @include typography.text-xs;
+    line-height: 1.3;
+    color: var(--gray-400);
+  }
 }
 
 .menuList {

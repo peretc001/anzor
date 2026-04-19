@@ -1,0 +1,79 @@
+@use "@/styles/typography";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-200);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  color: var(--gray-800);
+  @include typography.text-sm;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.openLink {
+  flex: none;
+  color: var(--main-blue);
+  @include typography.text-sm;
+  @include typography.semibold;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.deleteButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--gray-200);
+    color: var(--gray-800);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .trashIcon {
+    width: 18px;
+    height: 18px;
+  }
+}

@@ -25,6 +25,13 @@ export interface IGallery {
   url: string
 }
 
+export interface IDocument {
+  id: number
+  created_at?: null | string
+  project_id?: number
+  url: string
+}
+
 export interface ITask {
   id: number
   comments_count?: null | number

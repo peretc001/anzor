@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 
+import { ensureUserOwnsProject } from '@/lib/ensureUserOwnsProject'
 import { getCurrentUser } from '@/lib/getCurrentUser'
+import { s3DeleteObject, s3KeyFromStoredUrl } from '@/lib/s3'
 import { createClient } from '@/lib/supabaseServer'
 
 type RouteContext = { params: Promise<{ id: string }> }
@@ -53,6 +55,98 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   const supabase = await createClient()
+
+  const allowed = await ensureUserOwnsProject(supabase, user.id, projectId)
+
+  if (!allowed) {
+    return NextResponse.json({ error: 'Project not found', ok: false }, { status: 404 })
+  }
+
+  const { data: taskRows, error: tasksFetchError } = await supabase
+    .from('tasks')
+    .select('photos')
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  const { data: galleryRows, error: galleryFetchError } = await supabase
+    .from('gallery')
+    .select('url')
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  const { data: documentRows, error: documentsFetchError } = await supabase
+    .from('documents')
+    .select('url')
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  const fetchError = tasksFetchError ?? galleryFetchError ?? documentsFetchError
+
+  if (fetchError) {
+    return NextResponse.json({ error: fetchError.message, ok: false }, { status: 500 })
+  }
+
+  const urls = new Set<string>()
+
+  for (const row of taskRows ?? []) {
+    if (Array.isArray(row.photos)) {
+      for (const u of row.photos) {
+        if (typeof u === 'string' && u.trim() !== '') {
+          urls.add(u)
+        }
+      }
+    }
+  }
+
+  for (const row of galleryRows ?? []) {
+    if (typeof row.url === 'string' && row.url.trim() !== '') {
+      urls.add(row.url)
+    }
+  }
+
+  for (const row of documentRows ?? []) {
+    if (typeof row.url === 'string' && row.url.trim() !== '') {
+      urls.add(row.url)
+    }
+  }
+
+  const { error: galleryDeleteError } = await supabase
+    .from('gallery')
+    .delete()
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  if (galleryDeleteError) {
+    return NextResponse.json({ error: galleryDeleteError.message, ok: false }, { status: 500 })
+  }
+
+  const { error: documentsDeleteError } = await supabase
+    .from('documents')
+    .delete()
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  if (documentsDeleteError) {
+    return NextResponse.json({ error: documentsDeleteError.message, ok: false }, { status: 500 })
+  }
+
+  const { error: tasksDeleteError } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('project_id', projectId)
+    .eq('owner_id', user.id)
+
+  if (tasksDeleteError) {
+    return NextResponse.json({ error: tasksDeleteError.message, ok: false }, { status: 500 })
+  }
+
+  for (const url of urls) {
+    const key = s3KeyFromStoredUrl(url)
+    if (key) {
+      await s3DeleteObject(key).catch(() => {})
+    }
+  }
+
   const { data, error } = await supabase
     .from('projects')
     .delete()

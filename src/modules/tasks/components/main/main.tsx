@@ -157,10 +157,14 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       )}
 
       <Modal
+        centered={false}
+        className={styles.modal}
         destroyOnHidden
         footer={null}
         open={isModalOpen}
         title={ADD_TASK_LABEL}
+        width={600}
+        wrapClassName={styles.modalWrap}
         onCancel={handleCloseModal}
       >
         <Form submitting={isPending} onCancel={handleCloseModal} onSubmit={handleSubmit} />

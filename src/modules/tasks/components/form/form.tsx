@@ -65,105 +65,107 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
       layout="vertical"
       onFinish={handleFinish}
     >
-      <div className={styles.types}>
+      <div className={styles.container}>
+        <div className={styles.types}>
+          <Form.Item<TaskFormValues>
+            label="Тип задачи"
+            name="type"
+            rules={[{ message: 'Выберите тип', required: true }]}
+          >
+            <Select options={TASK_TYPES} placeholder="Выберите тип" />
+          </Form.Item>
+
+          <Form.Item<TaskFormValues>
+            hidden
+            name="priority"
+            rules={[{ message: 'Укажите приоритет', required: true }]}
+          >
+            <Input type="hidden" />
+          </Form.Item>
+
+          <Form.Item<TaskFormValues>
+            label="Статус"
+            name="status"
+            rules={[{ message: 'Выберите статус', required: true }]}
+          >
+            <Select options={STATUS_TYPES} placeholder="Выберите статус" />
+          </Form.Item>
+        </div>
+
+        <div className={styles.types}>
+          <Form.Item<TaskFormValues>
+            label="Ответственный"
+            name="executor"
+            rules={[{ message: 'Выберите ответственного', required: true }]}
+          >
+            <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
+          </Form.Item>
+
+          <Form.Item<TaskFormValues>
+            className={styles.date}
+            label="Ожидаемая дата"
+            name="control"
+            rules={[
+              {
+                validator: (_: unknown, value: Dayjs | undefined) => {
+                  if (!value) return Promise.resolve()
+                  return value.isBefore(dayjs(), 'day')
+                    ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
+                    : Promise.resolve()
+                }
+              }
+            ]}
+          >
+            <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
+          </Form.Item>
+        </div>
+
         <Form.Item<TaskFormValues>
-          label="Тип задачи"
-          name="type"
-          rules={[{ message: 'Выберите тип', required: true }]}
+          label="Название"
+          name="title"
+          rules={[{ message: 'Введите название', required: true }]}
         >
-          <Select options={TASK_TYPES} placeholder="Выберите тип" />
+          <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
+        </Form.Item>
+
+        <Form.Item className={styles.editor} label="Описание" name="description">
+          <SimpleEditor defaultContent="" onChange={handleChangeContent} />
+          <span className={styles.limit}>{t('form.description.limit')}</span>
         </Form.Item>
 
         <Form.Item<TaskFormValues>
-          hidden
-          name="priority"
-          rules={[{ message: 'Укажите приоритет', required: true }]}
-        >
-          <Input type="hidden" />
-        </Form.Item>
-
-        <Form.Item<TaskFormValues>
-          label="Статус"
-          name="status"
-          rules={[{ message: 'Выберите статус', required: true }]}
-        >
-          <Select options={STATUS_TYPES} placeholder="Выберите статус" />
-        </Form.Item>
-      </div>
-
-      <Form.Item<TaskFormValues>
-        label="Название"
-        name="title"
-        rules={[{ message: 'Введите название', required: true }]}
-      >
-        <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
-      </Form.Item>
-
-      <Form.Item className={styles.editor} label="Описание" name="description">
-        <SimpleEditor defaultContent="" onChange={handleChangeContent} />
-        <span className={styles.limit}>{t('form.description.limit')}</span>
-      </Form.Item>
-
-      <Form.Item<TaskFormValues>
-        extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}
-        getValueFromEvent={event => event?.fileList}
-        label="Фото"
-        name="photos"
-        rules={[
-          {
-            validator: (_, value: UploadFile[] | undefined) => {
-              if (!value || value.length <= MAX_TASK_PHOTOS) return Promise.resolve()
-              return Promise.reject(new Error(`Максимум ${MAX_TASK_PHOTOS} фотографий`))
-            }
-          }
-        ]}
-        valuePropName="fileList"
-      >
-        <Upload
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          beforeUpload={() => false}
-          listType="picture"
-          maxCount={MAX_TASK_PHOTOS}
-          multiple
-        >
-          <Button icon={<UploadOutlined />}>Выбрать фото</Button>
-        </Upload>
-      </Form.Item>
-
-      <div className={styles.types}>
-        <Form.Item<TaskFormValues>
-          label="Ответственный"
-          name="executor"
-          rules={[{ message: 'Выберите ответственного', required: true }]}
-        >
-          <Select options={EXECUTOR_TYPES} placeholder="Выберите ответственного" />
-        </Form.Item>
-
-        <Form.Item<TaskFormValues>
-          className={styles.date}
-          label="Ожидаемая дата выполнения"
-          name="control"
+          extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}
+          getValueFromEvent={event => event?.fileList}
+          label="Фото"
+          name="photos"
           rules={[
             {
-              validator: (_: unknown, value: Dayjs | undefined) => {
-                if (!value) return Promise.resolve()
-                return value.isBefore(dayjs(), 'day')
-                  ? Promise.reject(new Error('Выберите сегодняшнюю дату или дату в будущем'))
-                  : Promise.resolve()
+              validator: (_, value: UploadFile[] | undefined) => {
+                if (!value || value.length <= MAX_TASK_PHOTOS) return Promise.resolve()
+                return Promise.reject(new Error(`Максимум ${MAX_TASK_PHOTOS} фотографий`))
               }
             }
           ]}
+          valuePropName="fileList"
         >
-          <DatePicker disabledDate={disablePastDates} format="DD.MM.YYYY" locale={datePickerRu} />
+          <Upload
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            beforeUpload={() => false}
+            listType="picture"
+            maxCount={MAX_TASK_PHOTOS}
+            multiple
+          >
+            <Button icon={<UploadOutlined />}>Выбрать фото</Button>
+          </Upload>
         </Form.Item>
       </div>
 
       <div className={styles.actions}>
-        <Button disabled={submitting} onClick={onCancel}>
-          Отмена
-        </Button>
         <Button htmlType="submit" loading={submitting} type="primary">
           Добавить
+        </Button>
+        <Button disabled={submitting} onClick={onCancel}>
+          Отмена
         </Button>
       </div>
     </Form>

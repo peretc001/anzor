@@ -2,10 +2,11 @@ import type { ITask } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-export const updateTaskApi = async (
-  id: number,
-  payload: Partial<Pick<ITask, 'photos' | 'priority' | 'status' | 'type'>>
-) => {
+export type UpdateTaskPayload = Partial<
+  Pick<ITask, 'control' | 'description' | 'executor' | 'photos' | 'priority' | 'status' | 'title' | 'type'>
+>
+
+export const updateTaskApi = async (id: number, payload: UpdateTaskPayload) => {
   try {
     const response = await serverApi.patch(`projects/tasks/${id}`, payload)
 

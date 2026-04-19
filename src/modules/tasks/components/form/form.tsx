@@ -5,6 +5,8 @@ import type { UploadFile } from 'antd/es/upload/interface'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useTranslations } from 'next-intl'
 
+import type { ITask } from '@/shared/interfaces'
+
 import SimpleEditor from '@/shared/components/tiptap/tiptap-templates/simple/simple-editor'
 
 import { EXECUTOR_TYPES, STATUS_TYPES, TASK_TYPES } from '@/constants'
@@ -30,6 +32,7 @@ type TaskFormValues = {
 }
 
 type IFormProps = {
+  readonly editingTask?: ITask | null
   readonly submitting?: boolean
   readonly onCancel: () => void
   readonly onSubmit?: (values: TaskFormValues) => Promise<void> | void
@@ -37,10 +40,37 @@ type IFormProps = {
 
 const disablePastDates = (current: Dayjs) => current.isBefore(dayjs(), 'day')
 
-const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) => {
+const FormModal: FC<IFormProps> = ({ editingTask = null, submitting = false, onCancel, onSubmit }) => {
   const t = useTranslations('projects')
+  const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
+  const isEdit = Boolean(editingTask)
 
   const [form] = Form.useForm<TaskFormValues>()
+
+  const initialValues: Partial<TaskFormValues> & Pick<TaskFormValues, 'executor' | 'photos' | 'priority' | 'status' | 'type'> = {
+    executor: 'contractor',
+    photos: [],
+    priority: 'medium',
+    status: 'do',
+    type: 'task',
+    ...(editingTask
+      ? {
+          title: editingTask.title,
+          description: editingTask.description ?? '',
+          executor: editingTask.executor ?? 'contractor',
+          priority: editingTask.priority,
+          status: editingTask.status,
+          type: editingTask.type,
+          control: editingTask.control ? dayjs(editingTask.control) : undefined,
+          photos: (editingTask.photos ?? []).map((path, i) => ({
+            name: path.split('/').pop() ?? `photo-${i}.jpg`,
+            status: 'done' as const,
+            uid: path,
+            url: `${s3Base}${path}`
+          }))
+        }
+      : {})
+  }
 
   const handleChangeContent = (html: React.ReactNode) => {
     form.setFieldValue('description', html)
@@ -55,13 +85,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
     <Form
       className={styles.root}
       form={form}
-      initialValues={{
-        executor: 'contractor',
-        photos: [],
-        priority: 'medium',
-        status: 'do',
-        type: 'task'
-      }}
+      initialValues={initialValues}
       layout="vertical"
       onFinish={handleFinish}
     >
@@ -129,7 +153,11 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
         </Form.Item>
 
         <Form.Item className={styles.editor} label="Описание" name="description">
-          <SimpleEditor defaultContent="" onChange={handleChangeContent} />
+          <SimpleEditor
+            key={editingTask ? `desc-${editingTask.id}` : 'desc-new'}
+            defaultContent={editingTask?.description ?? ''}
+            onChange={handleChangeContent}
+          />
           <span className={styles.limit}>{t('form.description.limit')}</span>
         </Form.Item>
 
@@ -162,7 +190,7 @@ const FormModal: FC<IFormProps> = ({ submitting = false, onCancel, onSubmit }) =
 
       <div className={styles.actions}>
         <Button htmlType="submit" loading={submitting} type="primary">
-          Добавить
+          {isEdit ? 'Сохранить' : 'Добавить'}
         </Button>
         <Button disabled={submitting} onClick={onCancel}>
           Отмена

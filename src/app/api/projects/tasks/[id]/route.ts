@@ -23,9 +23,13 @@ export async function PATCH(request: Request, context: RouteContext) {
   const body = await request.json().catch(() => null)
 
   const updates: {
+    control?: null | string
+    description?: null | string
+    executor?: null | string
     photos?: null | string[]
     priority?: string
     status?: string
+    title?: string
     type?: string
   } = {}
 
@@ -47,6 +51,35 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   if (body && 'priority' in body) {
     updates.priority = body.priority
+  }
+
+  if (body && 'title' in body) {
+    if (typeof body.title !== 'string' || body.title.trim() === '') {
+      return NextResponse.json({ data: null, error: 'Invalid title' }, { status: 400 })
+    }
+    updates.title = body.title.trim()
+  }
+
+  if (body && 'description' in body) {
+    if (body.description != null && typeof body.description !== 'string') {
+      return NextResponse.json({ data: null, error: 'Invalid description' }, { status: 400 })
+    }
+    updates.description =
+      body.description == null ? null : body.description.trim() === '' ? null : body.description.trim()
+  }
+
+  if (body && 'executor' in body) {
+    if (body.executor != null && typeof body.executor !== 'string') {
+      return NextResponse.json({ data: null, error: 'Invalid executor' }, { status: 400 })
+    }
+    updates.executor = body.executor == null || body.executor === '' ? null : body.executor
+  }
+
+  if (body && 'control' in body) {
+    if (body.control != null && typeof body.control !== 'string') {
+      return NextResponse.json({ data: null, error: 'Invalid control' }, { status: 400 })
+    }
+    updates.control = body.control == null || body.control === '' ? null : body.control
   }
 
   if (Object.keys(updates).length === 0) {

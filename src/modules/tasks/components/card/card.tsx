@@ -4,7 +4,6 @@ import React from 'react'
 import { Dropdown, message, Popconfirm } from 'antd'
 import cns from 'classnames'
 import dayjs from 'dayjs'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -22,7 +21,7 @@ import {
 
 import type { ITask } from '@/shared/interfaces'
 
-import { EXECUTOR_TYPES, paths, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
+import { EXECUTOR_TYPES, PRIORITY_TYPES, STATUS_TYPES } from '@/constants'
 
 import useFancybox from '@/lib/useFancybox'
 
@@ -38,6 +37,7 @@ const formatDeadline = (date?: null | string) => {
 }
 
 type CardProps = {
+  readonly onEdit: (task: ITask) => void
   readonly projectId: number
   readonly task: ITask
 }
@@ -59,7 +59,7 @@ const PriorityGlyph = ({ value }: { readonly value: string }) => {
   return <EqualsIcon className={priorityIconClass('medium')} aria-hidden />
 }
 
-const Card = ({ projectId, task }: CardProps) => {
+const Card = ({ onEdit, projectId, task }: CardProps) => {
   const [setFancyboxRoot] = useFancybox()
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -128,18 +128,21 @@ const Card = ({ projectId, task }: CardProps) => {
   const priorityFromApi =
     task.priority && PRIORITY_TYPES.some(p => p.value === task.priority) ? task.priority : null
 
+  const handleCardClick = (e: React.MouseEvent<HTMLLIElement>) => {
+    const target = e.target as HTMLElement
+    if (target.closest('a, button')) {
+      return
+    }
+    onEdit(task)
+  }
+
   return (
-    <li className={styles.root}>
+    <li className={styles.root} onClick={handleCardClick} role="presentation">
       <div ref={setFancyboxRoot} className={styles.left}>
         {task.id ? <div className={styles.taskId}>#{task.id}</div> : null}
 
         <div className={styles.content}>
-          <Link
-            className={styles.titleLink}
-            href={`${paths.projects}/task?id=${encodeURIComponent(String(task.id))}`}
-          >
-            <h3 className={styles.title}>{task.title}</h3>
-          </Link>
+          <h3 className={styles.title}>{task.title}</h3>
 
           {task.executor || deadline ? (
             <div className={styles.meta}>

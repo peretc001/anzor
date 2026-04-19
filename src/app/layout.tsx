@@ -5,9 +5,12 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 
 import { Amplitude } from '@/lib/amplitude'
+import { getCurrentUser } from '@/lib/getCurrentUser'
+import { mapSessionUserForMenu } from '@/lib/mapSessionUserForMenu'
 import UseQueryProviders from '@/lib/useQueryProviders'
 
 import Menu from '@/layout/menu/menu'
+import UserStoreSync from '@/shared/components/user/userStoreSync'
 import Metrika from '@/layout/metrica'
 import AuthModal from '@/layout/modals/authModal'
 
@@ -29,12 +32,14 @@ const RootLayout = async ({
   children: React.ReactNode
 }>) => {
   const locale = await getLocale()
+  const menuUser = mapSessionUserForMenu(await getCurrentUser())
 
   return (
     <html lang={locale}>
       <body className={openSans.className}>
         <NextIntlClientProvider>
           <UseQueryProviders>
+            <UserStoreSync initialMenuUser={menuUser} />
             <div className="layout-container">
               <div className="menu">
                 <Menu />

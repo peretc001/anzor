@@ -3,7 +3,8 @@ export const paths = {
   contractors: '/contractors',
   customers: '/customers',
   home: '/',
-  projects: '/projects'
+  projects: '/projects',
+  settings: '/settings'
 }
 
 export const PROJECT_TYPES = [

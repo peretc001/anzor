@@ -1,8 +1,12 @@
 export interface IUser {
   id: string | undefined
+  avatar?: string
   email: string | undefined
+  name?: string
   password: string | undefined
-  user_metadata?: any
+  type?: string
+  /** Сырые метаданные Supabase Auth (для merge при обновлении профиля). */
+  user_metadata?: Record<string, unknown>
 }
 
 export interface IProject {

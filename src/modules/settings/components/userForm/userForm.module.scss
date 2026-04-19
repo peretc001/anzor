@@ -1,0 +1,82 @@
+@use "@/styles/typography";
+
+.root {
+  flex: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .avatar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+}
+
+
+.profile {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .label {
+    @include typography.text-md;
+    flex-shrink: 0;
+  }
+
+  .value {
+    @include typography.text-md;
+  }
+}
+
+.modal {
+  width: 100% !important;
+  max-width: 400px;
+  overflow: hidden;
+
+  :global(.ant-modal-container) {
+    padding: 48px 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    margin: 0 !important;
+    max-width: 100% !important;
+    top: 0;
+    bottom: 0;
+    height: 100dvh;
+    overflow: hidden;
+
+    :global(.ant-modal-container) {
+      display: flex;
+      height: 100%;
+      padding: 0;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    :global(.ant-modal-body) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+}

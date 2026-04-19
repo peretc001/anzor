@@ -139,7 +139,7 @@ const UserForm: FC<IUserForm> = ({ user }) => {
       </Form>
 
       <div className={styles.profile}>
-        <div className={styles.readonlyRow}>
+        <div className={styles.group}>
           <span className={styles.label}>{t('user.email.label')}:</span>
           <span className={styles.value}>{user?.email}</span>
         </div>

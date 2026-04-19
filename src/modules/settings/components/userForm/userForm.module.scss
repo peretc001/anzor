@@ -35,13 +35,18 @@
   flex-direction: column;
   gap: 16px;
 
-  .label {
-    @include typography.text-md;
-    flex-shrink: 0;
-  }
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-  .value {
-    @include typography.text-md;
+    .label {
+      @include typography.text-sm;
+    }
+
+    .value {
+      @include typography.text-sm;
+    }
   }
 }
 

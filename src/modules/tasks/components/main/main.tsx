@@ -252,12 +252,14 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
       )}
 
       <Modal
-        centered={false}
         className={styles.modal}
+        centered={false}
         destroyOnHidden
         footer={null}
+        maskTransitionName="fade"
         open={isModalOpen}
         title={editingTask ? EDIT_TASK_TITLE : ADD_TASK_LABEL}
+        transitionName=""
         width={600}
         wrapClassName={styles.modalWrap}
         onCancel={handleCloseModal}

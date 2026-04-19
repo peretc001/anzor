@@ -5,9 +5,8 @@ import type { UploadFile } from 'antd/es/upload/interface'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useTranslations } from 'next-intl'
 
-import type { ITask } from '@/shared/interfaces'
-
 import SimpleEditor from '@/shared/components/tiptap/tiptap-templates/simple/simple-editor'
+import type { ITask } from '@/shared/interfaces'
 
 import { EXECUTOR_TYPES, STATUS_TYPES, TASK_TYPES } from '@/constants'
 
@@ -40,14 +39,20 @@ type IFormProps = {
 
 const disablePastDates = (current: Dayjs) => current.isBefore(dayjs(), 'day')
 
-const FormModal: FC<IFormProps> = ({ editingTask = null, submitting = false, onCancel, onSubmit }) => {
+const FormModal: FC<IFormProps> = ({
+  editingTask = null,
+  submitting = false,
+  onCancel,
+  onSubmit
+}) => {
   const t = useTranslations('projects')
   const s3Base = process.env.NEXT_PUBLIC_S3_PATH ?? ''
   const isEdit = Boolean(editingTask)
 
   const [form] = Form.useForm<TaskFormValues>()
 
-  const initialValues: Partial<TaskFormValues> & Pick<TaskFormValues, 'executor' | 'photos' | 'priority' | 'status' | 'type'> = {
+  const initialValues: Partial<TaskFormValues> &
+    Pick<TaskFormValues, 'executor' | 'photos' | 'priority' | 'status' | 'type'> = {
     executor: 'contractor',
     photos: [],
     priority: 'medium',
@@ -55,19 +60,19 @@ const FormModal: FC<IFormProps> = ({ editingTask = null, submitting = false, onC
     type: 'task',
     ...(editingTask
       ? {
-          title: editingTask.title,
+          control: editingTask.control ? dayjs(editingTask.control) : undefined,
           description: editingTask.description ?? '',
           executor: editingTask.executor ?? 'contractor',
-          priority: editingTask.priority,
-          status: editingTask.status,
-          type: editingTask.type,
-          control: editingTask.control ? dayjs(editingTask.control) : undefined,
           photos: (editingTask.photos ?? []).map((path, i) => ({
             name: path.split('/').pop() ?? `photo-${i}.jpg`,
             status: 'done' as const,
             uid: path,
             url: `${s3Base}${path}`
-          }))
+          })),
+          priority: editingTask.priority,
+          status: editingTask.status,
+          title: editingTask.title,
+          type: editingTask.type
         }
       : {})
   }
@@ -152,14 +157,16 @@ const FormModal: FC<IFormProps> = ({ editingTask = null, submitting = false, onC
           <Input placeholder="Например: Кривая стена в зоне фартука кухни" />
         </Form.Item>
 
-        <Form.Item className={styles.editor} label="Описание" name="description">
-          <SimpleEditor
-            key={editingTask ? `desc-${editingTask.id}` : 'desc-new'}
-            defaultContent={editingTask?.description ?? ''}
-            onChange={handleChangeContent}
-          />
+        <div className={styles.editor}>
+          <Form.Item label="Описание" name="description">
+            <SimpleEditor
+              key={editingTask ? `desc-${editingTask.id}` : 'desc-new'}
+              defaultContent={editingTask?.description ?? ''}
+              onChange={handleChangeContent}
+            />
+          </Form.Item>
           <span className={styles.limit}>{t('form.description.limit')}</span>
-        </Form.Item>
+        </div>
 
         <Form.Item<TaskFormValues>
           extra={`Можно выбрать до ${MAX_TASK_PHOTOS} изображений`}

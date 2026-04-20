@@ -1,0 +1,53 @@
+@use "@/styles/typography";
+
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+
+  .iconWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--rounded-md);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    color: var(--blue-500);
+
+    .icon {
+      flex: none;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    white-space: pre-line;
+  }
+
+  .title {
+    margin: 0;
+    @include typography.text-lg;
+    @include typography.semibold;
+    color: var(--gray-800);
+  }
+
+  .description {
+    @include typography.text-sm;
+    @include typography.regular;
+    color: var(--gray-400);
+  }
+
+  .cta {
+    min-width: 200px;
+  }
+}

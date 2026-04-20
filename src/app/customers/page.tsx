@@ -1,10 +1,12 @@
 import { Metadata } from 'next'
 
+import Customers from '@/pages/customers/customers'
+
 export const metadata: Metadata = {
   description: process.env.NEXT_PUBLIC_DESCRIPTION,
   title: 'Заказчики'
 }
 
-const Page = () => <div>Тут будет список Заказчиков</div>
+const Page = () => <Customers />
 
 export default Page

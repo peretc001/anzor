@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, startTransition, useActionState, useEffect, useState } from 'react'
-import { Button, Form, Input, message, Modal } from 'antd'
+import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
@@ -20,6 +20,7 @@ import ChangePassword from '@/modules/settings/components/changePassword/changeP
 import styles from './userForm.module.scss'
 
 import { signout } from '@/app/actions/auth'
+import { deleteAccount } from '@/app/actions/deleteAccount'
 import { updateProfile, type UpdateProfileState } from '@/app/actions/profile'
 
 interface IUserForm {
@@ -30,13 +31,13 @@ const initialState: UpdateProfileState = {}
 
 const UserForm: FC<IUserForm> = ({ user }) => {
   const t = useTranslations('settings')
-  const tHeader = useTranslations('header')
 
   const router = useRouter()
 
   const { isMobileMD } = useMatchMedia()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDeleteAccountPending, setIsDeleteAccountPending] = useState(false)
 
   const [state, formAction, isPending] = useActionState(updateProfile, initialState)
 
@@ -48,6 +49,31 @@ const UserForm: FC<IUserForm> = ({ user }) => {
 
   const handleChangePassword = () => {
     setIsModalOpen(true)
+  }
+
+  const isNextRedirectError = (error: unknown) =>
+    typeof error === 'object' &&
+    error !== null &&
+    'digest' in error &&
+    typeof (error as { digest: unknown }).digest === 'string' &&
+    (error as { digest: string }).digest.startsWith('NEXT_REDIRECT')
+
+  const handleDeleteAccount = async () => {
+    setIsDeleteAccountPending(true)
+
+    try {
+      const result = await deleteAccount()
+
+      if (!result.ok) {
+        message.error(t('user.deleteAccount.error'))
+      }
+    } catch (error) {
+      if (!isNextRedirectError(error)) {
+        message.error(t('user.deleteAccount.error'))
+      }
+    } finally {
+      setIsDeleteAccountPending(false)
+    }
   }
 
   const handleFinish = (values: { name: string; type: string }) => {
@@ -143,7 +169,7 @@ const UserForm: FC<IUserForm> = ({ user }) => {
 
       <div className={styles.profile}>
         <div className={styles.group}>
-          <span className={styles.label}>{t('user.email.label')}:</span>
+          <span className={styles.label}>{t('user.email.label')}</span>
           <span className={styles.value}>{user?.email}</span>
         </div>
 
@@ -152,9 +178,27 @@ const UserForm: FC<IUserForm> = ({ user }) => {
         </Button>
       </div>
 
-      <Button className={styles.logout} danger type="default" onClick={() => void signout()}>
-        {tHeader('logout')}
-      </Button>
+      <br />
+
+      <div className={styles.actions}>
+        <Button danger type="default" onClick={() => void signout()}>
+          {t('user.logout')}
+        </Button>
+        <Popconfirm
+          className={styles.confirm}
+          cancelText={t('user.deleteAccount.confirmCancel')}
+          description={t('user.deleteAccount.confirmDescription')}
+          okButtonProps={{ danger: true, loading: isDeleteAccountPending }}
+          okText={t('user.deleteAccount.confirmOk')}
+          rootClassName={styles.confirm}
+          title={t('user.deleteAccount.confirmTitle')}
+          onConfirm={handleDeleteAccount}
+        >
+          <Button color="danger" loading={isDeleteAccountPending} variant="solid">
+            {t('user.delete')}
+          </Button>
+        </Popconfirm>
+      </div>
 
       {isModalOpen ? (
         <Modal

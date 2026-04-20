@@ -19,13 +19,6 @@
     gap: 24px;
     margin-bottom: 16px;
   }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 8px;
-  }
 }
 
 
@@ -50,8 +43,20 @@
   }
 }
 
-.logout {
-  margin-top: 24px;
+.actions {
+  margin-top: 8px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  button {
+    width: 100%;
+  }
+}
+
+.confirm {
+  white-space: pre-line;
 }
 
 .modal {

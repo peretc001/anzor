@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import Customers from '@/pages/customers/customers'
+import Customers from '@/widgets/customers/customers'
 
 export const metadata: Metadata = {
   description: process.env.NEXT_PUBLIC_DESCRIPTION,

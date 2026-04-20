@@ -43,7 +43,7 @@ const SignupPage: FC<ISignupPage> = ({ actionClose }) => {
     if (state?.id) {
       actionClose()
       eventSignUp()
-      redirect('/')
+      redirect('/settings')
     }
   }, [state?.id])
 

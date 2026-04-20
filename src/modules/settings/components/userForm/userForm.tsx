@@ -19,6 +19,7 @@ import ChangePassword from '@/modules/settings/components/changePassword/changeP
 
 import styles from './userForm.module.scss'
 
+import { signout } from '@/app/actions/auth'
 import { updateProfile, type UpdateProfileState } from '@/app/actions/profile'
 
 interface IUserForm {
@@ -29,6 +30,8 @@ const initialState: UpdateProfileState = {}
 
 const UserForm: FC<IUserForm> = ({ user }) => {
   const t = useTranslations('settings')
+  const tHeader = useTranslations('header')
+
   const router = useRouter()
 
   const { isMobileMD } = useMatchMedia()
@@ -148,6 +151,10 @@ const UserForm: FC<IUserForm> = ({ user }) => {
           {t('user.change.title')}
         </Button>
       </div>
+
+      <Button className={styles.logout} danger type="default" onClick={() => void signout()}>
+        {tHeader('logout')}
+      </Button>
 
       {isModalOpen ? (
         <Modal

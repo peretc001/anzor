@@ -6,6 +6,7 @@ import { Button, Input, Modal } from 'antd'
 import { IProject } from '@/shared/interfaces'
 
 import Card from '@/modules/projects/components/card/card'
+import Empty from '@/modules/projects/components/empty/empty'
 import AddProject from '@/modules/projects/components/form/form'
 
 import styles from './main.module.scss'
@@ -57,19 +58,49 @@ const Main = ({ projects }: MainProps) => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <Button className={styles.addButton} type="primary" onClick={handleOpenCreateModal}>
-          {UI_ADD_PROJECT}
-        </Button>
-        <Input
-          className={styles.filter}
-          placeholder={UI_SEARCH_PLACEHOLDER}
-          value={query}
-          onChange={event => {
-            setQuery(event.target.value)
-          }}
-        />
-      </div>
+      {projects.length > 0 ? (
+        <div className={styles.header}>
+          <Button className={styles.addButton} type="primary" onClick={handleOpenCreateModal}>
+            {UI_ADD_PROJECT}
+          </Button>
+          <Input
+            className={styles.filter}
+            placeholder={UI_SEARCH_PLACEHOLDER}
+            value={query}
+            onChange={event => {
+              setQuery(event.target.value)
+            }}
+          />
+        </div>
+      ) : (
+        <Empty onAddProject={handleOpenCreateModal} />
+      )}
+
+      {projects.length > 0 ? (
+        <div className={styles.container}>
+          {activeProjects.length > 0 ? (
+            <section className={styles.section}>
+              <h2 className={styles.title}>{UI_SECTION_ACTIVE}</h2>
+              <div className={styles.list}>
+                {activeProjects.map(project => (
+                  <Card key={project.id} project={project} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {archiveProjects.length > 0 ? (
+            <section className={styles.section}>
+              <h2 className={styles.title}>{UI_SECTION_ARCHIVE}</h2>
+              <div className={styles.list}>
+                {archiveProjects.map(project => (
+                  <Card key={project.id} project={project} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </div>
+      ) : null}
 
       <Modal
         destroyOnHidden
@@ -80,30 +111,6 @@ const Main = ({ projects }: MainProps) => {
       >
         <AddProject onCancel={handleCloseCreateModal} />
       </Modal>
-
-      <div className={styles.container}>
-        {activeProjects.length > 0 ? (
-          <section className={styles.section}>
-            <h2 className={styles.title}>{UI_SECTION_ACTIVE}</h2>
-            <div className={styles.list}>
-              {activeProjects.map(project => (
-                <Card key={project.id} project={project} />
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        {archiveProjects.length > 0 ? (
-          <section className={styles.section}>
-            <h2 className={styles.title}>{UI_SECTION_ARCHIVE}</h2>
-            <div className={styles.list}>
-              {archiveProjects.map(project => (
-                <Card key={project.id} project={project} />
-              ))}
-            </div>
-          </section>
-        ) : null}
-      </div>
     </div>
   )
 }

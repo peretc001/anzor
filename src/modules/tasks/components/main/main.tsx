@@ -275,49 +275,51 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
         <Button type="primary" onClick={handleOpenModal}>
           {ADD_TASK_LABEL}
         </Button>
-        <div className={styles.filters}>
-          <span className={styles.caption}>Фильтр:</span>
+        {tasks.length > 0 && (
+          <div className={styles.filters}>
+            <span className={styles.caption}>Фильтр:</span>
 
-          <Input
-            className={styles.filterSearch}
-            allowClear
-            placeholder="Номер или название"
-            value={searchText}
-            onChange={e => setSearchText(e.target.value)}
-          />
-          <Select
-            className={styles.filterSelect}
-            allowClear
-            options={TASK_TYPES.map(t => ({ label: t.label, value: t.value }))}
-            placeholder="Тип задачи"
-            value={typeFilter}
-            onChange={v => setTypeFilter(v)}
-          />
-          <Select
-            className={styles.filterSelect}
-            allowClear
-            options={EXECUTOR_TYPES.map(e => ({ label: e.label, value: e.value }))}
-            placeholder="Исполнитель"
-            value={executorFilter}
-            onChange={v => setExecutorFilter(v)}
-          />
-          <Select
-            className={styles.filterSelect}
-            allowClear
-            options={STATUS_TYPES.map(s => ({ label: s.label, value: s.value }))}
-            placeholder="Статус"
-            value={statusFilter}
-            onChange={v => setStatusFilter(v)}
-          />
-          <Select
-            className={styles.filterSelect}
-            allowClear
-            options={PRIORITY_TYPES.map(p => ({ label: p.label, value: p.value }))}
-            placeholder="Приоритет"
-            value={priorityFilter}
-            onChange={v => setPriorityFilter(v)}
-          />
-        </div>
+            <Input
+              className={styles.filterSearch}
+              allowClear
+              placeholder="Номер или название"
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
+            />
+            <Select
+              className={styles.filterSelect}
+              allowClear
+              options={TASK_TYPES.map(t => ({ label: t.label, value: t.value }))}
+              placeholder="Тип задачи"
+              value={typeFilter}
+              onChange={v => setTypeFilter(v)}
+            />
+            <Select
+              className={styles.filterSelect}
+              allowClear
+              options={EXECUTOR_TYPES.map(e => ({ label: e.label, value: e.value }))}
+              placeholder="Исполнитель"
+              value={executorFilter}
+              onChange={v => setExecutorFilter(v)}
+            />
+            <Select
+              className={styles.filterSelect}
+              allowClear
+              options={STATUS_TYPES.map(s => ({ label: s.label, value: s.value }))}
+              placeholder="Статус"
+              value={statusFilter}
+              onChange={v => setStatusFilter(v)}
+            />
+            <Select
+              className={styles.filterSelect}
+              allowClear
+              options={PRIORITY_TYPES.map(p => ({ label: p.label, value: p.value }))}
+              placeholder="Приоритет"
+              value={priorityFilter}
+              onChange={v => setPriorityFilter(v)}
+            />
+          </div>
+        )}
       </div>
 
       {tasks.length > 0 && filteredTasks.length === 0 && (

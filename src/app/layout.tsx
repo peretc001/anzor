@@ -34,7 +34,6 @@ const RootLayout = async ({
 }>) => {
   const locale = await getLocale()
   const menuUser = mapSessionUserForMenu(await getCurrentUser())
-  console.log(menuUser)
 
   return (
     <html lang={locale}>

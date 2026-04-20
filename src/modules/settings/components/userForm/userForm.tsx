@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, startTransition, useActionState, useEffect, useState } from 'react'
-import { Button, Form, Input, message, Modal, Upload } from 'antd'
+import { Button, Form, Input, message, Modal } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 

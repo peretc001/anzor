@@ -23,3 +23,205 @@
     gap: 8px;
   }
 }
+
+.wizard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 16px;
+
+  :global(.ant-form-item-label > label) {
+    @include typography.text-sm;
+    color: var(--gray-500);
+  }
+
+  :global(.ant-form-item-extra) {
+    @include typography.text-xs;
+    color: var(--gray-500);
+    margin-top: 8px;
+  }
+}
+
+.stepper {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.stepperTrack {
+  display: flex;
+  gap: 6px;
+}
+
+.stepperDot {
+  background: var(--gray-200);
+  border-radius: 999px;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+}
+
+.stepperActive {
+  background: var(--blue-500);
+  border-radius: 999px;
+  display: inline-block;
+  height: 8px;
+  min-width: 28px;
+}
+
+.stepperCaption {
+  @include typography.text-sm;
+  @include typography.regular;
+  color: var(--gray-400);
+}
+
+.stepPanels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 1px;
+}
+
+.stepVisible {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepHidden {
+  display: none;
+}
+
+.sectionHead {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.sectionIcon {
+  align-items: center;
+  border-radius: 12px;
+  display: flex;
+  flex: none;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.sectionIconBlue {
+  background: var(--blue-50);
+  color: var(--blue-500);
+}
+
+.sectionIconGreen {
+  background: var(--green-50);
+  color: var(--green-600);
+}
+
+.sectionIconSvg {
+  height: 22px;
+  width: 22px;
+}
+
+.sectionTitle {
+  @include typography.text-md;
+  @include typography.semibold;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.sectionSubtitle {
+  @include typography.text-sm;
+  @include typography.regular;
+  color: var(--gray-400);
+  margin: 0;
+}
+
+.hint {
+  @include typography.text-xs;
+  @include typography.regular;
+  color: var(--gray-400);
+  margin: -8px 0 0;
+}
+
+.typeField {
+  width: 100%;
+  max-width: 200px;
+}
+
+.typeRadioGroup {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.typeRadioOption:global(.ant-radio-wrapper) {
+  text-align: center;
+}
+
+.typeRadioOption :global(.ant-radio) {
+  display: none;
+}
+
+.typeCard {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--background-light);
+  border: 1px solid transparent;
+  border-radius: var(--rounded-md);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+}
+
+.typeRadioOption:hover .typeCard {
+  background: var(--blue-50);
+}
+
+.typeRadioOption:global(.ant-radio-wrapper):focus-within .typeCard {
+  outline: none;
+}
+
+.typeRadioOption:global(.ant-radio-wrapper-checked) .typeCard {
+  background: var(--blue-50);
+  border-color: var(--blue-500);
+}
+
+.typeRadioOption:global(.ant-radio-wrapper-checked) .typeCaption {
+  color: var(--main-black);
+}
+
+.icon {
+  color: var(--blue-500);
+  flex: none;
+  height: 28px;
+  width: 28px;
+}
+
+.typeCaption {
+  @include typography.text-xs;
+  @include typography.regular;
+  color: var(--gray-500);
+  text-align: center;
+}
+
+.wizardFooterSingle {
+  margin-top: 8px;
+}
+
+.wizardFooterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.footerIcon {
+  height: 18px;
+  margin-left: 4px;
+  vertical-align: -4px;
+  width: 18px;
+}

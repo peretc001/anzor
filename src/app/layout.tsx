@@ -4,13 +4,14 @@ import { Open_Sans } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 
+import UserStoreSync from '@/shared/components/user/userStoreSync'
+
 import { Amplitude } from '@/lib/amplitude'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { mapSessionUserForMenu } from '@/lib/mapSessionUserForMenu'
 import UseQueryProviders from '@/lib/useQueryProviders'
 
 import Menu from '@/layout/menu/menu'
-import UserStoreSync from '@/shared/components/user/userStoreSync'
 import Metrika from '@/layout/metrica'
 import AuthModal from '@/layout/modals/authModal'
 
@@ -33,6 +34,7 @@ const RootLayout = async ({
 }>) => {
   const locale = await getLocale()
   const menuUser = mapSessionUserForMenu(await getCurrentUser())
+  console.log(menuUser)
 
   return (
     <html lang={locale}>
@@ -41,9 +43,11 @@ const RootLayout = async ({
           <UseQueryProviders>
             <UserStoreSync initialMenuUser={menuUser} />
             <div className="layout-container">
-              <div className="menu">
-                <Menu />
-              </div>
+              {menuUser.id ? (
+                <div className="menu">
+                  <Menu />
+                </div>
+              ) : null}
 
               <div className="page">{children}</div>
             </div>

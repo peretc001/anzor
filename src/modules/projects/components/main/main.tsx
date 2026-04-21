@@ -73,7 +73,7 @@ const Main = ({ projects }: MainProps) => {
           />
         </div>
       ) : (
-        <Empty onAddProject={handleOpenCreateModal} />
+        <Empty onClick={handleOpenCreateModal} />
       )}
 
       {projects.length > 0 ? (

@@ -4,21 +4,21 @@ import React, { FC } from 'react'
 import { Button } from 'antd'
 import { useTranslations } from 'next-intl'
 
-import { BuildingOffice2Icon } from '@heroicons/react/24/outline'
+import { ListBulletIcon } from '@heroicons/react/24/outline'
 
 import styles from './empty.module.scss'
 
-interface IEmptyProject {
+interface IEmptyTasks {
   readonly onClick: () => void
 }
 
-const Empty: FC<IEmptyProject> = ({ onClick }) => {
-  const t = useTranslations('projects.empty')
+const Empty: FC<IEmptyTasks> = ({ onClick }) => {
+  const t = useTranslations('tasks.empty')
 
   return (
     <div className={styles.root}>
       <div className={styles.iconWrap}>
-        <BuildingOffice2Icon className={styles.icon} aria-hidden />
+        <ListBulletIcon className={styles.icon} aria-hidden />
       </div>
       <div className={styles.text}>
         <h2 className={styles.title}>{t('title')}</h2>

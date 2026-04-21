@@ -14,6 +14,7 @@ import { addGalleryApi } from '@/modules/gallery/api/addGalleryApi'
 import { saveTaskApi } from '@/modules/tasks/api/saveTaskApi'
 import { updateTaskApi } from '@/modules/tasks/api/updateTaskApi'
 import Card from '@/modules/tasks/components/card/card'
+import Empty from '@/modules/tasks/components/empty/empty'
 import type { TaskFormValues } from '@/modules/tasks/components/form/form'
 import Form from '@/modules/tasks/components/form/form'
 
@@ -271,11 +272,12 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <Button type="primary" onClick={handleOpenModal}>
-          {ADD_TASK_LABEL}
-        </Button>
-        {tasks.length > 0 && (
+      {tasks.length > 0 && (
+        <div className={styles.header}>
+          <Button type="primary" onClick={handleOpenModal}>
+            {ADD_TASK_LABEL}
+          </Button>
+
           <div className={styles.filters}>
             <span className={styles.caption}>Фильтр:</span>
 
@@ -319,8 +321,10 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
               onChange={v => setPriorityFilter(v)}
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {tasks.length === 0 && <Empty onClick={handleOpenModal} />}
 
       {tasks.length > 0 && filteredTasks.length === 0 && (
         <p className={styles.emptyFiltered}>Нет задач, подходящих под фильтры.</p>

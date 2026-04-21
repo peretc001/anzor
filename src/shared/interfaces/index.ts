@@ -9,16 +9,41 @@ export interface IUser {
   user_metadata?: Record<string, unknown>
 }
 
+export interface IContractor {
+  id: number
+  email?: null | string
+  inn?: null | string
+  name?: null | string
+  phone?: null | string
+}
+
+export interface ICustomer {
+  id: number
+  email?: null | string
+  name?: null | string
+}
+
 export interface IProject {
   id: number
   active: boolean
   address?: string
-  contractor?: string
-  customer?: string
+  /** Подтягивается в GET `/api/projects/[id]` при непустом `contractor_id`. */
+  contractor?: IContractor | null
+  contractor_id?: null | number
+  /** Подтягивается в GET `/api/projects/[id]` при непустом `customer_id`. */
+  customer?: ICustomer | null
+  customer_id?: null | number
   name: string
   photos_count?: number
   tasks_count?: number
   type: 'commerce' | 'flat' | 'house'
+}
+
+/** Вложенные `contractor` / `customer` — только в теле сохранения (upsert → `*_id`). */
+export type SaveProjectPayload = Omit<IProject, 'id' | 'photos_count' | 'tasks_count'> & {
+  id?: number
+  contractor?: (Partial<IContractor> & { id?: number }) | null
+  customer?: (Partial<ICustomer> & { id?: number }) | null
 }
 
 export interface IGallery {

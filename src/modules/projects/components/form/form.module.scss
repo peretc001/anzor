@@ -1,10 +1,10 @@
 @use "@/styles/typography";
 
-.root {
+.editForm {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 16px;
 
   :global(.ant-form-item-label > label) {
     @include typography.text-sm;
@@ -17,11 +17,101 @@
     margin-top: 8px;
   }
 
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+  .typeField {
+    max-width: 100%;
   }
+}
+
+.accordionCard {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+}
+
+.accordionTrigger {
+  align-items: center;
+  background: var(--background-light);
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 14px 16px;
+  text-align: left;
+  width: 100%;
+
+  .sectionHead {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.accordionHeadText {
+  min-width: 0;
+}
+
+.accordionChevron {
+  color: var(--gray-400);
+  flex: none;
+  height: 20px;
+  width: 20px;
+}
+
+.accordionPanel {
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.twoColumns {
+  display: grid;
+  gap: 12px 16px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 520px) {
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.twoColItem {
+  margin-bottom: 0 !important;
+}
+
+.labelWithIcon {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.labelIcon {
+  color: var(--gray-400);
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+
+.deleteContractor {
+  align-self: flex-start;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+.deleteContractorIcon {
+  height: 16px;
+  width: 16px;
+}
+
+.editFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 
 .wizard {

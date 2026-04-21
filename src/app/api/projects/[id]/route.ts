@@ -7,6 +7,20 @@ import { createClient } from '@/lib/supabaseServer'
 
 type RouteContext = { params: Promise<{ id: string }> }
 
+function rowPartyId(value: unknown): number | null {
+  if (value == null) {
+    return null
+  }
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return value
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value)
+    return Number.isNaN(n) ? null : n
+  }
+  return null
+}
+
 export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params
   const projectId = Number(id)
@@ -37,7 +51,41 @@ export async function GET(_request: Request, context: RouteContext) {
     return NextResponse.json({ data: null, error: 'Project not found' }, { status: 404 })
   }
 
-  return NextResponse.json({ data })
+  const contractorId = rowPartyId(data.contractor_id)
+  const customerId = rowPartyId(data.customer_id)
+
+  let contractor = null
+  let customer = null
+
+  if (contractorId != null) {
+    const { data: contractorRow } = await supabase
+      .from('contractors')
+      .select('id, name, inn, email, phone')
+      .eq('id', contractorId)
+      .eq('owner_id', user.id)
+      .maybeSingle()
+
+    contractor = contractorRow
+  }
+
+  if (customerId != null) {
+    const { data: customerRow } = await supabase
+      .from('customers')
+      .select('id, name, email')
+      .eq('id', customerId)
+      .eq('owner_id', user.id)
+      .maybeSingle()
+
+    customer = customerRow
+  }
+
+  return NextResponse.json({
+    data: {
+      ...data,
+      contractor,
+      customer
+    }
+  })
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {

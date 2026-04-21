@@ -1,9 +1,8 @@
-import { IProject } from '@/shared/interfaces'
+import type { IProject, SaveProjectPayload } from '@/shared/interfaces'
 
 import serverApi from '@/lib/serverApi'
 
-/** С `id` — обновление, без — создание (один POST на `projects/list`). */
-export type SaveProjectPayload = Omit<IProject, 'id'> & { id?: number }
+export type { SaveProjectPayload }
 
 export const saveProjectApi = async (project: SaveProjectPayload) => {
   try {

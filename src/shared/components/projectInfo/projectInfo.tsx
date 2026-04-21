@@ -41,9 +41,11 @@ const ProjectInfo: FC<IProjectInfo> = ({ project, tasks }) => (
       <p className={styles.address}>{project.address}</p>
 
       <div className={styles.parties}>
-        {project.customer ? <span className={styles.customer}>{project.customer}</span> : null}
-        {project.contractor ? (
-          <span className={styles.contractor}>{project.contractor}</span>
+        {project.customer?.name ? (
+          <span className={styles.customer}>{project.customer.name}</span>
+        ) : null}
+        {project.contractor?.name ? (
+          <span className={styles.contractor}>{project.contractor.name}</span>
         ) : null}
       </div>
     </div>

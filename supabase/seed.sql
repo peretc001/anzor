@@ -63,13 +63,30 @@ begin
   );
 end $$;
 
+-- Подрядчики и заказчики (связь с проектами через contractor_id / customer_id)
+insert into public.contractors (id, name, owner_id) values
+  (9001, 'ООО «СтройМастер»', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9002, 'ИП Мельников А.А.', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9003, 'ООО «МонолитСервис»', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9004, 'ИП Козлов Д.Н.', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid)
+on conflict (id) do nothing;
+
+insert into public.customers (id, name, owner_id) values
+  (9101, 'Иванова Мария', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9102, 'Мельникова Светлана', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9103, 'Красовский Игорь', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9104, 'Смирнов Павел', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9105, 'Саркисян Армен', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid),
+  (9106, 'Волкова Анна', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid)
+on conflict (id) do nothing;
+
 -- Моки из src/shared/store/projects.ts (owner_id = сид-пользователь выше)
 insert into public.projects (
   id,
   active,
   address,
-  contractor,
-  customer,
+  contractor_id,
+  customer_id,
   type,
   name,
   owner_id
@@ -78,9 +95,9 @@ insert into public.projects (
     5,
     true,
     'г. Москва, ул. Тверская, д. 12, кв. 45',
-    'ООО «СтройМастер»',
-    'Иванова Мария',
-    'building',
+    9001,
+    9101,
+    'flat',
     'Квартира на Тверской',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   ),
@@ -89,8 +106,8 @@ insert into public.projects (
     true,
     'Московская обл., Одинцовский р-н, пос. Горки-2',
     null,
-    'Мельникова Светлана',
-    'home',
+    9102,
+    'house',
     'Загородный дом Рублёвка',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   ),
@@ -99,8 +116,8 @@ insert into public.projects (
     true,
     'г. Краснодар, ул. Беличенок, д. 88, кв. 657',
     null,
-    'Красовский Игорь',
-    'building',
+    9103,
+    'flat',
     'Квартира ЖК Самолет',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   ),
@@ -108,9 +125,9 @@ insert into public.projects (
     2,
     false,
     'г. Краснодар, ст. Елизаветнинская, д. 7',
-    'ИП Мельников А.А.',
-    'Смирнов Павел',
-    'home',
+    9002,
+    9104,
+    'house',
     'Дом в Елизаветке',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   ),
@@ -118,9 +135,9 @@ insert into public.projects (
     1,
     false,
     'г. Екатеринбург, ул. Московская, д. 8, кв. 21',
-    'ООО «МонолитСервис»',
-    'Саркисян Армен',
-    'building',
+    9003,
+    9105,
+    'flat',
     'Квартира на Московской',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   ),
@@ -128,9 +145,9 @@ insert into public.projects (
     0,
     false,
     'Краснодарский край, п. Лазаревское, ул. Морская, д. 2',
-    'ИП Козлов Д.Н.',
-    'Волкова Анна',
-    'home',
+    9004,
+    9106,
+    'house',
     'Дом у моря',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid
   )

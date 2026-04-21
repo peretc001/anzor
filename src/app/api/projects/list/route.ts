@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { getCurrentUser } from '@/lib/getCurrentUser'
+import {
+  readNumericId,
+  upsertContractorForProject,
+  upsertCustomerForProject
+} from '@/lib/projectPartyUpsert'
 import { createClient } from '@/lib/supabaseServer'
 
 export async function GET() {
@@ -73,10 +78,10 @@ export async function GET() {
     photosByProject.set(id, (photosByProject.get(id) ?? 0) + 1)
   }
 
-  const enriched = data.map(project => ({
-    ...project,
-    photos_count: photosByProject.get(project.id) ?? 0,
-    tasks_count: tasksByProject.get(project.id) ?? 0
+  const enriched = data.map(row => ({
+    ...row,
+    photos_count: photosByProject.get(row.id) ?? 0,
+    tasks_count: tasksByProject.get(row.id) ?? 0
   }))
 
   return NextResponse.json({ data: enriched })
@@ -95,17 +100,33 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null)
-  const project = body?.project
+  const project = body?.project as Record<string, unknown> | undefined
 
-  if (!project?.name) {
+  if (!project?.name || typeof project.name !== 'string') {
     return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
   }
 
+  const prevContractorId = readNumericId(project.contractor_id)
+  const prevCustomerId = readNumericId(project.customer_id)
+
+  const contractorId = await upsertContractorForProject(
+    supabase,
+    user.id,
+    project.contractor,
+    prevContractorId
+  )
+  const customerId = await upsertCustomerForProject(
+    supabase,
+    user.id,
+    project.customer,
+    prevCustomerId
+  )
+
   const row = {
     active: Boolean(project.active),
-    address: project.address ?? null,
-    contractor: project.contractor ?? null,
-    customer: project.customer ?? null,
+    address: (typeof project.address === 'string' ? project.address : null) ?? null,
+    contractor_id: contractorId,
+    customer_id: customerId,
     name: project.name,
     type: project.type
   }
@@ -126,6 +147,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ data: null, error: error.message }, { status })
     }
 
+    if (!updatedProject) {
+      return NextResponse.json({ data: null })
+    }
+
     return NextResponse.json({ data: updatedProject })
   }
 
@@ -141,6 +166,10 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
+  }
+
+  if (!insertedProject) {
+    return NextResponse.json({ data: null })
   }
 
   return NextResponse.json({ data: insertedProject })

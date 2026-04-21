@@ -18,7 +18,7 @@ export interface IProject {
   name: string
   photos_count?: number
   tasks_count?: number
-  type: 'flat' | 'house'
+  type: 'commerce' | 'flat' | 'house'
 }
 
 export interface IGallery {

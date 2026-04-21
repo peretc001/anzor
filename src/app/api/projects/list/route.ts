@@ -34,8 +34,16 @@ export async function GET() {
 
   const [{ data: taskRows, error: tasksError }, { data: galleryRows, error: galleryError }] =
     await Promise.all([
-      supabase.from('tasks').select('project_id').eq('owner_id', user.id).in('project_id', projectIds),
-      supabase.from('gallery').select('project_id').eq('owner_id', user.id).in('project_id', projectIds)
+      supabase
+        .from('tasks')
+        .select('project_id')
+        .eq('owner_id', user.id)
+        .in('project_id', projectIds),
+      supabase
+        .from('gallery')
+        .select('project_id')
+        .eq('owner_id', user.id)
+        .in('project_id', projectIds)
     ])
 
   if (tasksError || galleryError) {
@@ -89,7 +97,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null)
   const project = body?.project
 
-  if (!project?.name || (project?.type !== 'flat' && project?.type !== 'house')) {
+  if (!project?.name) {
     return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
   }
 

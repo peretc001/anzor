@@ -1,24 +1,30 @@
 import React, { FC } from 'react'
 
-import { BuildingOffice2Icon, ExclamationTriangleIcon, HomeIcon } from '@heroicons/react/24/outline'
+import {
+  BuildingOffice2Icon,
+  BuildingStorefrontIcon,
+  ExclamationTriangleIcon,
+  HomeIcon
+} from '@heroicons/react/24/outline'
 
 import { IProject } from '@/shared/interfaces'
 
 import styles from './projectInfo.module.scss'
 
 interface IProjectInfo {
-  readonly photos?: number
   readonly project: IProject
   readonly tasks?: number
 }
 
-const ProjectInfo: FC<IProjectInfo> = ({ photos, project, tasks }) => (
+const ProjectInfo: FC<IProjectInfo> = ({ project, tasks }) => (
   <div className={styles.root}>
     <div className={styles.type}>
       {project.type === 'flat' ? (
         <BuildingOffice2Icon className={styles.icon} />
-      ) : (
+      ) : project.type === 'house' ? (
         <HomeIcon className={styles.icon} />
+      ) : (
+        <BuildingStorefrontIcon className={styles.icon} />
       )}
     </div>
 

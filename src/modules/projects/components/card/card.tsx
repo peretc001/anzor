@@ -24,7 +24,7 @@ const Card: FC<ICardProps> = ({ project }) => (
       className={cns(styles.card, !project.active && styles.archive)}
       href={paths.projects + '/' + project.id}
     >
-      <ProjectInfo photos={project.photos_count} project={project} tasks={project.tasks_count} />
+      <ProjectInfo project={project} tasks={project.tasks_count} />
     </Link>
   </div>
 )

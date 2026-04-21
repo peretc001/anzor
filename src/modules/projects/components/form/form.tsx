@@ -6,7 +6,12 @@ import { useRouter } from 'next/navigation'
 
 import { useQueryClient } from '@tanstack/react-query'
 
-import { BuildingOffice2Icon, HomeIcon, UserIcon } from '@heroicons/react/24/outline'
+import {
+  BuildingOffice2Icon,
+  BuildingStorefrontIcon,
+  HomeIcon,
+  UserIcon
+} from '@heroicons/react/24/outline'
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 
 import { IProject } from '@/shared/interfaces'
@@ -213,6 +218,12 @@ const CreateProjectWizard: FC<Pick<IFormProps, 'onCancel'>> = ({ onCancel }) => 
                   <HomeIcon className={styles.icon} aria-hidden />
                 </span>
                 <span className={styles.typeCaption}>Дом</span>
+              </Radio>
+              <Radio className={styles.typeRadioOption} value="commerce">
+                <span className={styles.typeCard}>
+                  <BuildingStorefrontIcon className={styles.icon} aria-hidden />
+                </span>
+                <span className={styles.typeCaption}>Коммерция</span>
               </Radio>
             </Radio.Group>
           </Form.Item>

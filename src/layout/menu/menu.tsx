@@ -55,10 +55,10 @@ const Menu = () => {
   return (
     <aside className={styles.root}>
       <div className={styles.top}>
-        <div className={styles.brand}>
+        <Link className={styles.brand} href="/">
           <div className={styles.logo}>АНЗОР</div>
           <div className={styles.subtitle}>авторский надзор</div>
-        </div>
+        </Link>
 
         <nav aria-label="Навигация">
           <ul className={styles.menuList}>

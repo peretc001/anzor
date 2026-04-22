@@ -1,3 +1,5 @@
+@use "@/styles/typography";
+
 .root {
   width: 100%;
   display: flex;
@@ -35,9 +37,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 1.2;
+    @include typography.text-sm;
+    @include typography.bold;
     color: var(--main-black);
   }
 

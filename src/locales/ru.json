@@ -136,6 +136,30 @@
     }
   },
   "contractors": {
+    "form": {
+      "title": "Исполнитель",
+      "subtitle": "Строительная компания или ИП",
+      "name": {
+        "label": "Наименование компании",
+        "placeholder": "ООО \"СтройМастер\" или ИП Петров И.В.",
+        "require": "Обязательное поле"
+      },
+      "inn": {
+        "label": "ИНН",
+        "placeholder": "7701234567",
+        "validate": "Введите корректный ИНН (10 или 12 цифр)"
+      },
+      "phone": {
+        "label": "Телефон",
+        "placeholder": "+7 (495) 123-45-67"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "office@company.ru",
+        "validate": "Введите корректный email"
+      },
+      "submit": "Сохранить"
+    },
     "empty": {
       "title": "Исполнители",
       "description": "Раздел в разработке"

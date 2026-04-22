@@ -40,6 +40,7 @@ const AuthModal = () => {
   return (
     <Modal
       className={styles.root}
+      destroyOnHidden
       footer={null}
       open={isModalOpen}
       width={isMobileMD ? '100%' : '450px'}

@@ -1,11 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import {
-  readNumericId,
-  upsertContractorForProject,
-  upsertCustomerForProject
-} from '@/lib/projectPartyUpsert'
 import { createClient } from '@/lib/supabaseServer'
 
 export async function GET() {
@@ -85,92 +80,4 @@ export async function GET() {
   }))
 
   return NextResponse.json({ data: enriched })
-}
-
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-    error: authError
-  } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
-  }
-
-  const body = await request.json().catch(() => null)
-  const project = body?.project as Record<string, unknown> | undefined
-
-  if (!project?.name || typeof project.name !== 'string') {
-    return NextResponse.json({ data: null, error: 'Invalid project payload' }, { status: 400 })
-  }
-
-  const prevContractorId = readNumericId(project.contractor_id)
-  const prevCustomerId = readNumericId(project.customer_id)
-
-  const contractorId = await upsertContractorForProject(
-    supabase,
-    user.id,
-    project.contractor,
-    prevContractorId
-  )
-  const customerId = await upsertCustomerForProject(
-    supabase,
-    user.id,
-    project.customer,
-    prevCustomerId
-  )
-
-  const row = {
-    active: Boolean(project.active),
-    address: (typeof project.address === 'string' ? project.address : null) ?? null,
-    contractor_id: contractorId,
-    customer_id: customerId,
-    name: project.name,
-    type: project.type
-  }
-
-  const isUpdate = typeof project.id === 'number' && !Number.isNaN(project.id)
-
-  if (isUpdate) {
-    const { data: updatedProject, error } = await supabase
-      .from('projects')
-      .update(row)
-      .eq('id', project.id)
-      .eq('owner_id', user.id)
-      .select('*')
-      .single()
-
-    if (error) {
-      const status = error.code === 'PGRST116' ? 404 : 500
-      return NextResponse.json({ data: null, error: error.message }, { status })
-    }
-
-    if (!updatedProject) {
-      return NextResponse.json({ data: null })
-    }
-
-    return NextResponse.json({ data: updatedProject })
-  }
-
-  const { data: insertedProject, error } = await supabase
-    .from('projects')
-    .insert({
-      id: Date.now(),
-      ...row,
-      owner_id: user.id
-    })
-    .select('*')
-    .single()
-
-  if (error) {
-    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
-  }
-
-  if (!insertedProject) {
-    return NextResponse.json({ data: null })
-  }
-
-  return NextResponse.json({ data: insertedProject })
 }

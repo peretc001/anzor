@@ -39,12 +39,18 @@ export interface IProject {
   type: 'commerce' | 'flat' | 'house'
 }
 
-/** Вложенные `contractor` / `customer` — только в теле сохранения (upsert → `*_id`). */
-export type SaveProjectPayload = Omit<IProject, 'id' | 'photos_count' | 'tasks_count'> & {
+export type SaveProjectPayload = {
   id?: number
-  contractor?: (Partial<IContractor> & { id?: number }) | null
-  customer?: (Partial<ICustomer> & { id?: number }) | null
-}
+} & Omit<
+  IProject,
+  | 'contractor'
+  | 'contractor_id'
+  | 'customer'
+  | 'customer_id'
+  | 'id'
+  | 'photos_count'
+  | 'tasks_count'
+>
 
 export interface IGallery {
   id: number

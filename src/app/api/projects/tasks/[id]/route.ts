@@ -65,7 +65,11 @@ export async function PATCH(request: Request, context: RouteContext) {
       return NextResponse.json({ data: null, error: 'Invalid description' }, { status: 400 })
     }
     updates.description =
-      body.description == null ? null : body.description.trim() === '' ? null : body.description.trim()
+      body.description == null
+        ? null
+        : body.description.trim() === ''
+          ? null
+          : body.description.trim()
   }
 
   if (body && 'executor' in body) {
@@ -165,7 +169,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const user = await getCurrentUser()
 
   if (!user?.id) {
-    return NextResponse.json({ error: 'Unauthorized', ok: false }, { status: 401 })
+    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
 
   const supabase = await createClient()

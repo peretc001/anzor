@@ -2,18 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { SaveProjectPayload } from '@/shared/interfaces'
 
+import { getCurrentUser } from '@/lib/getCurrentUser'
 import { createClient } from '@/lib/supabaseServer'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
 
-  const {
-    data: { user },
-    error: authError
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+  if (!user?.id) {
+    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
 
   const body = await request.json()

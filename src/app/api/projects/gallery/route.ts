@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const formData = await request.formData()
@@ -118,7 +118,10 @@ export async function POST(request: Request) {
       }
 
       if (!taskRow || Number(taskRow.project_id) !== projectId) {
-        return NextResponse.json({ error: 'Invalid task_id for this project', status: false }, { status: 400 })
+        return NextResponse.json(
+          { error: 'Invalid task_id for this project', status: false },
+          { status: 400 }
+        )
       }
     }
 
@@ -153,7 +156,7 @@ export async function DELETE(request: Request) {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const idParam = new URL(request.url).searchParams.get('id')
@@ -181,7 +184,7 @@ export async function DELETE(request: Request) {
     }
 
     const url = typeof row.url === 'string' ? row.url : ''
-    const rawTaskId = row.task_id as number | string | null | undefined
+    const rawTaskId = row.task_id as null | number | string | undefined
     const taskId =
       typeof rawTaskId === 'number' && Number.isInteger(rawTaskId) && rawTaskId > 0
         ? rawTaskId
@@ -210,7 +213,10 @@ export async function DELETE(request: Request) {
           .eq('owner_id', user.id)
 
         if (taskUpdateError) {
-          return NextResponse.json({ error: taskUpdateError.message, status: false }, { status: 500 })
+          return NextResponse.json(
+            { error: taskUpdateError.message, status: false },
+            { status: 500 }
+          )
         }
       }
     }
@@ -221,7 +227,11 @@ export async function DELETE(request: Request) {
       await s3DeleteObject(key).catch(() => {})
     }
 
-    const { error: deleteError } = await supabase.from('gallery').delete().eq('id', id).eq('owner_id', user.id)
+    const { error: deleteError } = await supabase
+      .from('gallery')
+      .delete()
+      .eq('id', id)
+      .eq('owner_id', user.id)
 
     if (deleteError) {
       return NextResponse.json({ error: deleteError.message, status: false }, { status: 500 })

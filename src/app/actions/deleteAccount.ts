@@ -25,7 +25,10 @@ export async function deleteAccount(): Promise<DeleteAccountResult> {
   const userId = user.id
   const admin = supabaseClient()
 
-  const { data: projects, error: projectsError } = await admin.from('projects').select('id').eq('owner_id', userId)
+  const { data: projects, error: projectsError } = await admin
+    .from('projects')
+    .select('id')
+    .eq('owner_id', userId)
 
   if (projectsError) {
     return { error: projectsError.message, ok: false }
@@ -84,11 +87,16 @@ export async function deleteAccount(): Promise<DeleteAccountResult> {
     }
   }
 
-  const { data: avatarObjects, error: listAvatarError } = await admin.storage.from('avatars').list(userId)
+  const { data: avatarObjects, error: listAvatarError } = await admin.storage
+    .from('avatars')
+    .list(userId)
 
   if (!listAvatarError && avatarObjects?.length) {
     const paths = avatarObjects.map(o => `${userId}/${o.name}`)
-    await admin.storage.from('avatars').remove(paths).catch(() => {})
+    await admin.storage
+      .from('avatars')
+      .remove(paths)
+      .catch(() => {})
   }
 
   const { error: deleteUserError } = await admin.auth.admin.deleteUser(userId)

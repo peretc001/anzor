@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabaseServer'
 
 type RouteContext = { params: Promise<{ id: string }> }
 
-function rowPartyId(value: unknown): number | null {
+function rowPartyId(value: unknown): null | number {
   if (value == null) {
     return null
   }
@@ -99,7 +99,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const user = await getCurrentUser()
 
   if (!user?.id) {
-    return NextResponse.json({ error: 'Unauthorized', ok: false }, { status: 401 })
+    return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
   }
 
   const supabase = await createClient()

@@ -21,7 +21,7 @@ function isPdfFile(file: File): boolean {
   return name.endsWith('.pdf')
 }
 
-function extensionForPdf(file: File): string | null {
+function extensionForPdf(file: File): null | string {
   const mime = (file.type || '').toLowerCase()
   if (ALLOWED_PDF_TYPES[mime]) {
     return ALLOWED_PDF_TYPES[mime]
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const formData = await request.formData()
@@ -129,8 +129,7 @@ export async function POST(request: Request) {
     }
 
     const uploadMime = (file.type || '').toLowerCase()
-    const contentType =
-      uploadMime && ALLOWED_PDF_TYPES[uploadMime] ? uploadMime : 'application/pdf'
+    const contentType = uploadMime && ALLOWED_PDF_TYPES[uploadMime] ? uploadMime : 'application/pdf'
 
     await s3UploadFile({
       key,
@@ -162,7 +161,7 @@ export async function DELETE(request: Request) {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const idParam = new URL(request.url).searchParams.get('id')
@@ -196,7 +195,11 @@ export async function DELETE(request: Request) {
       await s3DeleteObject(key).catch(() => {})
     }
 
-    const { error: deleteError } = await supabase.from('documents').delete().eq('id', id).eq('owner_id', user.id)
+    const { error: deleteError } = await supabase
+      .from('documents')
+      .delete()
+      .eq('id', id)
+      .eq('owner_id', user.id)
 
     if (deleteError) {
       return NextResponse.json({ error: deleteError.message, status: false }, { status: 500 })

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import sharp from 'sharp'
 
 import { paths } from '@/constants'
+
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { s3DeleteObject, s3KeyFromStoredUrl, s3UploadFile } from '@/lib/s3'
 import { createClient } from '@/lib/supabaseServer'
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const formData = await request.formData()
@@ -104,7 +105,7 @@ export async function DELETE() {
     const user = await getCurrentUser()
 
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized', status: false }, { status: 401 })
+      return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const supabase = await createClient()

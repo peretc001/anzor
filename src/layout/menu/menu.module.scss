@@ -31,9 +31,10 @@
   border-bottom: 1px solid var(--gray-100);
 
   .logo {
-    @include typography.display-sm;
+    @include typography.text-lg;
     line-height: 1.1;
     @include typography.bold;
+    text-transform: uppercase;
     color: var(--main-blue);
   }
 

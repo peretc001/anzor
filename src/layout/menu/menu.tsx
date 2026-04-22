@@ -56,7 +56,7 @@ const Menu = () => {
     <aside className={styles.root}>
       <div className={styles.top}>
         <Link className={styles.brand} href="/">
-          <div className={styles.logo}>АНЗОР</div>
+          <div className={styles.logo}>{process.env.NEXT_PUBLIC_NAME}</div>
           <div className={styles.subtitle}>авторский надзор</div>
         </Link>
 

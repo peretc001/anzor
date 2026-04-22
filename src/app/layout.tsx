@@ -13,7 +13,7 @@ import UseQueryProviders from '@/lib/useQueryProviders'
 
 import Menu from '@/layout/menu/menu'
 import Metrika from '@/layout/metrica'
-import AuthModal from '@/layout/modals/authModal'
+import Modals from '@/layout/modals'
 
 import '@/styles/antd.design.scss'
 import '@/globals.scss'
@@ -51,13 +51,13 @@ const RootLayout = async ({
               <div className="page">{children}</div>
             </div>
 
-            <AuthModal />
+            <Modals />
 
-            <Amplitude />
+            {/*<Amplitude />*/}
 
-            <Suspense>
-              <Metrika />
-            </Suspense>
+            {/*<Suspense>*/}
+            {/*  <Metrika />*/}
+            {/*</Suspense>*/}
           </UseQueryProviders>
         </NextIntlClientProvider>
       </body>

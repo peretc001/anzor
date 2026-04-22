@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { Button, Input, Modal } from 'antd'
+import { useTranslations } from 'next-intl'
 
 import { IProject } from '@/shared/interfaces'
 
@@ -10,11 +11,6 @@ import Empty from '@/modules/projects/components/empty/empty'
 import AddProject from '@/modules/projects/components/form/form'
 
 import styles from './main.module.scss'
-
-const UI_ADD_PROJECT = 'Добавить объект'
-const UI_SEARCH_PLACEHOLDER = 'Поиск по названию и адресу'
-const UI_SECTION_ACTIVE = 'Объекты'
-const UI_SECTION_ARCHIVE = 'Завершенные'
 
 interface IProjectData extends IProject {
   photos_count: number
@@ -26,6 +22,8 @@ type MainProps = {
 }
 
 const Main = ({ projects }: MainProps) => {
+  const t = useTranslations('projects')
+
   const [query, setQuery] = useState('')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const normalizedQuery = query.trim().toLowerCase()
@@ -61,11 +59,11 @@ const Main = ({ projects }: MainProps) => {
       {projects.length > 0 ? (
         <div className={styles.header}>
           <Button className={styles.addButton} type="primary" onClick={handleOpenCreateModal}>
-            {UI_ADD_PROJECT}
+            {t('header.create')}
           </Button>
           <Input
             className={styles.filter}
-            placeholder={UI_SEARCH_PLACEHOLDER}
+            placeholder={t('header.search')}
             value={query}
             onChange={event => {
               setQuery(event.target.value)
@@ -80,7 +78,7 @@ const Main = ({ projects }: MainProps) => {
         <div className={styles.container}>
           {activeProjects.length > 0 ? (
             <section className={styles.section}>
-              <h2 className={styles.title}>{UI_SECTION_ACTIVE}</h2>
+              <h2 className={styles.title}>{t('list.all')}</h2>
               <div className={styles.list}>
                 {activeProjects.map(project => (
                   <Card key={project.id} project={project} />
@@ -91,7 +89,7 @@ const Main = ({ projects }: MainProps) => {
 
           {archiveProjects.length > 0 ? (
             <section className={styles.section}>
-              <h2 className={styles.title}>{UI_SECTION_ARCHIVE}</h2>
+              <h2 className={styles.title}>{t('list.archived')}</h2>
               <div className={styles.list}>
                 {archiveProjects.map(project => (
                   <Card key={project.id} project={project} />
@@ -106,7 +104,7 @@ const Main = ({ projects }: MainProps) => {
         destroyOnHidden
         footer={null}
         open={isCreateModalOpen}
-        title={UI_ADD_PROJECT}
+        title={t('header.create')}
         onCancel={handleCloseCreateModal}
       >
         <AddProject onCancel={handleCloseCreateModal} />

@@ -92,12 +92,18 @@
   "projects": {
     "header": {
       "all": "Все объекты",
+      "create": "Создать объект",
+      "search": "Поиск по названию и адресу",
       "edit": "Редактировать",
       "delete": "Удалить",
       "deleteConfirmTitle": "Удалить объект?",
       "deleteConfirmDescription": "Действие нельзя отменить",
       "deleteConfirmCancel": "Отмена",
       "deleteFailed": "Не удалось удалить объект"
+    },
+    "list": {
+      "all": "Объекты",
+      "archived": "Архивные"
     },
     "form": {
       "description": {

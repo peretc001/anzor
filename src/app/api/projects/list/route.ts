@@ -3,6 +3,20 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { createClient } from '@/lib/supabaseServer'
 
+function rowPartyId(value: unknown): null | number {
+  if (value == null) {
+    return null
+  }
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return value
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value)
+    return Number.isNaN(n) ? null : n
+  }
+  return null
+}
+
 export async function GET() {
   const supabase = await createClient()
 
@@ -32,23 +46,64 @@ export async function GET() {
 
   const projectIds = data.map(row => row.id)
 
-  const [{ data: taskRows, error: tasksError }, { data: galleryRows, error: galleryError }] =
-    await Promise.all([
-      supabase
-        .from('tasks')
-        .select('project_id')
-        .eq('owner_id', user.id)
-        .in('project_id', projectIds),
-      supabase
-        .from('gallery')
-        .select('project_id')
-        .eq('owner_id', user.id)
-        .in('project_id', projectIds)
-    ])
+  const contractorIds = [
+    ...new Set(
+      data
+        .map(row => rowPartyId(row.contractor_id))
+        .filter((id): id is number => id != null)
+    )
+  ]
+  const customerIds = [
+    ...new Set(
+      data
+        .map(row => rowPartyId(row.customer_id))
+        .filter((id): id is number => id != null)
+    )
+  ]
 
-  if (tasksError || galleryError) {
+  const [
+    { data: taskRows, error: tasksError },
+    { data: galleryRows, error: galleryError },
+    { data: contractorRows, error: contractorsError },
+    { data: customerRows, error: customersError }
+  ] = await Promise.all([
+    supabase
+      .from('tasks')
+      .select('project_id')
+      .eq('owner_id', user.id)
+      .in('project_id', projectIds),
+    supabase
+      .from('gallery')
+      .select('project_id')
+      .eq('owner_id', user.id)
+      .in('project_id', projectIds),
+    contractorIds.length > 0
+      ? supabase
+          .from('contractors')
+          .select('id, name, inn, email, phone')
+          .eq('owner_id', user.id)
+          .in('id', contractorIds)
+      : Promise.resolve({ data: [], error: null }),
+    customerIds.length > 0
+      ? supabase
+          .from('customers')
+          .select('id, name, email')
+          .eq('owner_id', user.id)
+          .in('id', customerIds)
+      : Promise.resolve({ data: [], error: null })
+  ])
+
+  if (tasksError || galleryError || contractorsError || customersError) {
     return NextResponse.json(
-      { data: null, error: tasksError?.message ?? galleryError?.message ?? 'Count failed' },
+      {
+        data: null,
+        error:
+          tasksError?.message ??
+          galleryError?.message ??
+          contractorsError?.message ??
+          customersError?.message ??
+          'Count failed'
+      },
       { status: 500 }
     )
   }
@@ -73,11 +128,34 @@ export async function GET() {
     photosByProject.set(id, (photosByProject.get(id) ?? 0) + 1)
   }
 
-  const enriched = data.map(row => ({
-    ...row,
-    photos_count: photosByProject.get(row.id) ?? 0,
-    tasks_count: tasksByProject.get(row.id) ?? 0
-  }))
+  const contractorsById = new Map<number, (typeof contractorRows)[number]>()
+  for (const row of contractorRows ?? []) {
+    if (row?.id == null || Number.isNaN(Number(row.id))) {
+      continue
+    }
+    contractorsById.set(Number(row.id), row)
+  }
+
+  const customersById = new Map<number, (typeof customerRows)[number]>()
+  for (const row of customerRows ?? []) {
+    if (row?.id == null || Number.isNaN(Number(row.id))) {
+      continue
+    }
+    customersById.set(Number(row.id), row)
+  }
+
+  const enriched = data.map(row => {
+    const contractorId = rowPartyId(row.contractor_id)
+    const customerId = rowPartyId(row.customer_id)
+    return {
+      ...row,
+      photos_count: photosByProject.get(row.id) ?? 0,
+      tasks_count: tasksByProject.get(row.id) ?? 0,
+      contractor:
+        contractorId != null ? (contractorsById.get(contractorId) ?? null) : null,
+      customer: customerId != null ? (customersById.get(customerId) ?? null) : null
+    }
+  })
 
   return NextResponse.json({ data: enriched })
 }

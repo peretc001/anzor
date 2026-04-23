@@ -3,9 +3,9 @@ import { useTranslations } from 'next-intl'
 
 import { UsersIcon } from '@heroicons/react/24/outline'
 
-import styles from './customers.module.scss'
+import styles from './empty.module.scss'
 
-const Customers = () => {
+const Empty = () => {
   const t = useTranslations('customers.empty')
 
   return (
@@ -21,4 +21,4 @@ const Customers = () => {
   )
 }
 
-export default Customers
+export default Empty

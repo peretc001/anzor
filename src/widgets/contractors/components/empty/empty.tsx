@@ -3,9 +3,9 @@ import { useTranslations } from 'next-intl'
 
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 
-import styles from './contractors.module.scss'
+import styles from './empty.module.scss'
 
-const Contractors = () => {
+const Empty = () => {
   const t = useTranslations('contractors.empty')
 
   return (
@@ -21,4 +21,4 @@ const Contractors = () => {
   )
 }
 
-export default Contractors
+export default Empty

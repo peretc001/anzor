@@ -82,19 +82,23 @@
         align-items: center;
         max-width: 100%;
         padding: 4px 10px;
-        border-radius: 8px;
-        font-size: 12px;
-        line-height: 1.1;
+        border-radius: var(--rounded-md);
+        @include typography.text-xs;
       }
 
       .contractor {
-        background: #edf3ff;
-        color: #4f6a97;
+        background: var(--tt-brand-color-100);
+        color: var(--tt-brand-color-500);
       }
 
       .customer {
-        background: #e6f7ec;
-        color: #3c8a61;
+        background: var(--green-100);
+        color: var(--green-600);
+      }
+
+      button {
+        min-height: 32px;
+        @include typography.text-xs;
       }
     }
 

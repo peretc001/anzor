@@ -63,14 +63,28 @@ const ProjectInfo: FC<IProjectInfo> = ({ project, tasks }) => {
         <div className={styles.parties}>
           {project.customer?.name ? (
             <span className={styles.customer}>{project.customer.name}</span>
-          ) : (
-            <Button onClick={handleAttachCustomer}>{t('attachCustomer')}</Button>
-          )}
+          ) : project.active ? (
+            <Button
+              color="primary"
+              disabled={!project.active}
+              variant="outlined"
+              onClick={handleAttachCustomer}
+            >
+              {t('attachCustomer')}
+            </Button>
+          ) : null}
           {project.contractor?.name ? (
             <span className={styles.contractor}>{project.contractor.name}</span>
-          ) : (
-            <Button onClick={handleAttachContractor}>{t('attachContractor')}</Button>
-          )}
+          ) : project.active ? (
+            <Button
+              color="primary"
+              disabled={!project.active}
+              variant="outlined"
+              onClick={handleAttachContractor}
+            >
+              {t('attachContractor')}
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>

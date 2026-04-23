@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { Button, Form, Input, message } from 'antd'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -21,6 +22,7 @@ interface IAddForm {
 
 const AddForm: FC<IAddForm> = ({ projectId, onClose }) => {
   const t = useTranslations('contractors.form')
+  const router = useRouter()
 
   const queryClient = useQueryClient()
 
@@ -39,6 +41,7 @@ const AddForm: FC<IAddForm> = ({ projectId, onClose }) => {
       if (status) {
         await queryClient.invalidateQueries({ queryKey: ['projects'] })
         await queryClient.invalidateQueries({ queryKey: ['project', projectId] })
+        router.refresh()
         onClose()
       }
     }

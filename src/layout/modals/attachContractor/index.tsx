@@ -12,6 +12,7 @@ import styles from './authModal.module.scss'
 const AttachContractorModal = () => {
   const { isMobileMD } = useMatchMedia()
 
+  const [projectId, setProjectId] = useState<null | number>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const hideModal = useCallback(() => {
@@ -19,13 +20,15 @@ const AttachContractorModal = () => {
   }, [])
 
   useEffect(() => {
-    const handleShowModal = () => {
+    const handleShowModal = (ev: Event) => {
+      const { projectId: nextProjectId } = (ev as CustomEvent<{ projectId: number }>).detail ?? {}
+      if (nextProjectId != null) setProjectId(nextProjectId)
+
       setIsModalOpen(true)
     }
 
-    document.addEventListener('openAttachContractorModal', handleShowModal as EventListener)
-    return () =>
-      document.removeEventListener('openAttachContractorModal', handleShowModal as EventListener)
+    document.addEventListener('openAttachContractorModal', handleShowModal)
+    return () => document.removeEventListener('openAttachContractorModal', handleShowModal)
     // eslint-disable-next-line
   }, [])
 
@@ -38,7 +41,7 @@ const AttachContractorModal = () => {
       width={isMobileMD ? '100%' : '450px'}
       onCancel={hideModal}
     >
-      <AddForm />
+      <AddForm projectId={projectId} onClose={hideModal} />
     </Modal>
   )
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { SaveProjectPayload } from '@/shared/interfaces'
+import { IContractor } from '@/shared/interfaces'
 
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { createClient } from '@/lib/supabaseServer'
@@ -15,21 +15,41 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
+  const projectId = Number(body?.projectId)
+  const values = body?.values
+
+  if (!Number.isInteger(projectId) || projectId <= 0) {
+    return NextResponse.json({ error: 'Invalid project id', status: false }, { status: 400 })
+  }
 
   let row = {
-    active: body?.active ?? true,
-    address: body?.address ?? '',
-    name: body?.name ?? '',
+    email: values?.email ?? '',
+    inn: values?.inn ?? '',
+    name: values?.name ?? '',
     owner_id: user.id,
-    type: body?.type ?? 'flat'
-  } as SaveProjectPayload
+    phone: values?.phone ?? ''
+  } as IContractor
 
-  if (body?.id) row = { ...row, id: body.id } as SaveProjectPayload
+  if (projectId) row = { ...row, id: projectId } as IContractor
 
-  const { error } = await supabase.from('projects').upsert(row, { onConflict: 'id' })
+  const { data, error } = await supabase
+    .from('contractors')
+    .upsert(row, { onConflict: 'id' })
+    .select('id')
+    .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message, status: false }, { status: 500 })
+  if (!data?.id || error) {
+    return NextResponse.json({ error: error?.message, status: false }, { status: 500 })
+  }
+
+  const { error: errorUpdate } = await supabase
+    .from('projects')
+    .update({ contractor_id: data.id })
+    .eq('id', projectId)
+    .eq('owner_id', user.id)
+
+  if (errorUpdate) {
+    return NextResponse.json({ error: errorUpdate.message, status: false }, { status: 500 })
   }
 
   return NextResponse.json({ status: true })

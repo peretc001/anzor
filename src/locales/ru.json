@@ -99,7 +99,9 @@
       "deleteConfirmTitle": "Удалить объект?",
       "deleteConfirmDescription": "Действие нельзя отменить",
       "deleteConfirmCancel": "Отмена",
-      "deleteFailed": "Не удалось удалить объект"
+      "deleteFailed": "Не удалось удалить объект",
+      "attachCustomer": "Привязать Исполнителя",
+      "attachContractor": "Привязать Заказчика"
     },
     "list": {
       "all": "Объекты",
@@ -138,9 +140,9 @@
   "contractors": {
     "form": {
       "title": "Исполнитель",
-      "subtitle": "Строительная компания или ИП",
+      "subtitle": "Кто будет делать ремонт",
       "name": {
-        "label": "Наименование компании",
+        "label": "Наименование компании или ФИО",
         "placeholder": "ООО \"СтройМастер\" или ИП Петров И.В.",
         "require": "Обязательное поле"
       },

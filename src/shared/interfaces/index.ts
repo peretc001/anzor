@@ -10,7 +10,7 @@ export interface IUser {
 }
 
 export interface IContractor {
-  id: number
+  id?: number
   email?: null | string
   inn?: null | string
   name?: null | string

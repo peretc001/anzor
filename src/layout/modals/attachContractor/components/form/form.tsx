@@ -1,8 +1,12 @@
-import React from 'react'
-import { Button, Form, Input } from 'antd'
+import React, { FC } from 'react'
+import { Button, Form, Input, message } from 'antd'
 import { useTranslations } from 'next-intl'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import { BuildingOffice2Icon } from '@heroicons/react/24/outline'
+
+import { addContractorApi } from '@/layout/modals/attachContractor/api/addContractorApi'
 
 import styles from './form.module.scss'
 
@@ -15,11 +19,38 @@ type ContractorFormValues = {
 
 const innDigits = (value: string) => value.replace(/\D/g, '')
 
-const AddForm = () => {
+interface IAddForm {
+  readonly projectId: null | number
+  readonly onClose: () => void
+}
+
+const AddForm: FC<IAddForm> = ({ projectId, onClose }) => {
   const t = useTranslations('contractors.form')
+
+  const queryClient = useQueryClient()
+
   const [form] = Form.useForm<ContractorFormValues>()
 
-  const handleFinish = (_values: ContractorFormValues) => {}
+  const { isLoading, mutate: save } = useMutation({
+    mutationFn: ({
+      projectId,
+      values
+    }: {
+      projectId: number
+      values: ContractorFormValues
+    }): Promise<boolean> => addContractorApi(projectId, values),
+    onError: () => message.error(t('user.change.error')),
+    onSuccess: async (status: boolean) => {
+      if (status) {
+        await queryClient.invalidateQueries({ queryKey: ['project', projectId] })
+        onClose()
+      }
+    }
+  })
+
+  const handleFinish = (_values: ContractorFormValues) => {
+    if (projectId != null) save({ projectId, values: _values })
+  }
 
   return (
     <div className={styles.root}>
@@ -85,7 +116,7 @@ const AddForm = () => {
           <Input placeholder={t('email.placeholder')} type="email" />
         </Form.Item>
 
-        <Button className={styles.submit} htmlType="submit" type="primary">
+        <Button className={styles.submit} htmlType="submit" loading={isLoading} type="primary">
           {t('submit')}
         </Button>
       </Form>

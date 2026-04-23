@@ -1,7 +1,8 @@
 'use client'
 
-import React, { FC } from 'react'
+import React, { FC, MouseEvent } from 'react'
 import { Button } from 'antd'
+import { useTranslations } from 'next-intl'
 
 import {
   BuildingOffice2Icon,
@@ -23,11 +24,16 @@ interface IProjectInfo {
 }
 
 const ProjectInfo: FC<IProjectInfo> = ({ project, tasks }) => {
-  const handleAttachContractor = () => {
-    openAttachContractorModal()
+  const t = useTranslations('projects.header')
+
+  const handleAttachContractor = (e: MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    openAttachContractorModal(project.id)
   }
-  const handleAttachCustomer = () => {
-    openAttachCustomerModal()
+
+  const handleAttachCustomer = (e: MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    openAttachCustomerModal(project.id)
   }
 
   return (
@@ -58,12 +64,12 @@ const ProjectInfo: FC<IProjectInfo> = ({ project, tasks }) => {
           {project.customer?.name ? (
             <span className={styles.customer}>{project.customer.name}</span>
           ) : (
-            <Button onClick={handleAttachContractor}>Привязать Исполнителя</Button>
+            <Button onClick={handleAttachCustomer}>{t('attachCustomer')}</Button>
           )}
           {project.contractor?.name ? (
             <span className={styles.contractor}>{project.contractor.name}</span>
           ) : (
-            <Button onClick={handleAttachCustomer}>Привязать Заказчика</Button>
+            <Button onClick={handleAttachContractor}>{t('attachContractor')}</Button>
           )}
         </div>
       </div>

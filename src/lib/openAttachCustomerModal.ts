@@ -1,4 +1,4 @@
-export const openAttachCustomerModal = () => {
-  const event = new CustomEvent('openAttachCustomerModal')
+export const openAttachCustomerModal = (projectId: number) => {
+  const event = new CustomEvent('openAttachCustomerModal', { detail: { projectId } })
   document.dispatchEvent(event)
 }

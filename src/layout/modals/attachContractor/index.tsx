@@ -7,7 +7,7 @@ import { useMatchMedia } from '@/lib/useMatchMedia'
 
 import AddForm from '@/layout/modals/attachContractor/components/form/form'
 
-import styles from './authModal.module.scss'
+import styles from './contractor.module.scss'
 
 const AttachContractorModal = () => {
   const { isMobileMD } = useMatchMedia()

@@ -2,17 +2,17 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { Modal } from 'antd'
-import { useTranslations } from 'next-intl'
 
 import { useMatchMedia } from '@/lib/useMatchMedia'
 
-import styles from './authModal.module.scss'
+import AddForm from '@/layout/modals/attachCustomer/components/form/form'
+
+import styles from './customer.module.scss'
 
 const AttachCustomerModal = () => {
-  const t = useTranslations('auth')
-
   const { isMobileMD } = useMatchMedia()
 
+  const [projectId, setProjectId] = useState<null | number>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const hideModal = useCallback(() => {
@@ -20,13 +20,15 @@ const AttachCustomerModal = () => {
   }, [])
 
   useEffect(() => {
-    const handleShowModal = () => {
+    const handleShowModal = (ev: Event) => {
+      const { projectId: nextProjectId } = (ev as CustomEvent<{ projectId: number }>).detail ?? {}
+      if (nextProjectId != null) setProjectId(nextProjectId)
+
       setIsModalOpen(true)
     }
 
-    document.addEventListener('openAttachCustomerModal', handleShowModal as EventListener)
-    return () =>
-      document.removeEventListener('openAttachCustomerModal', handleShowModal as EventListener)
+    document.addEventListener('openAttachCustomerModal', handleShowModal)
+    return () => document.removeEventListener('openAttachCustomerModal', handleShowModal)
     // eslint-disable-next-line
   }, [])
 
@@ -39,9 +41,7 @@ const AttachCustomerModal = () => {
       width={isMobileMD ? '100%' : '450px'}
       onCancel={hideModal}
     >
-      <div className={styles.container}>
-        <h2 className={styles.title}>openAttachContractorModal</h2>
-      </div>
+      <AddForm projectId={projectId} onClose={hideModal} />
     </Modal>
   )
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { IContractor } from '@/shared/interfaces'
+import { ICustomer } from '@/shared/interfaces'
 
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { createClient } from '@/lib/supabaseServer'
@@ -22,18 +22,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid project id', status: false }, { status: 400 })
   }
 
-  let row = {
+  const row = {
     email: values?.email ?? '',
-    inn: values?.inn ?? '',
     name: values?.name ?? '',
     owner_id: user.id,
     phone: values?.phone ?? ''
-  } as IContractor
-
-  if (projectId) row = { ...row, id: projectId } as IContractor
+  } as ICustomer
 
   const { data, error } = await supabase
-    .from('contractors')
+    .from('customers')
     .upsert(row, { onConflict: 'id' })
     .select('id')
     .single()
@@ -44,7 +41,7 @@ export async function POST(request: NextRequest) {
 
   const { error: errorUpdate } = await supabase
     .from('projects')
-    .update({ contractor_id: data.id })
+    .update({ customer_id: data.id })
     .eq('id', projectId)
     .eq('owner_id', user.id)
 

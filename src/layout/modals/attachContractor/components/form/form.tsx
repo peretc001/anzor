@@ -6,16 +6,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { BuildingOffice2Icon } from '@heroicons/react/24/outline'
 
+import { IContractor } from '@/shared/interfaces'
+
 import { addContractorApi } from '@/layout/modals/attachContractor/api/addContractorApi'
 
 import styles from './form.module.scss'
-
-type ContractorFormValues = {
-  email?: string
-  inn?: string
-  name: string
-  phone?: string
-}
 
 const innDigits = (value: string) => value.replace(/\D/g, '')
 
@@ -29,7 +24,7 @@ const AddForm: FC<IAddForm> = ({ projectId, onClose }) => {
 
   const queryClient = useQueryClient()
 
-  const [form] = Form.useForm<ContractorFormValues>()
+  const [form] = Form.useForm<IContractor>()
 
   const { isLoading, mutate: save } = useMutation({
     mutationFn: ({
@@ -37,19 +32,20 @@ const AddForm: FC<IAddForm> = ({ projectId, onClose }) => {
       values
     }: {
       projectId: number
-      values: ContractorFormValues
+      values: IContractor
     }): Promise<boolean> => addContractorApi(projectId, values),
-    onError: () => message.error(t('user.change.error')),
+    onError: () => message.error(t('error')),
     onSuccess: async (status: boolean) => {
       if (status) {
+        await queryClient.invalidateQueries({ queryKey: ['projects'] })
         await queryClient.invalidateQueries({ queryKey: ['project', projectId] })
         onClose()
       }
     }
   })
 
-  const handleFinish = (_values: ContractorFormValues) => {
-    if (projectId != null) save({ projectId, values: _values })
+  const handleFinish = (values: IContractor) => {
+    if (projectId != null) save({ projectId, values })
   }
 
   return (

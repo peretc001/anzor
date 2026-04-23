@@ -18,9 +18,10 @@ export interface IContractor {
 }
 
 export interface ICustomer {
-  id: number
+  id?: number
   email?: null | string
   name?: null | string
+  phone?: null | string
 }
 
 export interface IProject {

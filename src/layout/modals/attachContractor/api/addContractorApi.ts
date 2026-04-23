@@ -7,7 +7,7 @@ export const addContractorApi = async (
   values: IContractor
 ): Promise<boolean> => {
   try {
-    const response = await serverApi.post('contractor/create', {
+    const response = await serverApi.post('contractors/create', {
       projectId,
       values
     })

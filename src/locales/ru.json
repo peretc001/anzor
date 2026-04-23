@@ -100,8 +100,8 @@
       "deleteConfirmDescription": "Действие нельзя отменить",
       "deleteConfirmCancel": "Отмена",
       "deleteFailed": "Не удалось удалить объект",
-      "attachCustomer": "Привязать Исполнителя",
-      "attachContractor": "Привязать Заказчика"
+      "attachCustomer": "Привязать Заказчика",
+      "attachContractor": "Привязать Исполнителя"
     },
     "list": {
       "all": "Объекты",
@@ -135,6 +135,30 @@
     "empty": {
       "title": "Заказчики",
       "description": "Раздел в разработке"
+    },
+    "form": {
+      "title": "Заказчик",
+      "subtitle": "Укажите данные для связи",
+      "collapse": {
+        "expand": "Развернуть форму",
+        "collapse": "Свернуть форму"
+      },
+      "name": {
+        "label": "ФИО",
+        "placeholder": "Иванова Мария Сергеевна",
+        "require": "Обязательное поле"
+      },
+      "phone": {
+        "label": "Телефон",
+        "placeholder": "+7 (916) 987-65-43"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "maria@client.ru",
+        "validate": "Введите корректный email"
+      },
+      "error": "Ошибка сохранения",
+      "submit": "Сохранить"
     }
   },
   "contractors": {
@@ -160,6 +184,7 @@
         "placeholder": "office@company.ru",
         "validate": "Введите корректный email"
       },
+      "error": "Ошибка сохранения",
       "submit": "Сохранить"
     },
     "empty": {

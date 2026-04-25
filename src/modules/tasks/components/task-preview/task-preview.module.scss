@@ -1,0 +1,93 @@
+@use "@/styles/typography";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px 24px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.rowPair {
+  display: flex;
+  gap: 16px;
+
+  > * {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  @include typography.text-sm;
+  color: var(--gray-500);
+}
+
+.value {
+  @include typography.text-sm;
+  color: var(--gray-900);
+  word-break: break-word;
+}
+
+.titleValue {
+  @include typography.text-md;
+  font-weight: 600;
+  color: var(--gray-900);
+  word-break: break-word;
+}
+
+.descriptionBox {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--rounded-md);
+  min-height: 100px;
+  background: var(--white);
+
+  :global(.simple-editor-content .tiptap.ProseMirror.simple-editor) {
+    min-height: 100px;
+  }
+}
+
+.emptyDescription {
+  @include typography.text-sm;
+  color: var(--gray-400);
+  padding: 16px;
+}
+
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.photoLink {
+  display: block;
+  border-radius: var(--rounded-sm);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+
+.photoThumb {
+  display: block;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--gray-200);
+
+  button {
+    min-width: 150px;
+  }
+}

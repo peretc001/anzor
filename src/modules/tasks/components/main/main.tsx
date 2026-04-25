@@ -17,6 +17,7 @@ import Card from '@/modules/tasks/components/card/card'
 import Empty from '@/modules/tasks/components/empty/empty'
 import type { TaskFormValues } from '@/modules/tasks/components/form/form'
 import Form from '@/modules/tasks/components/form/form'
+import TaskPreview from '@/modules/tasks/components/task-preview/task-preview'
 
 import styles from './main.module.scss'
 
@@ -35,11 +36,14 @@ type SaveTaskWithPhotosResult = {
 
 const ADD_TASK_LABEL = 'Добавить задачу'
 const EDIT_TASK_TITLE = 'Редактирование задачи'
+const PREVIEW_TASK_TITLE = 'Просмотр задачи'
 
 const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<ITask | null>(null)
+  /** для существующей задачи: сначала превью, после «Редактировать» — форма */
+  const [taskFormFromPreview, setTaskFormFromPreview] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
   const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined)
@@ -77,6 +81,7 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
     setEditingTask(null)
+    setTaskFormFromPreview(false)
   }, [])
 
   const afterSave = useCallback(async () => {
@@ -221,13 +226,19 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
 
   const handleOpenModal = () => {
     setEditingTask(null)
+    setTaskFormFromPreview(false)
     setIsModalOpen(true)
   }
 
   const handleOpenEdit = (task: ITask) => {
     setEditingTask(task)
+    setTaskFormFromPreview(false)
     setIsModalOpen(true)
   }
+
+  const handleStartTaskFormEdit = useCallback(() => {
+    setTaskFormFromPreview(true)
+  }, [])
 
   const handleSubmit = async (values: TaskFormValues) => {
     try {
@@ -345,19 +356,33 @@ const Main: FC<IMainProps> = ({ projectId, tasks }) => {
         footer={null}
         maskTransitionName="fade"
         open={isModalOpen}
-        title={editingTask ? EDIT_TASK_TITLE : ADD_TASK_LABEL}
+        title={
+          editingTask
+            ? taskFormFromPreview
+              ? EDIT_TASK_TITLE
+              : PREVIEW_TASK_TITLE
+            : ADD_TASK_LABEL
+        }
         transitionName=""
         width={600}
         wrapClassName={styles.modalWrap}
         onCancel={handleCloseModal}
       >
-        <Form
-          key={editingTask ? editingTask.id : 'new'}
-          editingTask={editingTask}
-          submitting={isSaving}
-          onCancel={handleCloseModal}
-          onSubmit={handleSubmit}
-        />
+        {editingTask && !taskFormFromPreview ? (
+          <TaskPreview
+            task={editingTask}
+            onClose={handleCloseModal}
+            onEdit={handleStartTaskFormEdit}
+          />
+        ) : (
+          <Form
+            key={editingTask ? `edit-${editingTask.id}` : 'new'}
+            editingTask={editingTask}
+            submitting={isSaving}
+            onCancel={handleCloseModal}
+            onSubmit={handleSubmit}
+          />
+        )}
       </Modal>
     </div>
   )
